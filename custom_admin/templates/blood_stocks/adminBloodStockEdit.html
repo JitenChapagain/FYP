@@ -1,0 +1,263 @@
+{% extends 'adminbase.html' %}
+{% load static %}
+
+{% block title %}Edit Blood Stock - Rakta Sewa Admin{% endblock %}
+
+{% block active_blood_stocks %}active{% endblock %}
+
+{% block content %}
+<style>
+    .detail-header {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .detail-title {
+        color: #333;
+        font-size: 1.8rem;
+        font-weight: 600;
+    }
+
+    .detail-card {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+
+    .detail-section {
+        padding: 20px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .detail-section:last-child {
+        border-bottom: none;
+    }
+
+    .section-title {
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 12px 15px;
+        background-color: #bf2229;
+        border-radius: 6px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-label {
+        color: #666;
+        font-size: 0.85rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #bf2229;
+        outline: none;
+    }
+
+    .form-select {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        font-size: 1rem;
+        background-color: white;
+        cursor: pointer;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-select:focus {
+        border-color: #bf2229;
+        outline: none;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        cursor: pointer;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-back {
+        background-color: #f5f5f5;
+        color: #424242;
+    }
+
+    .btn-save {
+        background-color: #bf2229;
+        color: white;
+    }
+
+    .btn:hover {
+        opacity: 0.9;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .alert {
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .alert-success {
+        background-color: #4caf50;
+        color: white;
+    }
+
+    .alert-error {
+        background-color: #f44336;
+        color: white;
+    }
+
+    .alert-icon {
+        font-size: 20px;
+    }
+
+    .error-message {
+        color: #f44336;
+        font-size: 0.85rem;
+        margin-top: 5px;
+    }
+</style>
+
+<div class="detail-header">
+    <h1 class="detail-title">Edit Blood Stock</h1>
+    <a href="{% url 'admin_blood_stocks' %}" class="btn btn-back">
+        <span class="material-icons">arrow_back</span>
+        Back to List
+    </a>
+</div>
+
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}" id="message-{{ forloop.counter }}">
+        <span class="material-icons alert-icon">
+            {% if message.tags == 'success' %}check_circle{% else %}error{% endif %}
+        </span>
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<form method="post" class="detail-card">
+    {% csrf_token %}
+    
+    <div class="detail-section">
+        <h2 class="section-title">Blood Bank Information</h2>
+        <div class="form-grid">
+            <div class="form-group {% if form.bloodbank.errors %}error{% endif %}">
+                <label class="form-label">Blood Bank</label>
+                <select name="bloodbank" class="form-select" required>
+                    {% for bank in blood_banks %}
+                        <option value="{{ bank.pk }}" {% if blood_stock.bloodbank.pk == bank.pk %}selected{% endif %}>{{ bank.blood_bank_name }}</option>
+                    {% endfor %}
+                </select>
+                {% if form.bloodbank.errors %}
+                    <span class="error-message">{{ form.bloodbank.errors.0 }}</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-section">
+        <h2 class="section-title">Stock Information</h2>
+        <div class="form-grid">
+            <div class="form-group {% if form.blood_group.errors %}error{% endif %}">
+                <label class="form-label">Blood Group</label>
+                <select name="blood_group" class="form-select" required>
+                    <option value="A+" {% if blood_stock.blood_group == 'A+' %}selected{% endif %}>A+</option>
+                    <option value="A-" {% if blood_stock.blood_group == 'A-' %}selected{% endif %}>A-</option>
+                    <option value="B+" {% if blood_stock.blood_group == 'B+' %}selected{% endif %}>B+</option>
+                    <option value="B-" {% if blood_stock.blood_group == 'B-' %}selected{% endif %}>B-</option>
+                    <option value="AB+" {% if blood_stock.blood_group == 'AB+' %}selected{% endif %}>AB+</option>
+                    <option value="AB-" {% if blood_stock.blood_group == 'AB-' %}selected{% endif %}>AB-</option>
+                    <option value="O+" {% if blood_stock.blood_group == 'O+' %}selected{% endif %}>O+</option>
+                    <option value="O-" {% if blood_stock.blood_group == 'O-' %}selected{% endif %}>O-</option>
+                </select>
+                {% if form.blood_group.errors %}
+                    <span class="error-message">{{ form.blood_group.errors.0 }}</span>
+                {% endif %}
+            </div>
+            <div class="form-group {% if form.units.errors %}error{% endif %}">
+                <label class="form-label">Units Available</label>
+                <input type="number" name="units" class="form-control" value="{{ blood_stock.units }}" required min="0">
+                {% if form.units.errors %}
+                    <span class="error-message">{{ form.units.errors.0 }}</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <button type="submit" class="btn btn-save">
+            <span class="material-icons">save</span>
+            Save Changes
+        </button>
+    </div>
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get all message elements
+    const messages = document.querySelectorAll('.alert');
+    
+    // Set timeout for each message
+    messages.forEach(message => {
+        setTimeout(() => {
+            message.style.opacity = '0';
+            message.style.transition = 'opacity 0.5s ease-out';
+            setTimeout(() => {
+                message.remove();
+            }, 500);
+        }, 5000); // 5 seconds
+    });
+});
+</script>
+{% endblock %} 

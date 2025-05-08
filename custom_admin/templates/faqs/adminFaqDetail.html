@@ -1,0 +1,150 @@
+{% extends "../adminbase.html" %}
+{% load static %}
+
+{% block title %}FAQ Details - Rakta Sewa Admin{% endblock %}
+
+{% block active_faqs %}active{% endblock %}
+
+{% block content %}
+<style>
+    .content-header {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .content-title {
+        color: #333;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    .back-button {
+        background: #f5f5f5;
+        color: #000000;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .back-button:hover {
+        background: #424242;
+        color: #fff;
+    }
+
+    .detail-card {
+        background: #fff;
+        padding: 24px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+    }
+
+    .detail-section {
+        margin-bottom: 24px;
+    }
+
+    .detail-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .detail-label {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    .detail-value {
+        color: #000000;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+        margin-top: 20px;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .btn .material-icons {
+        font-size: 20px;
+    }
+
+    .btn-edit {
+        background-color: #f5f5f5;
+        color: #000000;
+    }
+
+    .btn-edit:hover {
+        background-color: #424242;
+        color: #fff;
+    }
+
+    .btn-delete {
+        background-color: #ffebee;
+        color: #bf2229;
+    }
+
+    .btn-delete:hover {
+        background-color: #bf2229;
+        color: #fff;
+    }
+</style>
+
+<div class="content-header">
+    <h1 class="content-title">FAQ Details</h1>
+    <a href="{% url 'admin_faqs' %}" class="back-button">
+        <span class="material-icons">arrow_back</span>
+        Back to FAQs
+    </a>
+</div>
+
+<div class="detail-card">
+    <div class="detail-section">
+        <div class="detail-label">Question</div>
+        <div class="detail-value">{{ faq.question }}</div>
+    </div>
+    
+    <div class="detail-section">
+        <div class="detail-label">Answer</div>
+        <div class="detail-value">{{ faq.answer }}</div>
+    </div>
+
+    <div class="action-buttons">
+        <a href="{% url 'admin_faq_edit' faq.id %}" class="btn btn-edit">
+            <span class="material-icons">edit</span>
+            Edit FAQ
+        </a>
+        <a href="{% url 'admin_faq_delete' faq.id %}" class="btn btn-delete">
+            <span class="material-icons">delete</span>
+            Delete FAQ
+        </a>
+    </div>
+</div>
+{% endblock %} 

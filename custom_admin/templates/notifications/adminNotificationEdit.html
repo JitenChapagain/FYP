@@ -1,0 +1,146 @@
+{% extends "../adminbase.html" %}
+{% load static %}
+
+{% block title %}Edit Notification - Admin{% endblock %}
+
+{% block active_notifications %}active{% endblock %}
+
+{% block content %}
+<style>
+    .content-header {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .content-title {
+        color: #333;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    .back-button {
+        background: #f5f5f5;
+        color: #333;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .back-button:hover {
+        background: #e0e0e0;
+    }
+
+    .form-card {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        padding: 24px;
+        margin-top: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 24px;
+    }
+
+    .form-label {
+        display: block;
+        color: #333;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #bf2229;
+        box-shadow: 0 0 0 2px rgba(191, 34, 41, 0.1);
+    }
+
+    .form-textarea {
+        min-height: 150px;
+        resize: vertical;
+    }
+
+    .btn-submit {
+        background: #bf2229;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-submit:hover {
+        background: #d62731;
+    }
+
+    .error-message {
+        color: #bf2229;
+        font-size: 14px;
+        margin-top: 4px;
+    }
+</style>
+
+<div class="content-header">
+    <h1 class="content-title">Edit Notification</h1>
+    <a href="{% url 'admin_notifications' %}" class="back-button">
+        <span class="material-icons">arrow_back</span>
+        Back to List
+    </a>
+</div>
+
+<div class="form-card">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label class="form-label" for="title">Title</label>
+            <input type="text" id="title" name="title" class="form-control" value="{{ notification.title }}" required>
+            {% if form.title.errors %}
+                <div class="error-message">{{ form.title.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="message">Message</label>
+            <textarea id="message" name="message" class="form-control form-textarea" required>{{ notification.message }}</textarea>
+            {% if form.message.errors %}
+                <div class="error-message">{{ form.message.errors }}</div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn-submit">
+            <span class="material-icons">save</span>
+            Update Notification
+        </button>
+    </form>
+</div>
+{% endblock %} 

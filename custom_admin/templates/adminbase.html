@@ -1,0 +1,266 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Rakta Sewa Admin{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-red: #bf2229;
+            --dark-red: #bf2229;
+            --light-red: rgba(191, 34, 41, 0.1);
+            --hover-red: #d62731;
+            --sidebar-bg: #1a1a1a;
+            --text-light: #ffffff;
+            --text-muted: rgba(255,255,255,0.7);
+            --border-color: rgba(255,255,255,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f6fa;
+        }
+
+        .wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 240px;
+            background: linear-gradient(180deg, var(--sidebar-bg) 0%, #2a2a2a 100%);
+            color: var(--text-light);
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 100;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 10px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 8px;
+        }
+
+        .logo svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
+        }
+
+        .brand-name {
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 10px 0;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item.active {
+            color: var(--text-light);
+            background: var(--primary-red);
+            border-left-color: var(--primary-red);
+            font-weight: 500;
+        }
+
+        .nav-item.active .material-icons {
+            color: var(--text-light);
+            opacity: 1;
+        }
+
+        .nav-item:hover {
+            color: var(--text-light);
+            background: var(--dark-red);
+            border-left-color: var(--primary-red);
+        }
+
+        .nav-item .material-icons {
+            font-size: 20px;
+            margin-right: 12px;
+            opacity: 0.9;
+            color: inherit;
+        }
+
+        /* Top Header Styles */
+        .top-header {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 240px;
+            height: 60px;
+            background-color: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 99;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        }
+
+        .sign-in-btn {
+            text-decoration: none;
+            color: #666;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+        }
+
+        .sign-in-btn:hover {
+            background-color: var(--light-red);
+            color: var(--primary-red);
+        }
+
+        .sign-in-btn .material-icons {
+            font-size: 20px;
+            margin-right: 8px;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            margin-left: 240px;
+            margin-top: 60px;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+            .main-content {
+                margin-left: 200px;
+            }
+            .top-header {
+                left: 200px;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-section">
+                    <div class="logo">
+                        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M50 5C50 5 20 35 20 65C20 85 35 95 50 95C65 95 80 85 80 65C80 35 50 5 50 5Z" fill="#ffffff"/>
+                            <path d="M45 35C45 35 35 50 35 65C35 75 42 80 50 80C58 80 65 75 65 65C65 50 55 35 55 35C55 35 52 40 50 40C48 40 45 35 45 35Z" fill="#e23744"/>
+                        </svg>
+                    </div>
+                    <h1 class="brand-name">Rakta Sewa</h1>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="{% url 'admin_dashboard' %}" class="nav-item {% block active_dashboard %}{% endblock %}">
+                    <span class="material-icons">dashboard</span> Dashboard
+                </a></li>
+                <li><a href="{% url 'admin_blood_banks' %}" class="nav-item {% block active_blood_banks %}{% endblock %}">
+                    <span class="material-icons">local_hospital</span> Blood Banks
+                </a></li>
+                <li><a href="{% url 'admin_donors' %}" class="nav-item {% block active_donors %}{% endblock %}">
+                    <span class="material-icons">people</span> Donors
+                </a></li>
+                <li><a href="{% url 'admin_camps' %}" class="nav-item {% block active_camps %}{% endblock %}">
+                    <span class="material-icons">event</span> Blood Camp Schedules
+                </a></li>
+                <li><a href="{% url 'admin_blood_stocks' %}" class="nav-item {% block active_blood_stocks %}{% endblock %}">
+                    <span class="material-icons">bloodtype</span> Blood Stocks
+                </a></li>
+                <li><a href="{% url 'admin_about_raktasewa' %}" class="nav-item {% block active_about_raktasewa %}{% endblock %}">
+                    <span class="material-icons">info</span> About Rakta Sewa
+                </a></li>
+                <li><a href="{% url 'admin_faqs' %}" class="nav-item {% block active_faqs %}{% endblock %}">
+                    <span class="material-icons">help</span> FAQs
+                </a></li>
+                <li><a href="{% url 'admin_notifications' %}" class="nav-item {% block active_notifications %}{% endblock %}">
+                    <span class="material-icons">notifications</span> Notifications
+                </a></li>
+                <li><a href="{% url 'admin_gallery' %}" class="nav-item {% block active_gallery %}{% endblock %}">
+                    <span class="material-icons">photo_library</span> Gallery
+                </a></li>
+                <li><a href="{% url 'admin_mobile_apps' %}" class="nav-item {% block active_mobile_apps %}{% endblock %}">
+                    <span class="material-icons">phone_android</span> Mobile App
+                </a></li>
+                <li><a href="{% url 'admin_contact_messages' %}" class="nav-item {% block active_contact_messages %}{% endblock %}">
+                    <span class="material-icons">message</span> Contact Messages
+                </a></li>
+                <li><a href="{% url 'admin_logout' %}" class="nav-item">
+                    <span class="material-icons">logout</span> Logout
+                </a></li>
+            </ul>
+        </div>
+
+        <!-- Top Header -->
+        <div class="top-header">
+            <a href="#" class="sign-in-btn">
+                <span class="material-icons">person</span>
+                <span>Super Admin</span>
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

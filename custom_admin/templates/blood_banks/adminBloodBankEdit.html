@@ -1,0 +1,665 @@
+{% extends "../adminbase.html" %}
+
+{% block title %}Edit {{ blood_bank.blood_bank_name }} - Rakta Sewa Admin{% endblock %}
+
+{% block active_blood_banks %}active{% endblock %}
+
+{% block content %}
+<style>
+    .detail-header {
+        background: #fff;
+        padding: 8px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .detail-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--primary-red);
+    }
+
+    .detail-title {
+        color: var(--primary-red);
+        font-size: 28px;
+        font-weight: 600;
+        margin: 0;
+        position: relative;
+        padding-left: 14px;
+    }
+
+    .detail-title::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 22px;
+        background: var(--primary-red);
+        border-radius: 1px;
+    }
+
+    .detail-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+        position: relative;
+    }
+
+    .detail-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-red), #ff6b6b);
+    }
+
+    .detail-section {
+        padding: 30px;
+        border-bottom: 2px solid rgba(220, 53, 69, 0.1);
+        animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    .detail-section:last-child {
+        border-bottom: none;
+    }
+
+    .section-title {
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 14px 20px;
+        background: linear-gradient(145deg, var(--primary-red), #c82333);
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .section-title .material-icons {
+        font-size: 20px;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 6px;
+        border-radius: 6px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-label {
+        color: #333;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #eee;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        color: #333;
+        background: #fafafa;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-red);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+        background: white;
+    }
+
+    .form-select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #eee;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        color: #333;
+        background: #fafafa;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .form-select:focus {
+        border-color: var(--primary-red);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+        background: white;
+    }
+
+    .form-check {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+        padding: 8px 12px;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+    }
+
+    .form-check:hover {
+        background: rgba(220, 53, 69, 0.05);
+    }
+
+    .form-check-input {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        border: 2px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .form-check-input:checked {
+        background-color: var(--primary-red);
+        border-color: var(--primary-red);
+    }
+
+    .form-check-label {
+        font-size: 0.95rem;
+        color: #333;
+        cursor: pointer;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-back {
+        background: linear-gradient(145deg, #ffffff, #f0f0f0);
+        color: #666;
+        box-shadow: 5px 5px 10px #d1d1d1,
+                    -5px -5px 10px #ffffff;
+    }
+
+    .btn-save {
+        background: linear-gradient(145deg, var(--primary-red), #c82333);
+        color: white;
+        box-shadow: 5px 5px 10px rgba(220, 53, 69, 0.2);
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .btn-back:hover {
+        box-shadow: 8px 8px 15px #d1d1d1,
+                    -8px -8px 15px #ffffff;
+    }
+
+    .btn-save:hover {
+        box-shadow: 8px 8px 15px rgba(220, 53, 69, 0.3);
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .detail-section:nth-child(1) { animation-delay: 0.1s; }
+    .detail-section:nth-child(2) { animation-delay: 0.2s; }
+    .detail-section:nth-child(3) { animation-delay: 0.3s; }
+    .detail-section:nth-child(4) { animation-delay: 0.4s; }
+    .detail-section:nth-child(5) { animation-delay: 0.5s; }
+    .detail-section:nth-child(6) { animation-delay: 0.6s; }
+
+    .checkbox-group {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+    }
+
+    .checkbox-section {
+        margin-top: 20px;
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid #eee;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    .checkbox-section-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid rgba(220, 53, 69, 0.1);
+    }
+
+    .messages {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .alert {
+        padding: 15px 20px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideIn 0.3s ease-out;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateY(-20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .alert-success {
+        background: linear-gradient(145deg, #4caf50, #45a049);
+        color: white;
+    }
+
+    .alert-error {
+        background: linear-gradient(145deg, #f44336, #d32f2f);
+        color: white;
+    }
+
+    .alert-icon {
+        font-size: 20px;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 6px;
+        border-radius: 6px;
+    }
+
+    .alert-close {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        padding: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+
+    .alert-close:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    @media (max-width: 768px) {
+        .detail-header {
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .action-buttons {
+            width: 100%;
+        }
+
+        .btn {
+            flex: 1;
+            justify-content: center;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .detail-section {
+            padding: 20px;
+        }
+
+        .checkbox-group {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="detail-header">
+    <h1 class="detail-title">Edit Blood Bank</h1>
+    <div class="action-buttons">
+        <a href="{% url 'admin_blood_banks' %}" class="btn btn-back">
+            <span class="material-icons">arrow_back</span>
+            Back to List
+        </a>
+    </div>
+</div>
+
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}" id="message-{{ forloop.counter }}">
+        <span class="material-icons alert-icon">
+            {% if message.tags == 'success' %}check_circle{% else %}error{% endif %}
+        </span>
+        {{ message }}
+        <button class="alert-close" onclick="this.parentElement.remove()">
+            <span class="material-icons">close</span>
+        </button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<form method="post" class="detail-card">
+    {% csrf_token %}
+    
+    <div class="detail-section">
+        <h2 class="section-title">
+            <span class="material-icons">info</span>
+            Basic Information
+        </h2>
+        <div class="form-grid">
+            <div class="form-group">
+                <label class="form-label">Blood Bank Name</label>
+                <input type="text" name="blood_bank_name" class="form-control" value="{{ blood_bank.blood_bank_name }}" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Parent Hospital</label>
+                <input type="text" name="parent_hospital_name" class="form-control" value="{{ blood_bank.parent_hospital_name }}" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Short Name</label>
+                <input type="text" name="short_name" class="form-control" value="{{ blood_bank.short_name }}" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Category</label>
+                <select name="category" class="form-select" required>
+                    <option value="Government" {% if blood_bank.category == 'Government' %}selected{% endif %}>Government</option>
+                    <option value="Private" {% if blood_bank.category == 'Private' %}selected{% endif %}>Private</option>
+                    <option value="Community" {% if blood_bank.category == 'Community' %}selected{% endif %}>Community</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-section">
+        <h2 class="section-title">Contact Information</h2>
+        <div class="form-grid">
+            <div class="form-group">
+                <label class="form-label">Contact Person</label>
+                <input type="text" name="contact_person" class="form-control" value="{{ blood_bank.contact_person }}" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" name="email" class="form-control" value="{{ blood_bank.email }}" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Contact Number</label>
+                <input type="text" name="contact_no" class="form-control" value="{{ blood_bank.contact_no }}" required>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-section">
+        <h2 class="section-title">Location Information</h2>
+        <div class="form-grid">
+            <div class="form-group">
+                <label class="form-label">Province</label>
+                <select name="province" class="form-select" required>
+                    {% for value, label in PROVINCE_CHOICES %}
+                        <option value="{{ value }}" {% if blood_bank.province == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">District</label>
+                <select name="district" class="form-select" required>
+                    {% for value, label in DISTRICT_CHOICES %}
+                        <option value="{{ value }}" {% if blood_bank.district == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">City</label>
+                <input type="text" name="city" class="form-control" value="{{ blood_bank.city }}" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Address</label>
+                <input type="text" name="address" class="form-control" value="{{ blood_bank.address }}" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Pincode</label>
+                <input type="text" name="pincode" class="form-control" value="{{ blood_bank.pincode }}" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Geographic Coordinates</label>
+                <div class="form-grid">
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="number" step="any" name="latitude" class="form-control" value="{{ blood_bank.latitude }}" placeholder="Latitude" required>
+                        <input type="number" step="any" name="longitude" class="form-control" value="{{ blood_bank.longitude }}" placeholder="Longitude" required>
+                        <button type="button" class="btn btn-map" onclick="openMapModal()" style="background-color: #bf2229; color: white; padding: 8px 12px; border-radius: 6px; display: flex; align-items: center; gap: 6px; transition: all 0.3s ease;">
+                            <span class="material-icons" style="font-size: 20px;">location_on</span>
+                            <span style="font-size: 0.9rem;">Map</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-section">
+        <h2 class="section-title">Donation Types</h2>
+        <div class="checkbox-section">
+            <div class="checkbox-section-title">Donor Types</div>
+            <div class="checkbox-group">
+                <div class="form-check">
+                    <input type="checkbox" name="donor_voluntary" class="form-check-input" {% if blood_bank.donor_voluntary %}checked{% endif %}>
+                    <label class="form-check-label">Voluntary</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="donor_replacement" class="form-check-input" {% if blood_bank.donor_replacement %}checked{% endif %}>
+                    <label class="form-check-label">Replacement</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="donor_directed" class="form-check-input" {% if blood_bank.donor_directed %}checked{% endif %}>
+                    <label class="form-check-label">Directed</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="donor_autologous" class="form-check-input" {% if blood_bank.donor_autologous %}checked{% endif %}>
+                    <label class="form-check-label">Autologous</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="donor_family" class="form-check-input" {% if blood_bank.donor_family %}checked{% endif %}>
+                    <label class="form-check-label">Family</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="donor_replacement_external" class="form-check-input" {% if blood_bank.donor_replacement_external %}checked{% endif %}>
+                    <label class="form-check-label">External Replacement</label>
+                </div>
+            </div>
+        </div>
+        <div class="checkbox-section">
+            <div class="checkbox-section-title">Donation Methods</div>
+            <div class="checkbox-group">
+                <div class="form-check">
+                    <input type="checkbox" name="donation_leucapheresis" class="form-check-input" {% if blood_bank.donation_leucapheresis %}checked{% endif %}>
+                    <label class="form-check-label">Leucapheresis</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="donation_plasmapheresis" class="form-check-input" {% if blood_bank.donation_plasmapheresis %}checked{% endif %}>
+                    <label class="form-check-label">Plasmapheresis</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="donation_plateletpheresis" class="form-check-input" {% if blood_bank.donation_plateletpheresis %}checked{% endif %}>
+                    <label class="form-check-label">Plateletpheresis</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="donation_whole_blood" class="form-check-input" {% if blood_bank.donation_whole_blood %}checked{% endif %}>
+                    <label class="form-check-label">Whole Blood</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-section">
+        <h2 class="section-title">Account Information</h2>
+        <div class="form-grid">
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <input type="text" name="username" class="form-control" value="{{ blood_bank.username }}" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Leave blank to keep current password">
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-section">
+        <h2 class="section-title">Additional Information</h2>
+        <div class="form-grid">
+            <div class="form-group">
+                <label class="form-label">Remarks</label>
+                <textarea name="remark" class="form-control" rows="3">{{ blood_bank.remark }}</textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-section">
+        <button type="submit" class="btn btn-save">
+            <span class="material-icons">save</span>
+            Save Changes
+        </button>
+    </div>
+</form>
+
+<div id="mapModal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+    <div class="modal-content" style="background-color: #fff; margin: 5% auto; padding: 20px; width: 80%; max-width: 800px; border-radius: 8px; position: relative;">
+        <span class="close" onclick="closeMapModal()" style="position: absolute; right: 20px; top: 10px; font-size: 28px; cursor: pointer;">&times;</span>
+        <h2 style="margin-bottom: 20px;">Select Location on Map</h2>
+        <div id="map" style="width: 100%; height: 400px;"></div>
+        <div style="margin-top: 20px; text-align: right;">
+            <button onclick="saveCoordinates()" class="btn btn-save">Save Coordinates</button>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get all message elements
+    const messages = document.querySelectorAll('.alert');
+    
+    // Set timeout for each message
+    messages.forEach(message => {
+        setTimeout(() => {
+            message.style.opacity = '0';
+            message.style.transition = 'opacity 0.5s ease-out';
+            setTimeout(() => {
+                message.remove();
+            }, 500);
+        }, 5000); // 5 seconds
+    });
+});
+
+let map;
+let marker;
+
+function openMapModal() {
+    document.getElementById('mapModal').style.display = 'block';
+    initializeMap();
+}
+
+function closeMapModal() {
+    document.getElementById('mapModal').style.display = 'none';
+}
+
+function initializeMap() {
+    const latitude = parseFloat(document.querySelector('input[name="latitude"]').value) || 27.7172;
+    const longitude = parseFloat(document.querySelector('input[name="longitude"]').value) || 85.3240;
+
+    if (!map) {
+        map = L.map('map').setView([latitude, longitude], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+    } else {
+        map.setView([latitude, longitude], 13);
+    }
+
+    if (marker) {
+        map.removeLayer(marker);
+    }
+
+    marker = L.marker([latitude, longitude]).addTo(map);
+
+    map.on('click', function(e) {
+        if (marker) {
+            map.removeLayer(marker);
+        }
+        marker = L.marker(e.latlng).addTo(map);
+    });
+}
+
+function saveCoordinates() {
+    if (marker) {
+        const latlng = marker.getLatLng();
+        document.querySelector('input[name="latitude"]').value = latlng.lat.toFixed(6);
+        document.querySelector('input[name="longitude"]').value = latlng.lng.toFixed(6);
+    }
+    closeMapModal();
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('mapModal');
+    if (event.target == modal) {
+        closeMapModal();
+    }
+}
+</script>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+{% endblock %} 

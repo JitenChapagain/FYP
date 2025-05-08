@@ -1,0 +1,304 @@
+{% extends 'adminbase.html' %}
+{% load static %}
+
+{% block title %}Add Blood Stock - Rakta Sewa Admin{% endblock %}
+
+{% block active_blood_stocks %}active{% endblock %}
+
+{% block content %}
+<style>
+    .content-header {
+        background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+        padding: 25px 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        margin-bottom: 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .content-title {
+        color: #2c3e50;
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .content-title .material-icons {
+        color: #bf2229;
+        font-size: 2rem;
+    }
+
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: #f8f9fa;
+        color: #2c3e50;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .btn-back:hover {
+        background: #e9ecef;
+        color: #bf2229;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .detail-card {
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .detail-section {
+        margin-bottom: 35px;
+        padding: 25px;
+        background: #f8f9fa;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .detail-section:hover {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transform: translateY(-2px);
+    }
+
+    .section-title {
+        color: #2c3e50;
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .section-title .material-icons {
+        color: #bf2229;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        color: #2c3e50;
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fff;
+    }
+
+    .form-control:focus {
+        border-color: #bf2229;
+        box-shadow: 0 0 0 2px rgba(191, 34, 41, 0.1);
+        outline: none;
+    }
+
+    .form-select {
+        width: 100%;
+        padding: 10px 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        background-color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .form-select:focus {
+        border-color: #bf2229;
+        box-shadow: 0 0 0 2px rgba(191, 34, 41, 0.1);
+        outline: none;
+    }
+
+    .btn-save {
+        background: #bf2229;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(191, 34, 41, 0.2);
+    }
+
+    .btn-save:hover {
+        background: #a61d23;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(191, 34, 41, 0.3);
+    }
+
+    .alert {
+        padding: 15px 25px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .alert-success {
+        background-color: #4caf50;
+        color: white;
+    }
+
+    .alert-error {
+        background-color: #f44336;
+        color: white;
+    }
+
+    .alert-icon {
+        font-size: 24px;
+    }
+
+    .error-message {
+        color: #f44336;
+        font-size: 0.8rem;
+        margin-top: 5px;
+    }
+</style>
+
+<div class="content-header">
+    <h1 class="content-title">
+        <span class="material-icons">add_circle</span>
+        Add New Blood Stock
+    </h1>
+    <a href="{% url 'admin_blood_stocks' %}" class="btn-back">
+        <span class="material-icons">arrow_back</span>
+        Back to List
+    </a>
+</div>
+
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}" id="message-{{ forloop.counter }}">
+        <span class="material-icons alert-icon">
+            {% if message.tags == 'success' %}check_circle{% else %}error{% endif %}
+        </span>
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<form method="post" class="detail-card">
+    {% csrf_token %}
+    
+    <div class="detail-section">
+        <h2 class="section-title">
+            <span class="material-icons">local_hospital</span>
+            Blood Bank Information
+        </h2>
+        <div class="form-grid">
+            <div class="form-group {% if form.bloodbank.errors %}error{% endif %}">
+                <label class="form-label">Blood Bank</label>
+                <select name="bloodbank" class="form-select" required>
+                    <option value="">Select Blood Bank</option>
+                    {% for bank in blood_banks %}
+                        <option value="{{ bank.pk }}">{{ bank.blood_bank_name }}</option>
+                    {% endfor %}
+                </select>
+                {% if form.bloodbank.errors %}
+                    <span class="error-message">{{ form.bloodbank.errors.0 }}</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-section">
+        <h2 class="section-title">
+            <span class="material-icons">bloodtype</span>
+            Stock Information
+        </h2>
+        <div class="form-grid">
+            <div class="form-group {% if form.blood_group.errors %}error{% endif %}">
+                <label class="form-label">Blood Group</label>
+                <select name="blood_group" class="form-select" required>
+                    <option value="">Select Blood Group</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                </select>
+                {% if form.blood_group.errors %}
+                    <span class="error-message">{{ form.blood_group.errors.0 }}</span>
+                {% endif %}
+            </div>
+            <div class="form-group {% if form.units.errors %}error{% endif %}">
+                <label class="form-label">Units Available</label>
+                <input type="number" name="units" class="form-control" required min="0" placeholder="Enter number of units">
+                {% if form.units.errors %}
+                    <span class="error-message">{{ form.units.errors.0 }}</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="form-actions" style="text-align: right; margin-top: 30px;">
+        <button type="submit" class="btn-save">
+            <span class="material-icons">save</span>
+            Save Blood Stock
+        </button>
+    </div>
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get all message elements
+    const messages = document.querySelectorAll('.alert');
+    
+    // Set timeout for each message
+    messages.forEach(message => {
+        setTimeout(() => {
+            message.style.opacity = '0';
+            message.style.transition = 'opacity 0.5s ease-out';
+            setTimeout(() => {
+                message.remove();
+            }, 500);
+        }, 5000); // 5 seconds
+    });
+});
+</script>
+{% endblock %} 

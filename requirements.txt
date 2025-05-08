@@ -1,0 +1,5 @@
+# Bootstrap 5 for UI
+# Pillow for image handling
+Django>=3.2,<4.0
+Pillow
+

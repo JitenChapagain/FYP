@@ -1,0 +1,180 @@
+{% extends "../adminbase.html" %}
+{% load static %}
+
+{% block title %}Notifications - Admin{% endblock %}
+
+{% block active_notifications %}active{% endblock %}
+
+{% block content %}
+<style>
+    .content-header {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .content-title {
+        color: #333;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    .add-button {
+        background: #bf2229;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .add-button:hover {
+        background: #d62731;
+    }
+
+    .notifications-table {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        overflow: hidden;
+        margin-top: 20px;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .table th {
+        background: #bf2229;
+        padding: 12px 16px;
+        text-align: left;
+        font-weight: 600;
+        color: #ffffff;
+    }
+
+    .table td {
+        padding: 12px 16px;
+        border-bottom: 1px solid #eee;
+        color: #333;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn {
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .btn .material-icons {
+        font-size: 18px;
+    }
+
+    .btn-view {
+        background-color: #e3f2fd;
+        color: #1976d2;
+    }
+
+    .btn-view:hover {
+        background-color: #1976d2;
+        color: #fff;
+    }
+
+    .btn-edit {
+        background-color: #f5f5f5;
+        color: #000000;
+    }
+
+    .btn-edit:hover {
+        background-color: #424242;
+        color: #fff;
+    }
+
+    .btn-delete {
+        background-color: #ffebee;
+        color: #bf2229;
+    }
+
+    .btn-delete:hover {
+        background-color: #bf2229;
+        color: #fff;
+    }
+</style>
+
+<div class="content-header">
+    <h1 class="content-title">Notifications</h1>
+    <a href="{% url 'admin_notification_add' %}" class="add-button">
+        <span class="material-icons">add</span>
+        Add New Notification
+    </a>
+</div>
+
+<div class="notifications-table">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Message</th>
+                <th>Created At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for notification in notifications %}
+            <tr>
+                <td>{{ notification.title }}</td>
+                <td>{{ notification.message|truncatechars:100 }}</td>
+                <td>{{ notification.created_at|date:"M d, Y" }}</td>
+                <td>
+                    <div class="action-buttons">
+                        <a href="{% url 'admin_notification_detail' notification.id %}" class="btn btn-view">
+                            <span class="material-icons">visibility</span>
+                            View
+                        </a>
+                        <a href="{% url 'admin_notification_edit' notification.id %}" class="btn btn-edit">
+                            <span class="material-icons">edit</span>
+                            Edit
+                        </a>
+                        <a href="{% url 'admin_notification_delete' notification.id %}" class="btn btn-delete">
+                            <span class="material-icons">delete</span>
+                            Delete
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" style="text-align: center;">No notifications available</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %} 

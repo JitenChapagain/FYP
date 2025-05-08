@@ -1,0 +1,953 @@
+{% extends "../adminbase.html" %}
+{% load static %}
+
+{% block title %}Blood Banks - Rakta Sewa Admin{% endblock %}
+
+{% block active_blood_banks %}active{% endblock %}
+
+{% block content %}
+<style>
+    .content-header {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .content-title {
+        color: #333;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    .add-button {
+        background: #bf2229;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .add-button:hover {
+        background: #bf2229;
+    }
+
+    .blood-banks-table {
+        background: #fff;
+        border-radius: 0;
+        box-shadow: none;
+        overflow: hidden;
+        margin-top: 20px;
+        border: 1px solid #ddd;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        border-spacing: 0;
+        font-size: 14px;
+    }
+
+    .table th {
+        background: #bf2229;
+        padding: 8px 12px;
+        text-align: left;
+        font-weight: 600;
+        color: #ffffff;
+        border: 1px solid #a61d23;
+        white-space: nowrap;
+    }
+
+    .table td {
+        padding: 6px 12px;
+        border: 1px solid #ddd;
+        color: #000000;
+        vertical-align: top;
+        background: #fff;
+        line-height: 1.3;
+    }
+
+    .table tbody tr:hover td {
+        background-color: #f8f9fa;
+    }
+
+    .blood-bank-details {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+    }
+
+    .blood-bank-name {
+        font-weight: 600;
+        color: #000000;
+    }
+
+    .blood-bank-address {
+        color: #000000;
+        font-size: 13px;
+    }
+
+    .blood-bank-contact {
+        color: #000000;
+        font-size: 13px;
+    }
+
+    .contact-info {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+    }
+
+    .contact-label {
+        color: #000000;
+        font-size: 13px;
+    }
+
+    .contact-value {
+        color: #000000;
+        font-size: 13px;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 3px;
+    }
+
+    .btn {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .btn .material-icons {
+        font-size: 16px;
+    }
+
+    .btn-view {
+        background-color: #e3f2fd;
+        color: #1976d2;
+    }
+
+    .btn-view:hover {
+        background-color: #1976d2;
+        color: #fff;
+    }
+
+    .btn-edit {
+        background-color: #f5f5f5;
+        color: #000000;
+    }
+
+    .btn-edit:hover {
+        background-color: #424242;
+        color: #fff;
+    }
+
+    .btn-delete {
+        background-color: #ffebee;
+        color: #bf2229;
+    }
+
+    .btn-delete:hover {
+        background-color: #bf2229;
+        color: #fff;
+    }
+
+    /* Search and Filter Section */
+    .search-box {
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .search-control {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-input {
+        padding: 6px 12px;
+        padding-right: 32px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        width: 250px;
+        color: #000000;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: #bf2229;
+    }
+
+    .search-icon {
+        position: absolute;
+        right: 8px;
+        color: #666;
+        font-size: 20px;
+        display: none;
+    }
+
+    .clear-search {
+        position: absolute;
+        right: 8px;
+        background: none;
+        border: none;
+        color: #666;
+        cursor: pointer;
+        padding: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+    }
+
+    .clear-search:hover {
+        color: #bf2229;
+    }
+
+    .search-control:hover .clear-search {
+        display: none;
+    }
+
+    .search-input:not(:placeholder-shown) + .clear-search {
+        display: flex;
+    }
+
+    .search-input:placeholder-shown + .clear-search + .search-icon {
+        display: flex;
+    }
+
+    /* Stats Card */
+    .stats-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 24px;
+        margin-bottom: 24px;
+    }
+
+    .stat-card {
+        background: #fff;
+        padding: 24px;
+        border-radius: 12px;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+    }
+
+    .stat-card h3 {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .stat-card .value {
+        color: #2c3e50;
+        font-size: 28px;
+        font-weight: 600;
+    }
+
+    /* Pagination */
+    .pagination {
+        display: flex;
+        gap: 6px;
+        margin: 0;
+        align-items: center;
+    }
+
+    .page-btn {
+        padding: 6px 12px;
+        border: 2px solid #e0e0e0;
+        background: #fff;
+        border-radius: 6px;
+        cursor: pointer;
+        color: #666;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        font-size: 12px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .page-btn.active {
+        background: #bf2229;
+        color: white;
+        border-color: #bf2229;
+    }
+
+    .page-btn:hover:not(.active) {
+        border-color: #bf2229;
+        color: #bf2229;
+    }
+
+    .status-badge {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .status-active {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+    }
+
+    .status-pending {
+        background-color: #fff3e0;
+        color: #ef6c00;
+    }
+
+    .status-inactive {
+        background-color: #ffebee;
+        color: #c62828;
+    }
+
+    .text-muted {
+        color: #666;
+        font-size: 13px;
+    }
+
+    .table td.address-cell {
+        max-width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        backdrop-filter: blur(4px);
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    .modal-content {
+        background: #fff;
+        width: 90%;
+        max-width: 500px;
+        margin: 50px auto;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        transform: translateY(0);
+        animation: slideIn 0.3s ease-out;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .modal-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #333;
+        margin: 0;
+    }
+
+    .close-modal {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #666;
+        padding: 4px;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .close-modal:hover {
+        background: #f5f5f5;
+        color: #333;
+    }
+
+    .modal-body {
+        margin-bottom: 24px;
+        color: #555;
+        line-height: 1.5;
+        font-size: 15px;
+    }
+
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+    }
+
+    .modal-footer .btn {
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-weight: 500;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .modal-footer .btn:not(.btn-delete) {
+        background: #f5f5f5;
+        color: #333;
+        border: 1px solid #ddd;
+    }
+
+    .modal-footer .btn:not(.btn-delete):hover {
+        background: #e0e0e0;
+    }
+
+    .modal-footer .btn-delete {
+        background: #ffebee;
+        color: #bf2229;
+        border: 1px solid #ffcdd2;
+    }
+
+    .modal-footer .btn-delete:hover {
+        background: #bf2229;
+        color: white;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateY(-20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    /* Empty state message alignment */
+    .table td.empty-message {
+        text-align: left;
+        padding: 20px;
+    }
+
+    /* Table Controls */
+    .table-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .entries-control {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .entries-select {
+        padding: 6px 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        color: #000000;
+    }
+
+    .search-control {
+        display: flex;
+        align-items: center;
+    }
+
+    .search-input {
+        padding: 6px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        width: 250px;
+        color: #000000;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: #bf2229;
+    }
+
+    .search-input::placeholder {
+        color: #666;
+    }
+
+    .highlight {
+        background-color: #fff3cd;
+        padding: 0 2px;
+    }
+
+    .entries-info {
+        margin: 0;
+        color: #666;
+        font-size: 13px;
+    }
+
+    .table-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 15px;
+        padding: 10px 0;
+    }
+
+    .search-results {
+        margin-bottom: 15px;
+        color: #666;
+        font-size: 13px;
+    }
+
+    .no-results {
+        display: none;
+        padding: 20px;
+        text-align: center;
+        color: #666;
+        background: #f8f9fa;
+        border: 1px solid #ddd;
+        margin: 20px 0;
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    .messages {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .alert {
+        padding: 12px 20px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        position: relative;
+        animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateY(-20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .alert-success {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+    }
+
+    .alert-error {
+        background-color: #f44336;
+        color: white;
+        border: none;
+    }
+
+    .alert-icon {
+        font-size: 20px;
+    }
+
+    .alert-close {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .alert-close:hover {
+        opacity: 0.8;
+    }
+</style>
+
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}" id="message-{{ forloop.counter }}">
+        <span class="material-icons alert-icon">
+            {% if message.tags == 'success' %}check_circle{% else %}error{% endif %}
+        </span>
+        {{ message }}
+        <button class="alert-close" onclick="this.parentElement.remove()">
+            <span class="material-icons">close</span>
+        </button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="content-header">
+    <h1 class="content-title" style="color: #A94442; font-size: 28px;">List of Blood Banks</h1>
+    <a href="{% url 'blood_bank_add' %}" class="add-button">
+        <span class="material-icons">add</span>
+        Add Blood Bank
+    </a>
+</div>
+
+<script>
+    function filterTable() {
+        const searchInput = document.querySelector('.search-input');
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        const clearButton = document.querySelector('.clear-search');
+        const tableBody = document.querySelector('.table tbody');
+        const tableRows = tableBody.querySelectorAll('tr');
+        const noResults = document.querySelector('.no-results');
+        const searchResults = document.querySelector('.search-results');
+        const currentPage = parseInt(new URLSearchParams(window.location.search).get('page')) || 1;
+        const entriesPerPage = parseInt(document.querySelector('.entries-select').value);
+        let visibleCount = 0;
+
+        // Show/hide clear button based on input value
+        clearButton.style.display = searchTerm ? 'flex' : 'none';
+
+        // Reset display if search is empty
+        if (!searchTerm) {
+            tableRows.forEach((row, index) => {
+                row.classList.remove('hidden');
+                // Calculate correct serial number based on page and entries per page
+                const serialNumber = ((currentPage - 1) * entriesPerPage) + index + 1;
+                row.querySelector('td:first-child').textContent = serialNumber;
+            });
+            noResults.style.display = 'none';
+            searchResults.style.display = 'none';
+            updateEntriesInfo(tableRows.length, parseInt(document.getElementById('totalEntries').value));
+            return;
+        }
+
+        // Filter rows and maintain correct serial numbers
+        tableRows.forEach((row, index) => {
+            const cells = row.querySelectorAll('td');
+            let found = false;
+
+            cells.forEach(cell => {
+                if (cell.textContent.toLowerCase().includes(searchTerm)) {
+                    found = true;
+                }
+            });
+
+            if (found) {
+                row.classList.remove('hidden');
+                visibleCount++;
+                // Maintain the original serial number even during filtering
+                const serialNumber = ((currentPage - 1) * entriesPerPage) + index + 1;
+                row.querySelector('td:first-child').textContent = serialNumber;
+            } else {
+                row.classList.add('hidden');
+            }
+        });
+
+        // Update the entries info with the total count from hidden input
+        updateEntriesInfo(visibleCount, parseInt(document.getElementById('totalEntries').value));
+
+        if (visibleCount === 0) {
+            noResults.style.display = 'block';
+            noResults.textContent = `No results found for "${searchTerm}"`;
+        } else {
+            noResults.style.display = 'none';
+        }
+
+        if (searchTerm) {
+            searchResults.style.display = 'block';
+            searchResults.textContent = `Found ${visibleCount} result${visibleCount !== 1 ? 's' : ''} for "${searchTerm}"`;
+        } else {
+            searchResults.style.display = 'none';
+        }
+    }
+
+    function updateEntriesInfo(visibleCount, totalCount) {
+        const entriesInfo = document.querySelector('.entries-info');
+        if (entriesInfo) {
+            const currentPage = parseInt(new URLSearchParams(window.location.search).get('page')) || 1;
+            const entriesPerPage = parseInt(document.querySelector('.entries-select').value);
+            const startEntry = ((currentPage - 1) * entriesPerPage) + 1;
+            const tableRows = document.querySelectorAll('.table tbody tr');
+            const endEntry = startEntry + tableRows.length - 1;
+            
+            // Get total entries from hidden input
+            const totalEntries = parseInt(document.getElementById('totalEntries').value);
+
+            if (visibleCount === tableRows.length) {
+                entriesInfo.textContent = `Showing entries ${startEntry} to ${endEntry} of ${totalEntries} entries`;
+            } else {
+                entriesInfo.textContent = `Showing ${visibleCount} filtered entries (from ${totalEntries} total entries)`;
+            }
+        }
+    }
+
+    function clearSearch() {
+        const searchInput = document.querySelector('.search-input');
+        searchInput.value = '';
+        filterTable();
+        searchInput.focus();
+    }
+
+    // Initialize search functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.querySelector('.search-input');
+        const clearButton = document.querySelector('.clear-search');
+        
+        // Add event listener for real-time filtering
+        searchInput.addEventListener('input', filterTable);
+        
+        // Add event listener for clear button
+        clearButton.addEventListener('click', clearSearch);
+        
+        // Initial filter (in case there's a value on page load)
+        filterTable();
+    });
+
+    // Add message auto-dismissal
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get all message elements
+        const messages = document.querySelectorAll('.alert');
+        
+        // Set timeout for each message
+        messages.forEach(message => {
+            setTimeout(() => {
+                message.style.opacity = '0';
+                message.style.transition = 'opacity 0.5s ease-out';
+                setTimeout(() => {
+                    message.remove();
+                }, 500);
+            }, 5000); // 5 seconds
+        });
+    });
+
+    // Add event listener for entries select change
+    document.addEventListener('DOMContentLoaded', function() {
+        const entriesSelect = document.querySelector('.entries-select');
+        entriesSelect.addEventListener('change', function() {
+            // Always go back to page 1 when changing entries per page
+            const entries = this.value;
+            window.location.href = `?page=1&entries=${entries}`;
+        });
+
+        // Update entries info on page load
+        const tableBody = document.querySelector('.table tbody');
+        if (tableBody) {
+            const totalCount = tableBody.querySelectorAll('tr').length;
+            updateEntriesInfo(totalCount, totalCount);
+        }
+    });
+</script>
+
+<form class="table-controls" onsubmit="return false;">
+    <div class="entries-control">
+        <label>Show</label>
+        <select name="entries" class="entries-select" onchange="this.form.submit()">
+            <option value="2" {% if entries == '2' %}selected{% endif %}>2</option>
+            <option value="4" {% if entries == '4' %}selected{% endif %}>4</option>
+            <option value="10" {% if entries == '10' %}selected{% endif %}>10</option>
+            <option value="25" {% if entries == '25' %}selected{% endif %}>25</option>
+            <option value="50" {% if entries == '50' %}selected{% endif %}>50</option>
+            <option value="100" {% if entries == '100' %}selected{% endif %}>100</option>
+        </select>
+        <label>Entries</label>
+    </div>
+    <div class="search-control">
+        <input type="text" 
+               class="search-input" 
+               placeholder="Search blood banks..." 
+               autocomplete="off">
+        <button type="button" class="clear-search" onclick="clearSearch()">
+            <span class="material-icons">close</span>
+        </button>
+        <span class="material-icons search-icon">search</span>
+    </div>
+</form>
+
+<div class="search-results" style="display: none;"></div>
+<div class="no-results"></div>
+
+{% if blood_banks %}
+<div class="blood-banks-table">
+    <!-- Add this hidden input to store total count -->
+    <input type="hidden" id="totalEntries" value="{{ blood_banks.paginator.count }}">
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="width: 60px;">S.No</th>
+                <th>BLOOD BANK</th>
+                <th>PROVINCE</th>
+                <th>DISTRICT</th>
+                <th>ADDRESS</th>
+                <th>CONTACT PERSON</th>
+                <th style="width: 150px;">ACTIONS</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for bank in blood_banks %}
+            <tr>
+                <td>{{ blood_banks.start_index|add:forloop.counter0 }}</td>
+                <td>
+                    <div class="blood-bank-details">
+                        <div class="blood-bank-name">{{ bank.blood_bank_name }}</div>
+                        <div class="blood-bank-contact">{{ bank.email }}</div>
+                    </div>
+                </td>
+                <td>{{ bank.province }}</td>
+                <td>{{ bank.district }}</td>
+                <td class="address-cell" title="{{ bank.address }}">{{ bank.address }}</td>
+                <td>
+                    <div class="contact-info">
+                        <div class="contact-label">{{ bank.contact_person }}</div>
+                        <div class="contact-value">{{ bank.contact_no }}</div>
+                    </div>
+                </td>
+                <td>
+                    <div class="action-buttons">
+                        <a href="{% url 'blood_bank_view' bank.pk %}" class="btn btn-view">
+                            <span class="material-icons">visibility</span>
+                            View
+                        </a>
+                        <a href="{% url 'blood_bank_edit' bank.pk %}" class="btn btn-edit">
+                            <span class="material-icons">edit</span>
+                            Edit
+                        </a>
+                        <button class="btn btn-delete" onclick="showDeleteModal('{{ bank.pk }}')">
+                            <span class="material-icons">delete</span>
+                            Delete
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="table-footer">
+    <div class="entries-info"></div>
+    <div class="pagination">
+        {% if blood_banks.has_previous %}
+        <a href="?page={{ blood_banks.previous_page_number }}&entries={{ entries }}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-btn">Previous</a>
+        {% endif %}
+        
+        {% for num in blood_banks.paginator.page_range %}
+            {% if num == blood_banks.number %}
+            <span class="page-btn active">{{ num }}</span>
+            {% else %}
+            <a href="?page={{ num }}&entries={{ entries }}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-btn">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+        
+        {% if blood_banks.has_next %}
+        <a href="?page={{ blood_banks.next_page_number }}&entries={{ entries }}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-btn">Next</a>
+        {% endif %}
+    </div>
+</div>
+{% else %}
+    {% if is_filtered %}
+    <div class="no-results">
+        No blood banks found matching "{{ search_query }}"
+    </div>
+    {% else %}
+    <div class="no-results">
+        No blood banks available
+    </div>
+    {% endif %}
+{% endif %}
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">Confirm Delete</h2>
+            <button class="close-modal" onclick="hideDeleteModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to delete this blood bank? This action cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+            <form id="deleteForm" method="POST" style="display: flex; gap: 12px;">
+                {% csrf_token %}
+                <button type="button" class="btn" onclick="hideDeleteModal()">Cancel</button>
+                <button type="submit" class="btn btn-delete">Delete</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function showDeleteModal(bankId) {
+    const modal = document.getElementById('deleteModal');
+    const form = document.getElementById('deleteForm');
+    form.action = `/admin/blood-banks/delete/${bankId}/`;
+    modal.style.display = 'block';
+}
+
+function hideDeleteModal() {
+    const modal = document.getElementById('deleteModal');
+    modal.style.display = 'none';
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('deleteModal');
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
+}
+</script>
+{% endblock %} 

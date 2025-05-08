@@ -1,0 +1,586 @@
+{% extends 'adminbase.html' %}
+{% load static %}
+
+{% block title %}Gallery Management - Rakta Sewa Admin{% endblock %}
+
+{% block active_gallery %}active{% endblock %}
+
+{% block content %}
+<style>
+    .content-header {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .content-title {
+        color: #333;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    .add-button {
+        background: #bf2229;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .add-button:hover {
+        background: #d62731;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .gallery-table {
+        background: #fff;
+        border-radius: 0;
+        box-shadow: none;
+        overflow: hidden;
+        margin-top: 20px;
+        border: 1px solid #ddd;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        border-spacing: 0;
+        font-size: 14px;
+    }
+
+    .table th {
+        background: #bf2229;
+        padding: 8px 12px;
+        text-align: left;
+        font-weight: 600;
+        color: #ffffff;
+        border: 1px solid #a61d23;
+        white-space: nowrap;
+    }
+
+    .table td {
+        padding: 6px 12px;
+        border: 1px solid #ddd;
+        color: #000000;
+        vertical-align: top;
+        background: #fff;
+        line-height: 1.3;
+    }
+
+    .table tbody tr:hover td {
+        background-color: #f8f9fa;
+    }
+
+    .gallery-image {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+
+    .gallery-details {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .gallery-caption {
+        font-weight: 600;
+        color: #000000;
+    }
+
+    .gallery-date {
+        color: #666;
+        font-size: 13px;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 3px;
+    }
+
+    .btn {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .btn .material-icons {
+        font-size: 16px;
+    }
+
+    .btn-view {
+        background-color: #e3f2fd;
+        color: #1976d2;
+    }
+
+    .btn-view:hover {
+        background-color: #1976d2;
+        color: #fff;
+    }
+
+    .btn-edit {
+        background-color: #f5f5f5;
+        color: #000000;
+    }
+
+    .btn-edit:hover {
+        background-color: #424242;
+        color: #fff;
+    }
+
+    .btn-delete {
+        background-color: #ffebee;
+        color: #bf2229;
+    }
+
+    .btn-delete:hover {
+        background-color: #bf2229;
+        color: #fff;
+    }
+
+    /* Search and Filter Section */
+    .search-box {
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .search-control {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-input {
+        padding: 6px 12px;
+        padding-right: 32px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        width: 250px;
+        color: #000000;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: #bf2229;
+    }
+
+    .search-icon {
+        position: absolute;
+        right: 8px;
+        color: #666;
+        font-size: 20px;
+    }
+
+    .clear-search {
+        position: absolute;
+        right: 8px;
+        background: none;
+        border: none;
+        color: #666;
+        cursor: pointer;
+        padding: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .clear-search:hover {
+        color: #bf2229;
+    }
+
+    /* Pagination */
+    .pagination {
+        display: flex;
+        justify-content: flex-end;
+        padding: 20px;
+        gap: 8px;
+    }
+
+    .page-btn {
+        padding: 8px 16px;
+        border: 2px solid #e0e0e0;
+        background: #fff;
+        border-radius: 6px;
+        cursor: pointer;
+        color: #666;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .page-btn.active {
+        background: #bf2229;
+        color: white;
+        border-color: #bf2229;
+    }
+
+    .page-btn:hover:not(.active) {
+        border-color: #bf2229;
+        color: #bf2229;
+    }
+
+    /* Table Controls */
+    .table-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .entries-control {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .entries-select {
+        padding: 6px 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        color: #000000;
+    }
+
+    .entries-info {
+        margin: 15px 0;
+        color: #666;
+        font-size: 13px;
+    }
+
+    .search-results {
+        margin-bottom: 15px;
+        color: #666;
+        font-size: 13px;
+    }
+
+    .no-results {
+        display: none;
+        padding: 20px;
+        text-align: center;
+        color: #666;
+        background: #f8f9fa;
+        border: 1px solid #ddd;
+        margin: 20px 0;
+    }
+
+    .messages {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .alert {
+        padding: 12px 20px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        position: relative;
+        animation: slideIn 0.3s ease-out;
+    }
+
+    .alert-success {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+    }
+
+    .alert-error {
+        background-color: #f44336;
+        color: white;
+        border: none;
+    }
+
+    .alert-icon {
+        font-size: 20px;
+    }
+
+    .alert-close {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .alert-close:hover {
+        opacity: 0.8;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateY(-20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+</style>
+
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}" id="message-{{ forloop.counter }}">
+        <span class="material-icons alert-icon">
+            {% if message.tags == 'success' %}check_circle{% else %}error{% endif %}
+        </span>
+        {{ message }}
+        <button class="alert-close" onclick="this.parentElement.remove()">
+            <span class="material-icons">close</span>
+        </button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="content-header">
+    <h1 class="content-title">Gallery Management</h1>
+    <a href="{% url 'admin_gallery_add' %}" class="add-button">
+        <span class="material-icons">add</span>
+        Add New Image
+    </a>
+</div>
+
+<form class="table-controls" onsubmit="return false;">
+    <div class="entries-control">
+        <label>Show</label>
+        <select name="entries" class="entries-select" onchange="this.form.submit()">
+            <option value="4" {% if entries == '4' %}selected{% endif %}>4</option>
+            <option value="10" {% if entries == '10' %}selected{% endif %}>10</option>
+            <option value="25" {% if entries == '25' %}selected{% endif %}>25</option>
+            <option value="50" {% if entries == '50' %}selected{% endif %}>50</option>
+            <option value="100" {% if entries == '100' %}selected{% endif %}>100</option>
+        </select>
+        <label>Entries</label>
+    </div>
+    <div class="search-control">
+        <input type="text" 
+               class="search-input" 
+               placeholder="Search images..." 
+               autocomplete="off">
+        <button type="button" id="clearSearch" class="clear-search" onclick="clearSearch()">
+            <span class="material-icons">close</span>
+        </button>
+        <span class="material-icons search-icon">search</span>
+    </div>
+</form>
+
+<div class="search-results" style="display: none;"></div>
+<div class="no-results"></div>
+
+{% if gallery_items %}
+<div class="gallery-table">
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="width: 60px;">S.No</th>
+                <th>IMAGE</th>
+                <th>CAPTION</th>
+                <th>UPLOAD DATE</th>
+                <th style="width: 150px;">ACTIONS</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in gallery_items %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>
+                    <img src="{{ item.image.url }}" alt="{{ item.caption }}" class="gallery-image">
+                </td>
+                <td>
+                    <div class="gallery-details">
+                        <div class="gallery-caption">{{ item.caption|default:"No caption" }}</div>
+                    </div>
+                </td>
+                <td>
+                    <div class="gallery-date">{{ item.uploaded_at|date:"M d, Y" }}</div>
+                </td>
+                <td>
+                    <div class="action-buttons">
+                        <a href="{% url 'admin_gallery_detail' item.pk %}" class="btn btn-view">
+                            <span class="material-icons">visibility</span>
+                            View
+                        </a>
+                        <a href="{% url 'admin_gallery_edit' item.pk %}" class="btn btn-edit">
+                            <span class="material-icons">edit</span>
+                            Edit
+                        </a>
+                        <a href="{% url 'admin_gallery_delete' item.pk %}" class="btn btn-delete" onclick="return confirm('Are you sure you want to delete this image?')">
+                            <span class="material-icons">delete</span>
+                            Delete
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+    {% if is_filtered %}
+    <div class="no-results">
+        No images found matching "{{ search_query }}"
+    </div>
+    {% else %}
+    <div class="no-results">
+        No images available
+    </div>
+    {% endif %}
+{% endif %}
+
+{% if gallery_items %}
+<div class="entries-info">
+    Showing {{ gallery_items.start_index }} to {{ gallery_items.end_index }} of {{ filtered_count }} entries
+    {% if is_filtered %}(filtered from {{ total_gallery_items }} total entries){% endif %}
+</div>
+
+<div class="pagination">
+    {% if gallery_items.has_previous %}
+    <a href="?page={{ gallery_items.previous_page_number }}&entries={{ entries }}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-btn">Previous</a>
+    {% endif %}
+    
+    {% for num in gallery_items.paginator.page_range %}
+        {% if num == gallery_items.number %}
+        <span class="page-btn active">{{ num }}</span>
+        {% else %}
+        <a href="?page={{ num }}&entries={{ entries }}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-btn">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+    
+    {% if gallery_items.has_next %}
+    <a href="?page={{ gallery_items.next_page_number }}&entries={{ entries }}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-btn">Next</a>
+    {% endif %}
+</div>
+{% endif %}
+
+<script>
+    function filterTable() {
+        const searchInput = document.querySelector('.search-input');
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        const clearButton = document.getElementById('clearSearch');
+        const tableBody = document.querySelector('.table tbody');
+        const tableRows = tableBody.querySelectorAll('tr');
+        const noResults = document.querySelector('.no-results');
+        const searchResults = document.querySelector('.search-results');
+        let visibleCount = 0;
+
+        clearButton.style.display = searchTerm ? 'flex' : 'none';
+
+        if (!searchTerm) {
+            tableRows.forEach((row, index) => {
+                row.classList.remove('hidden');
+                row.querySelector('td:first-child').textContent = index + 1;
+            });
+            noResults.style.display = 'none';
+            searchResults.style.display = 'none';
+            updateEntriesInfo(tableRows.length, tableRows.length);
+            return;
+        }
+
+        tableRows.forEach((row, index) => {
+            const cells = row.querySelectorAll('td');
+            let found = false;
+
+            cells.forEach(cell => {
+                if (cell.textContent.toLowerCase().includes(searchTerm)) {
+                    found = true;
+                }
+            });
+
+            if (found) {
+                row.classList.remove('hidden');
+                visibleCount++;
+                row.querySelector('td:first-child').textContent = visibleCount;
+            } else {
+                row.classList.add('hidden');
+            }
+        });
+
+        if (visibleCount === 0) {
+            noResults.style.display = 'block';
+            noResults.textContent = `No results found for "${searchTerm}"`;
+        } else {
+            noResults.style.display = 'none';
+        }
+
+        if (searchTerm) {
+            searchResults.style.display = 'block';
+            searchResults.textContent = `Found ${visibleCount} result${visibleCount !== 1 ? 's' : ''} for "${searchTerm}"`;
+        }
+
+        updateEntriesInfo(visibleCount, tableRows.length);
+    }
+
+    function updateEntriesInfo(visibleCount, totalCount) {
+        const entriesInfo = document.querySelector('.entries-info');
+        if (entriesInfo) {
+            if (visibleCount === totalCount) {
+                entriesInfo.textContent = `Showing 1 to ${totalCount} of ${totalCount} entries`;
+            } else {
+                entriesInfo.textContent = `Showing ${visibleCount} filtered entries (from ${totalCount} total entries)`;
+            }
+        }
+    }
+
+    function clearSearch() {
+        const searchInput = document.querySelector('.search-input');
+        searchInput.value = '';
+        filterTable();
+        searchInput.focus();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.querySelector('.search-input');
+        searchInput.addEventListener('input', filterTable);
+        filterTable();
+
+        const messages = document.querySelectorAll('.alert');
+        messages.forEach(message => {
+            setTimeout(() => {
+                message.style.opacity = '0';
+                message.style.transition = 'opacity 0.5s ease-out';
+                setTimeout(() => {
+                    message.remove();
+                }, 500);
+            }, 5000);
+        });
+    });
+</script>
+{% endblock %} 

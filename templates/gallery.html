@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Gallery{% endblock %}
+{% block content %}
+<div class="container my-5">
+  <h2 class="mb-4">Gallery</h2>
+  <div class="row g-3">
+    {% for image in images %}
+    <div class="col-6 col-md-4 col-lg-3">
+      <div class="card shadow-sm h-100">
+        <img src="{{ image.image.url }}" class="card-img-top gallery-img" alt="{{ image.caption }}">
+        {% if image.caption %}
+        <div class="card-body p-2">
+          <p class="card-text small text-center">{{ image.caption }}</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% empty %}
+    <div class="text-center">No images in the gallery yet.</div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

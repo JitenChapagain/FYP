@@ -1,0 +1,481 @@
+{% extends "../adminbase.html" %}
+{% load static %}
+
+{% block title %}Mobile Apps - Rakta Sewa Admin{% endblock %}
+
+{% block active_mobile_apps %}active{% endblock %}
+
+{% block content %}
+<style>
+    .content-header {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .content-title {
+        color: #333;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    .add-button {
+        background: #bf2229;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .add-button:hover {
+        background: #a61d23;
+    }
+
+    .mobile-apps-table {
+        background: #fff;
+        border-radius: 0;
+        box-shadow: none;
+        overflow: hidden;
+        margin-top: 20px;
+        border: 1px solid #ddd;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        border-spacing: 0;
+        font-size: 14px;
+    }
+
+    .table th {
+        background: #bf2229;
+        padding: 8px 12px;
+        text-align: left;
+        font-weight: 600;
+        color: #ffffff;
+        border: 1px solid #a61d23;
+        white-space: nowrap;
+    }
+
+    .table td {
+        padding: 6px 12px;
+        border: 1px solid #ddd;
+        color: #000000;
+        vertical-align: top;
+        background: #fff;
+        line-height: 1.3;
+    }
+
+    .table tbody tr:hover td {
+        background-color: #f8f9fa;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 3px;
+    }
+
+    .btn {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .btn .material-icons {
+        font-size: 16px;
+    }
+
+    .btn-view {
+        background-color: #e3f2fd;
+        color: #1976d2;
+    }
+
+    .btn-view:hover {
+        background-color: #1976d2;
+        color: #fff;
+    }
+
+    .btn-edit {
+        background-color: #f5f5f5;
+        color: #000000;
+    }
+
+    .btn-edit:hover {
+        background-color: #424242;
+        color: #fff;
+    }
+
+    .btn-delete {
+        background-color: #ffebee;
+        color: #bf2229;
+    }
+
+    .btn-delete:hover {
+        background-color: #bf2229;
+        color: #fff;
+    }
+
+    /* Search and Filter Section */
+    .search-box {
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .search-control {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-input {
+        padding: 6px 12px;
+        padding-right: 32px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        width: 250px;
+        color: #000000;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: #bf2229;
+    }
+
+    .search-icon {
+        position: absolute;
+        right: 8px;
+        color: #666;
+        font-size: 20px;
+    }
+
+    .no-results {
+        text-align: center;
+        padding: 20px;
+        color: #666;
+        font-style: italic;
+    }
+
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+        background-color: #fff;
+        margin: 15% auto;
+        padding: 20px;
+        border-radius: 8px;
+        width: 80%;
+        max-width: 500px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .modal-title {
+        margin: 0;
+        color: #333;
+    }
+
+    .close-modal {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #666;
+    }
+
+    .modal-body {
+        margin-bottom: 20px;
+    }
+
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    /* Alert Styles */
+    .messages {
+        margin-bottom: 20px;
+    }
+
+    .alert {
+        padding: 12px 20px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        animation: slideIn 0.3s ease-out;
+        position: relative;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateY(-20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .alert-success {
+        background-color: #4caf50;
+        color: white;
+    }
+
+    .alert-error {
+        background-color: #f44336;
+        color: white;
+    }
+
+    .alert-icon {
+        font-size: 20px;
+    }
+
+    .alert-close {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .alert-close:hover {
+        opacity: 0.8;
+    }
+</style>
+
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}" id="message-{{ forloop.counter }}">
+        <span class="material-icons alert-icon">
+            {% if message.tags == 'success' %}check_circle{% else %}error{% endif %}
+        </span>
+        {{ message }}
+        <button class="alert-close" onclick="this.parentElement.remove()">
+            <span class="material-icons">close</span>
+        </button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="content-header">
+    <h1 class="content-title">List of Mobile Apps</h1>
+    <a href="{% url 'admin_mobile_app_add' %}" class="add-button">
+        <span class="material-icons">add</span>
+        Add Mobile App
+    </a>
+</div>
+
+<form class="search-box" onsubmit="return false;">
+    <div class="search-control">
+        <input type="text" 
+               class="search-input" 
+               placeholder="Search mobile apps..." 
+               autocomplete="off">
+        <button type="button" id="clearSearch" class="clear-search" onclick="clearSearch()">
+            <span class="material-icons">close</span>
+        </button>
+        <span class="material-icons search-icon">search</span>
+    </div>
+</form>
+
+{% if mobile_apps %}
+<div class="mobile-apps-table">
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="width: 60px;">S.No</th>
+                <th>App Name</th>
+                <th>Description</th>
+                <th>Download Link</th>
+                <th style="width: 150px;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for app in mobile_apps %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ app.name }}</td>
+                <td>{{ app.description|truncatechars:100 }}</td>
+                <td><a href="{{ app.download_link }}" target="_blank">{{ app.download_link|truncatechars:30 }}</a></td>
+                <td>
+                    <div class="action-buttons">
+                        <a href="{% url 'admin_mobile_app_detail' app.pk %}" class="btn btn-view">
+                            <span class="material-icons">visibility</span>
+                            View
+                        </a>
+                        <a href="{% url 'admin_mobile_app_edit' app.pk %}" class="btn btn-edit">
+                            <span class="material-icons">edit</span>
+                            Edit
+                        </a>
+                        <button class="btn btn-delete" onclick="showDeleteModal('{{ app.pk }}')">
+                            <span class="material-icons">delete</span>
+                            Delete
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="no-results">
+    No mobile apps available
+</div>
+{% endif %}
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">Confirm Delete</h2>
+            <button class="close-modal" onclick="hideDeleteModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to delete this mobile app? This action cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+            <form id="deleteForm" method="POST">
+                {% csrf_token %}
+                <button type="button" class="btn btn-secondary" onclick="hideDeleteModal()">Cancel</button>
+                <button type="submit" class="btn btn-delete">Delete</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function showDeleteModal(appId) {
+    const modal = document.getElementById('deleteModal');
+    const form = document.getElementById('deleteForm');
+    form.action = `/admin/mobile-apps/delete/${appId}/`;
+    modal.style.display = 'block';
+}
+
+function hideDeleteModal() {
+    const modal = document.getElementById('deleteModal');
+    modal.style.display = 'none';
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('deleteModal');
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Search functionality
+function filterTable() {
+    const searchInput = document.querySelector('.search-input');
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    const clearButton = document.getElementById('clearSearch');
+    const tableBody = document.querySelector('.table tbody');
+    const tableRows = tableBody.querySelectorAll('tr');
+    const noResults = document.querySelector('.no-results');
+    let visibleCount = 0;
+
+    // Show/hide clear button based on input value
+    clearButton.style.display = searchTerm ? 'flex' : 'none';
+
+    tableRows.forEach(row => {
+        const nameCell = row.querySelector('td:nth-child(2)');
+        const descriptionCell = row.querySelector('td:nth-child(3)');
+        const nameText = nameCell.textContent.toLowerCase();
+        const descriptionText = descriptionCell.textContent.toLowerCase();
+
+        if (nameText.includes(searchTerm) || descriptionText.includes(searchTerm)) {
+            row.style.display = '';
+            visibleCount++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+
+    // Show/hide no results message
+    if (visibleCount === 0) {
+        noResults.style.display = 'block';
+    } else {
+        noResults.style.display = 'none';
+    }
+}
+
+// Add event listener for search input
+document.querySelector('.search-input').addEventListener('input', filterTable);
+
+// Clear search functionality
+function clearSearch() {
+    const searchInput = document.querySelector('.search-input');
+    searchInput.value = '';
+    filterTable();
+}
+
+// Add message auto-dismissal
+document.addEventListener('DOMContentLoaded', function() {
+    const messages = document.querySelectorAll('.alert');
+    messages.forEach(message => {
+        setTimeout(() => {
+            message.style.opacity = '0';
+            message.style.transition = 'opacity 0.5s ease-out';
+            setTimeout(() => {
+                message.remove();
+            }, 500);
+        }, 5000);
+    });
+});
+</script>
+{% endblock %} 

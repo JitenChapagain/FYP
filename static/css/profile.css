@@ -1,0 +1,51 @@
+/* Blood Bank Profile Custom Styles */
+.profile-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(220,53,69,0.1), 0 1.5px 6px rgba(220,53,69,0.07);
+  background: #fff;
+  margin-bottom: 2rem;
+}
+.profile-header {
+  background: linear-gradient(90deg, #b71c1c 0%, #880808 100%);
+  color: #fff;
+  padding: 1.5rem 2rem;
+  border-radius: 12px 12px 0 0;
+  text-align: center;
+}
+.profile-info dt {
+  font-weight: 600;
+  color: #b71c1c;
+  width: 180px;
+}
+.profile-info dd {
+  margin-bottom: 1.2rem;
+  color: #333;
+}
+.edit-btn, .update-btn, .cancel-btn {
+  min-width: 120px;
+  margin-right: 0.5rem;
+}
+.edit-btn {
+  background: #b71c1c;
+  color: #fff;
+}
+.edit-btn:hover {
+  background: #880808;
+  color: #fff;
+}
+.update-btn {
+  background: #198754;
+  color: #fff;
+}
+.update-btn:hover {
+  background: #145c32;
+  color: #fff;
+}
+.cancel-btn {
+  background: #6c757d;
+  color: #fff;
+}
+.cancel-btn:hover {
+  background: #495057;
+  color: #fff;
+}

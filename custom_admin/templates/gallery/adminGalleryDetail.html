@@ -1,0 +1,237 @@
+{% extends 'adminbase.html' %}
+{% load static %}
+
+{% block title %}Gallery Image Details - Rakta Sewa Admin{% endblock %}
+
+{% block active_gallery %}active{% endblock %}
+
+{% block content %}
+<style>
+    .content-header {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .content-title {
+        color: #333;
+        font-size: 1.5rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .content-title .material-icons {
+        color: #bf2229;
+        font-size: 2rem;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .action-button {
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .edit-button {
+        background: #bf2229;
+        color: white;
+        border: none;
+    }
+
+    .edit-button:hover {
+        background: #d62731;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .delete-button {
+        background: #f8f9fa;
+        color: #dc3545;
+        border: 1px solid #dc3545;
+    }
+
+    .delete-button:hover {
+        background: #dc3545;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .back-button {
+        background: #f8f9fa;
+        color: #333;
+        border: none;
+    }
+
+    .back-button:hover {
+        background: #e9ecef;
+        transform: translateY(-2px);
+    }
+
+    .detail-container {
+        background: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+    }
+
+    .image-container {
+        position: relative;
+        background: #f8f9fa;
+        border-radius: 8px;
+        overflow: hidden;
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .detail-image {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .detail-image:hover {
+        transform: scale(1.02);
+    }
+
+    .detail-info {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .detail-group {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #eee;
+    }
+
+    .detail-label {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .detail-label .material-icons {
+        font-size: 18px;
+        color: #bf2229;
+    }
+
+    .detail-value {
+        color: #333;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    .detail-value a {
+        color: #bf2229;
+        text-decoration: none;
+        word-break: break-all;
+    }
+
+    .detail-value a:hover {
+        text-decoration: underline;
+    }
+
+    .upload-date {
+        color: #666;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+        margin-top: auto;
+    }
+
+    .upload-date .material-icons {
+        font-size: 18px;
+    }
+
+    @media (max-width: 768px) {
+        .detail-container {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="content-header">
+    <h1 class="content-title">
+        <span class="material-icons">photo</span>
+        Image Details
+    </h1>
+    <div class="action-buttons">
+        <a href="{% url 'admin_gallery_edit' gallery_item.id %}" class="action-button edit-button">
+            <span class="material-icons">edit</span>
+            Edit
+        </a>
+        <a href="{% url 'admin_gallery_delete' gallery_item.id %}" class="action-button delete-button">
+            <span class="material-icons">delete</span>
+            Delete
+        </a>
+        <a href="{% url 'admin_gallery' %}" class="action-button back-button">
+            <span class="material-icons">arrow_back</span>
+            Back to Gallery
+        </a>
+    </div>
+</div>
+
+<div class="detail-container">
+    <div class="image-container">
+        <img src="{{ gallery_item.image.url }}" alt="{{ gallery_item.caption|default:'Gallery Image' }}" class="detail-image">
+    </div>
+    
+    <div class="detail-info">
+        <div class="detail-group">
+            <div class="detail-label">
+                <span class="material-icons">description</span>
+                Caption
+            </div>
+            <div class="detail-value">{{ gallery_item.caption|default:"No caption provided" }}</div>
+        </div>
+        
+        <div class="detail-group">
+            <div class="detail-label">
+                <span class="material-icons">link</span>
+                Image URL
+            </div>
+            <div class="detail-value">
+                <a href="{{ gallery_item.image.url }}" target="_blank">{{ gallery_item.image.url }}</a>
+            </div>
+        </div>
+        
+        <div class="upload-date">
+            <span class="material-icons">schedule</span>
+            Uploaded on: {{ gallery_item.created_at|date:"F j, Y" }}
+        </div>
+    </div>
+</div>
+{% endblock %} 

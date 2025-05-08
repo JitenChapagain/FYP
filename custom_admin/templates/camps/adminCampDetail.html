@@ -1,0 +1,395 @@
+{% extends "../adminbase.html" %}
+{% load static %}
+
+{% block title %}{{ camp.location }} - Rakta Sewa Admin{% endblock %}
+
+{% block active_camps %}active{% endblock %}
+
+{% block content %}
+<style>
+    .detail-header {
+        background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .detail-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-red), #ff6b6b);
+    }
+
+    .content-title {
+        color: var(--primary-red);
+        font-size: 32px;
+        font-weight: 700;
+        margin: 0;
+        position: relative;
+        padding-left: 20px;
+    }
+
+    .content-title::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 24px;
+        background: var(--primary-red);
+        border-radius: 2px;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 16px;
+    }
+
+    .btn {
+        padding: 14px 28px;
+        border-radius: 12px;
+        font-size: 1rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .btn-back {
+        background: linear-gradient(145deg, #ffffff, #f0f0f0);
+        color: #666;
+        box-shadow: 5px 5px 10px #d1d1d1,
+                    -5px -5px 10px #ffffff;
+    }
+
+    .btn-edit {
+        background: linear-gradient(145deg, var(--primary-red), #c82333);
+        color: white;
+        box-shadow: 5px 5px 10px rgba(220, 53, 69, 0.2);
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .btn-back:hover {
+        box-shadow: 8px 8px 15px #d1d1d1,
+                    -8px -8px 15px #ffffff;
+    }
+
+    .btn-edit:hover {
+        box-shadow: 8px 8px 15px rgba(220, 53, 69, 0.3);
+    }
+
+    .detail-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+        position: relative;
+    }
+
+    .detail-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-red), #ff6b6b);
+    }
+
+    .detail-section {
+        padding: 30px;
+        border-bottom: 2px solid rgba(220, 53, 69, 0.1);
+        animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    .detail-section:last-child {
+        border-bottom: none;
+    }
+
+    .section-title {
+        color: white;
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 14px 20px;
+        background: linear-gradient(145deg, var(--primary-red), #c82333);
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .section-title .material-icons {
+        font-size: 24px;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 8px;
+        border-radius: 8px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+    }
+
+    .info-card {
+        background: #fff;
+        border: 2px solid #eee;
+        border-radius: 12px;
+        padding: 20px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        min-height: 100px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .info-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(to bottom, var(--primary-red), #ff6b6b);
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+
+    .info-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        border-color: var(--primary-red);
+    }
+
+    .info-card:hover::before {
+        opacity: 1;
+    }
+
+    .info-label {
+        color: #666;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+    }
+
+    .info-value {
+        color: #333;
+        font-size: 1.1rem;
+        font-weight: 500;
+        line-height: 1.4;
+    }
+
+    .date-passed {
+        color: #666 !important;
+        position: relative;
+        padding-left: 8px;
+    }
+
+    .date-passed::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 4px;
+        background: #666;
+        border-radius: 50%;
+    }
+
+    .date-upcoming {
+        color: var(--primary-red) !important;
+        position: relative;
+        padding-left: 8px;
+    }
+
+    .date-upcoming::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 4px;
+        background: var(--primary-red);
+        border-radius: 50%;
+    }
+
+    .description-content {
+        color: #666;
+        line-height: 1.8;
+        font-size: 1rem;
+        white-space: pre-line;
+        padding: 20px;
+        background: #fff;
+        border: 2px solid #eee;
+        border-radius: 12px;
+        margin-top: 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+    }
+
+    .description-content:hover {
+        border-color: var(--primary-red);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .detail-section:nth-child(1) { animation-delay: 0.1s; }
+    .detail-section:nth-child(2) { animation-delay: 0.2s; }
+    .detail-section:nth-child(3) { animation-delay: 0.3s; }
+    .detail-section:nth-child(4) { animation-delay: 0.4s; }
+
+    @media (max-width: 768px) {
+        .detail-header {
+            flex-direction: column;
+            gap: 20px;
+            align-items: flex-start;
+            padding: 20px;
+        }
+
+        .content-title {
+            font-size: 28px;
+        }
+
+        .action-buttons {
+            width: 100%;
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="detail-header">
+    <h1 class="content-title">Camp Schedule Details</h1>
+    <div class="action-buttons">
+        <a href="{% url 'admin_camps' %}" class="btn btn-back">
+            <span class="material-icons">arrow_back</span>
+            Back to List
+        </a>
+        <a href="{% url 'camp_edit' camp.pk %}" class="btn btn-edit">
+            <span class="material-icons">edit</span>
+            Edit Camp
+        </a>
+    </div>
+</div>
+
+<div class="detail-card">
+    <div class="detail-section">
+        <h2 class="section-title">
+            <span class="material-icons">location_on</span>
+            Location Information
+        </h2>
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="info-label">Location</div>
+                <div class="info-value">{{ camp.location }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Province</div>
+                <div class="info-value">{{ camp.province }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">District</div>
+                <div class="info-value">{{ camp.district }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-section">
+        <h2 class="section-title">
+            <span class="material-icons">event</span>
+            Schedule Information
+        </h2>
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="info-label">Schedule Date</div>
+                <div class="info-value {% if camp.schedule_date|date:'Y-m-d' < now|date:'Y-m-d' %}date-passed{% else %}date-upcoming{% endif %}">
+                    {{ camp.schedule_date|date:"F d, Y" }}
+                </div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Start Time</div>
+                <div class="info-value">{{ camp.start_time|time:"h:i A" }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">End Time</div>
+                <div class="info-value">{{ camp.end_time|time:"h:i A" }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-section">
+        <h2 class="section-title">
+            <span class="material-icons">local_hospital</span>
+            Blood Bank Information
+        </h2>
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="info-label">Blood Bank Name</div>
+                <div class="info-value">{{ camp.bloodbank.blood_bank_name }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Contact Person</div>
+                <div class="info-value">{{ camp.bloodbank.contact_person }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Contact Number</div>
+                <div class="info-value">{{ camp.bloodbank.contact_no }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Email</div>
+                <div class="info-value">{{ camp.bloodbank.email }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-section">
+        <h2 class="section-title">
+            <span class="material-icons">description</span>
+            Camp Description
+        </h2>
+        <div class="description-content">
+            {{ camp.description|linebreaks }}
+        </div>
+    </div>
+</div>
+{% endblock %} 

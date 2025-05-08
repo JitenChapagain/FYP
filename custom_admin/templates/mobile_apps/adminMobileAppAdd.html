@@ -1,0 +1,235 @@
+{% extends "../adminbase.html" %}
+{% load static %}
+
+{% block title %}Add Mobile App - Rakta Sewa Admin{% endblock %}
+
+{% block active_mobile_apps %}active{% endblock %}
+
+{% block content %}
+<style>
+    .content-header {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+    }
+
+    .content-title {
+        color: #333;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .form-container {
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-weight: 500;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #bf2229;
+        outline: none;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .btn-primary {
+        background: #bf2229;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #a61d23;
+    }
+
+    .btn-secondary {
+        background: #f5f5f5;
+        color: #333;
+    }
+
+    .btn-secondary:hover {
+        background: #e0e0e0;
+    }
+
+    .error-message {
+        color: #bf2229;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .messages {
+        margin-bottom: 20px;
+    }
+
+    .alert {
+        padding: 12px 20px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateY(-20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .alert-success {
+        background-color: #4caf50;
+        color: white;
+    }
+
+    .alert-error {
+        background-color: #f44336;
+        color: white;
+    }
+
+    .alert-icon {
+        font-size: 20px;
+    }
+
+    .alert-close {
+        margin-left: auto;
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        padding: 0;
+    }
+
+    .alert-close:hover {
+        opacity: 0.8;
+    }
+</style>
+
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        <span class="material-icons alert-icon">
+            {% if message.tags == 'success' %}check_circle{% else %}error{% endif %}
+        </span>
+        {{ message }}
+        <button class="alert-close" onclick="this.parentElement.remove()">
+            <span class="material-icons">close</span>
+        </button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="content-header">
+    <h1 class="content-title">Add Mobile App</h1>
+</div>
+
+<div class="form-container">
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="id_name" class="form-label">App Name</label>
+            <input type="text" 
+                   name="name" 
+                   id="id_name" 
+                   class="form-control" 
+                   required>
+            {% if form.name.errors %}
+            <div class="error-message">{{ form.name.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_description" class="form-label">Description</label>
+            <textarea name="description" 
+                      id="id_description" 
+                      class="form-control" 
+                      rows="4"
+                      required></textarea>
+            {% if form.description.errors %}
+            <div class="error-message">{{ form.description.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_download_link" class="form-label">Download Link</label>
+            <input type="url" 
+                   name="download_link" 
+                   id="id_download_link" 
+                   class="form-control" 
+                   required>
+            {% if form.download_link.errors %}
+            <div class="error-message">{{ form.download_link.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">
+                <span class="material-icons">save</span>
+                Add Mobile App
+            </button>
+            <a href="{% url 'admin_mobile_apps' %}" class="btn btn-secondary">
+                <span class="material-icons">arrow_back</span>
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+// Add message auto-dismissal
+document.addEventListener('DOMContentLoaded', function() {
+    const messages = document.querySelectorAll('.alert');
+    messages.forEach(message => {
+        setTimeout(() => {
+            message.style.opacity = '0';
+            message.style.transition = 'opacity 0.5s ease-out';
+            setTimeout(() => {
+                message.remove();
+            }, 500);
+        }, 5000);
+    });
+});
+</script>
+{% endblock %} 

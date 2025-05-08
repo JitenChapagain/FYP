@@ -1,0 +1,1009 @@
+{% extends "../adminbase.html" %}
+{% load static %}
+
+{% block title %}Add Blood Bank - Rakta Sewa Admin{% endblock %}
+
+{% block active_blood_banks %}active{% endblock %}
+
+{% block content %}
+<style>
+    .content-header {
+        background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .content-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-red), #ff6b6b);
+    }
+
+    .content-title {
+        color: var(--primary-red);
+        font-size: 32px;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        position: relative;
+        padding-left: 20px;
+    }
+
+    .content-title::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 24px;
+        background: var(--primary-red);
+        border-radius: 2px;
+    }
+
+    .content-title .material-icons {
+        color: var(--primary-red);
+        font-size: 32px;
+        background: rgba(220, 53, 69, 0.1);
+        padding: 8px;
+        border-radius: 8px;
+    }
+
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        background: linear-gradient(145deg, #ffffff, #f0f0f0);
+        color: #666;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 5px 5px 10px #d1d1d1,
+                    -5px -5px 10px #ffffff;
+    }
+
+    .btn-back:hover {
+        transform: translateY(-2px);
+        box-shadow: 8px 8px 15px #d1d1d1,
+                    -8px -8px 15px #ffffff;
+    }
+
+    .detail-card {
+        background: #fff;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .detail-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-red), #ff6b6b);
+    }
+
+    .form-table-container {
+        margin-top: 20px;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        padding: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .form-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .section-header {
+        background: linear-gradient(145deg, var(--primary-red), #c82333);
+        border-radius: 12px;
+        margin: 20px 0;
+        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.2);
+        animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    .section-header td {
+        padding: 20px;
+        border-bottom: none;
+    }
+
+    .section-subtitle {
+        margin: 0;
+        color: #fff;
+        font-size: 1.3rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .section-subtitle .material-icons {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 8px;
+        border-radius: 8px;
+    }
+
+    .form-label-cell {
+        width: 30%;
+        padding: 20px;
+        vertical-align: middle;
+        background: #fafafa;
+        border-right: 1px solid rgba(0,0,0,0.05);
+        font-weight: 600;
+        color: #333;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.9rem;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .form-input-cell {
+        padding: 20px;
+        background: #fff;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .form-input-cell:last-child {
+        border-bottom: none;
+    }
+
+    tr:not(.section-header):hover .form-label-cell,
+    tr:not(.section-header):hover .form-input-cell {
+        background: #fff;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .form-label-cell, .form-input-cell {
+        transition: all 0.3s ease;
+    }
+
+    .form-control, .form-select {
+        width: 100%;
+        padding: 14px;
+        border: 2px solid #eee;
+        border-radius: 8px;
+        font-size: 1rem;
+        color: #333;
+        background: #fafafa;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        outline: none;
+        border-color: var(--primary-red);
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+        background: white;
+    }
+
+    .checkbox-group {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        padding: 10px 0;
+    }
+
+    .form-check {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 15px;
+        background: #fafafa;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        border: 2px solid #eee;
+    }
+
+    .form-check:hover {
+        background: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        border-color: var(--primary-red);
+    }
+
+    .form-check-input {
+        width: 18px;
+        height: 18px;
+        margin: 0;
+        cursor: pointer;
+        accent-color: var(--primary-red);
+    }
+
+    .form-check-label {
+        color: #333;
+        font-size: 0.95rem;
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    .btn-save {
+        background: linear-gradient(145deg, var(--primary-red), #c82333);
+        color: white;
+        border: none;
+        padding: 14px 28px;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.2);
+    }
+
+    .btn-save:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(220, 53, 69, 0.3);
+    }
+
+    .btn-save .material-icons {
+        font-size: 1.2rem;
+    }
+
+    /* Map Modal Styles */
+    #map-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000;
+        backdrop-filter: blur(4px);
+    }
+
+    #map-modal > div {
+        position: relative;
+        width: 90%;
+        max-width: 800px;
+        margin: 50px auto;
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid var(--primary-red);
+    }
+
+    .modal-title {
+        margin: 0;
+        color: #333;
+        font-size: 1.5rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .modal-title .material-icons {
+        color: var(--primary-red);
+        background: rgba(220, 53, 69, 0.1);
+        padding: 8px;
+        border-radius: 8px;
+    }
+
+    #map {
+        height: 500px;
+        width: 100%;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        border: 2px solid #eee;
+    }
+
+    .map-controls {
+        margin-top: 20px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        background: #fafafa;
+        padding: 20px;
+        border-radius: 12px;
+        border: 2px solid #eee;
+    }
+
+    .coordinate-inputs {
+        display: flex;
+        gap: 15px;
+    }
+
+    .coordinate-input {
+        flex: 1;
+    }
+
+    .coordinate-input label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .coordinate-input input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #eee;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        background: #fff;
+    }
+
+    .coordinate-input input:focus {
+        outline: none;
+        border-color: var(--primary-red);
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+    }
+
+    .map-buttons {
+        display: flex;
+        gap: 12px;
+        align-items: flex-end;
+    }
+
+    .map-button {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .map-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+
+    .map-button.update {
+        background: linear-gradient(145deg, #4CAF50, #45a049);
+    }
+
+    .map-button.save {
+        background: linear-gradient(145deg, #2196F3, #1976D2);
+    }
+
+    .map-button.clear {
+        background: linear-gradient(145deg, #f44336, #d32f2f);
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-header:nth-child(1) { animation-delay: 0.1s; }
+    .section-header:nth-child(2) { animation-delay: 0.2s; }
+    .section-header:nth-child(3) { animation-delay: 0.3s; }
+    .section-header:nth-child(4) { animation-delay: 0.4s; }
+    .section-header:nth-child(5) { animation-delay: 0.5s; }
+
+    @media (max-width: 768px) {
+        .content-header {
+            flex-direction: column;
+            gap: 20px;
+            align-items: flex-start;
+            padding: 20px;
+        }
+
+        .content-title {
+            font-size: 28px;
+        }
+
+        .form-table-container {
+            padding: 15px;
+        }
+
+        .form-label-cell {
+            width: 100%;
+            display: block;
+            border-right: none;
+        }
+
+        .form-input-cell {
+            width: 100%;
+            display: block;
+        }
+
+        .coordinate-inputs {
+            flex-direction: column;
+        }
+
+        .map-buttons {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="content-header">
+    <h1 class="content-title" style="color: #A94442; font-size: 28px;">
+        <span class="material-icons">add_location</span>
+        Add New Blood Bank
+    </h1>
+        <a href="{% url 'admin_blood_banks' %}" class="btn btn-back">
+            <span class="material-icons">arrow_back</span>
+            Back to List
+        </a>
+</div>
+
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        <span class="material-icons alert-icon">
+            {% if message.tags == 'success' %}check_circle{% else %}error{% endif %}
+        </span>
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<form method="post" class="detail-card">
+    {% csrf_token %}
+    
+    
+        
+        <div class="form-table-container">
+            <table class="form-table">
+                <tbody>
+                    <!-- Basic Information -->
+                    <tr class="section-header">
+                        <td colspan="2">
+                            <h3 class="section-subtitle">
+                                <span class="material-icons">info</span>
+                                Basic Information
+                            </h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-label-cell">
+                <label class="form-label">Blood Bank Name</label>
+                        </td>
+                        <td class="form-input-cell">
+                <input type="text" name="blood_bank_name" class="form-control" value="{{ request.POST.blood_bank_name }}" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-label-cell">
+                <label class="form-label">Parent Hospital</label>
+                        </td>
+                        <td class="form-input-cell">
+                <input type="text" name="parent_hospital_name" class="form-control" value="{{ request.POST.parent_hospital_name }}" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-label-cell">
+                <label class="form-label">Short Name</label>
+                        </td>
+                        <td class="form-input-cell">
+                <input type="text" name="short_name" class="form-control" value="{{ request.POST.short_name }}" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-label-cell">
+                <label class="form-label">Category</label>
+                        </td>
+                        <td class="form-input-cell">
+                <select name="category" class="form-select" required>
+                    <option value="Government" {% if request.POST.category == 'Government' %}selected{% endif %}>Government</option>
+                    <option value="Private" {% if request.POST.category == 'Private' %}selected{% endif %}>Private</option>
+                    <option value="Community" {% if request.POST.category == 'Community' %}selected{% endif %}>Community</option>
+                </select>
+                        </td>
+                    </tr>
+
+                    <!-- Contact Information -->
+                    <tr class="section-header">
+                        <td colspan="2">
+                            <h3 class="section-subtitle">
+                                <span class="material-icons">contact_phone</span>
+                                Contact Information
+                            </h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-label-cell">
+                <label class="form-label">Contact Person</label>
+                        </td>
+                        <td class="form-input-cell">
+                <input type="text" name="contact_person" class="form-control" value="{{ request.POST.contact_person }}" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-label-cell">
+                <label class="form-label">Email</label>
+                        </td>
+                        <td class="form-input-cell">
+                <input type="email" name="email" class="form-control" value="{{ request.POST.email }}" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-label-cell">
+                <label class="form-label">Contact Number</label>
+                        </td>
+                        <td class="form-input-cell">
+                <input type="text" name="contact_no" class="form-control" value="{{ request.POST.contact_no }}" required>
+                        </td>
+                    </tr>
+
+                    <!-- Location Information -->
+                    <tr class="section-header">
+                        <td colspan="2">
+                            <h3 class="section-subtitle">
+                                <span class="material-icons">place</span>
+                                Location Information
+                            </h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-label-cell">
+                <label class="form-label">Province</label>
+                        </td>
+                        <td class="form-input-cell">
+                <select name="province" class="form-select" required>
+                    {% for value, label in PROVINCE_CHOICES %}
+                        <option value="{{ value }}" {% if request.POST.province == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-label-cell">
+                <label class="form-label">District</label>
+                        </td>
+                        <td class="form-input-cell">
+                <select name="district" class="form-select" required>
+                    {% for value, label in DISTRICT_CHOICES %}
+                        <option value="{{ value }}" {% if request.POST.district == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-label-cell">
+                <label class="form-label">City</label>
+                        </td>
+                        <td class="form-input-cell">
+                <input type="text" name="city" class="form-control" value="{{ request.POST.city }}" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-label-cell">
+                <label class="form-label">Address</label>
+                        </td>
+                        <td class="form-input-cell">
+                <input type="text" name="address" class="form-control" value="{{ request.POST.address }}" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-label-cell">
+                <label class="form-label">Pincode</label>
+                        </td>
+                        <td class="form-input-cell">
+                <input type="text" name="pincode" class="form-control" value="{{ request.POST.pincode }}" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-label-cell">
+                <label class="form-label">Latitude</label>
+                        </td>
+                        <td class="form-input-cell">
+                            <input type="number" step="any" name="latitude" id="latitude" class="form-control" value="{{ request.POST.latitude }}" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-label-cell">
+                <label class="form-label">Longitude</label>
+                        </td>
+                        <td class="form-input-cell">
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <input type="number" step="any" name="longitude" id="longitude" class="form-control" value="{{ request.POST.longitude }}" required>
+                                <button type="button" id="open-map" class="btn btn-save" style="padding: 8px; background: #2196F3; display: flex; align-items: center; gap: 5px;">
+                                    <span class="material-icons" style="font-size: 20px;">location_on</span>
+                                    <span style="font-size: 0.9rem;">Location</span>
+                                </button>
+            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Donation Types -->
+                    <tr class="section-header">
+                        <td colspan="2">
+                            <h3 class="section-subtitle">
+                                <span class="material-icons">bloodtype</span>
+                                Donation Types
+                            </h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-label-cell">
+                            <label class="form-label">Donor Types</label>
+                        </td>
+                        <td class="form-input-cell">
+            <div class="checkbox-group">
+                <div class="form-check">
+                    <input type="checkbox" name="donor_voluntary" class="form-check-input" {% if 'donor_voluntary' in request.POST %}checked{% endif %}>
+                    <label class="form-check-label">Voluntary</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="donor_replacement" class="form-check-input" {% if 'donor_replacement' in request.POST %}checked{% endif %}>
+                    <label class="form-check-label">Replacement</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="donor_directed" class="form-check-input" {% if 'donor_directed' in request.POST %}checked{% endif %}>
+                    <label class="form-check-label">Directed</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="donor_autologous" class="form-check-input" {% if 'donor_autologous' in request.POST %}checked{% endif %}>
+                    <label class="form-check-label">Autologous</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="donor_family" class="form-check-input" {% if 'donor_family' in request.POST %}checked{% endif %}>
+                    <label class="form-check-label">Family</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="donor_replacement_external" class="form-check-input" {% if 'donor_replacement_external' in request.POST %}checked{% endif %}>
+                    <label class="form-check-label">External Replacement</label>
+                </div>
+            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-label-cell">
+                            <label class="form-label">Donation Methods</label>
+                        </td>
+                        <td class="form-input-cell">
+            <div class="checkbox-group">
+                <div class="form-check">
+                    <input type="checkbox" name="donation_leucapheresis" class="form-check-input" {% if 'donation_leucapheresis' in request.POST %}checked{% endif %}>
+                    <label class="form-check-label">Leucapheresis</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="donation_plasmapheresis" class="form-check-input" {% if 'donation_plasmapheresis' in request.POST %}checked{% endif %}>
+                    <label class="form-check-label">Plasmapheresis</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="donation_plateletpheresis" class="form-check-input" {% if 'donation_plateletpheresis' in request.POST %}checked{% endif %}>
+                    <label class="form-check-label">Plateletpheresis</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" name="donation_whole_blood" class="form-check-input" {% if 'donation_whole_blood' in request.POST %}checked{% endif %}>
+                    <label class="form-check-label">Whole Blood</label>
+                </div>
+            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Account Information -->
+                    <tr class="section-header">
+                        <td colspan="2">
+                            <h3 class="section-subtitle">
+                                <span class="material-icons">person</span>
+                                Account Information
+                            </h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-label-cell">
+                <label class="form-label">Username</label>
+                        </td>
+                        <td class="form-input-cell">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <input type="text" name="username" class="form-control" placeholder="Please enter your username" required style="flex: 1;">
+                    <button type="button" id="suggest-username" class="btn btn-save" style="padding: 6px 10px; background: #bf2229; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
+                        <span class="material-icons" style="font-size: 16px;">auto_fix_high</span>
+                        <span style="font-size: 0.8rem;">Suggest</span>
+                    </button>
+                </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-label-cell">
+                <label class="form-label">Password</label>
+                        </td>
+                        <td class="form-input-cell">
+                <input type="password" name="password" class="form-control" placeholder="Please enter your password" required>
+                        </td>
+                    </tr>
+
+                    <!-- Additional Information -->
+                    <tr class="section-header">
+                        <td colspan="2">
+                            <h3 class="section-subtitle">
+                                <span class="material-icons">note</span>
+                                Additional Information
+                            </h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-label-cell">
+                            <label class="form-label">Remarks</label>
+                        </td>
+                        <td class="form-input-cell">
+                            <textarea name="remark" class="form-control" rows="3">{{ request.POST.remark }}</textarea>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button type="submit" class="btn btn-save">
+                <span class="material-icons">save</span>
+                Add Blood Bank
+            </button>
+        </div>
+    </div>
+</form>
+
+<!-- Map Modal -->
+<div id="map-modal">
+    <div>
+        <div class="modal-header">
+            <h3 class="modal-title">
+                <span class="material-icons">map</span>
+                Select Location
+            </h3>
+            <button id="close-map" style="background: none; border: none; cursor: pointer; padding: 5px; border-radius: 50%; transition: all 0.3s ease;">
+                <span class="material-icons" style="color: #666; font-size: 24px;">close</span>
+            </button>
+        </div>
+        <div id="map"></div>
+        <div class="map-controls">
+            <div class="coordinate-inputs">
+                <div class="coordinate-input">
+                    <label>Latitude</label>
+                    <input type="number" step="any" id="modal-latitude" placeholder="Enter latitude">
+                </div>
+                <div class="coordinate-input">
+                    <label>Longitude</label>
+                    <input type="number" step="any" id="modal-longitude" placeholder="Enter longitude">
+                </div>
+            </div>
+            <div class="map-buttons">
+                <button type="button" id="update-coordinates" class="map-button update">
+                    <span class="material-icons">my_location</span>
+                    Update
+                </button>
+                <button type="button" id="save-coordinates" class="map-button save">
+                    <span class="material-icons">save</span>
+                    Save
+                </button>
+                <button type="button" id="clear-marker" class="map-button clear">
+                    <span class="material-icons">clear</span>
+                    Clear
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const mapModal = document.getElementById('map-modal');
+        const openMapBtn = document.getElementById('open-map');
+        const closeMapBtn = document.getElementById('close-map');
+        const latitudeInput = document.getElementById('latitude');
+        const longitudeInput = document.getElementById('longitude');
+        const modalLatitudeInput = document.getElementById('modal-latitude');
+        const modalLongitudeInput = document.getElementById('modal-longitude');
+        let map = null;
+        let marker = null;
+
+        // Function to initialize map
+        function initMap() {
+            if (!map) {
+                // Create map instance
+                map = L.map('map', {
+                    center: [27.7172, 85.3240], // Default to Kathmandu
+                    zoom: 13,
+                    zoomControl: true
+                });
+
+                // Add tile layer
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+
+                // Add click event to map
+                map.on('click', function(e) {
+                    const lat = e.latlng.lat;
+                    const lng = e.latlng.lng;
+                    updateModalCoordinates(lat, lng);
+                });
+
+                // Initialize marker if coordinates exist
+                if (latitudeInput.value && longitudeInput.value) {
+                    const lat = parseFloat(latitudeInput.value);
+                    const lng = parseFloat(longitudeInput.value);
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        updateModalCoordinates(lat, lng);
+                    }
+                }
+            }
+        }
+
+        // Function to update marker position
+        function updateMarker(lat, lng) {
+            if (marker) {
+                map.removeLayer(marker);
+            }
+            marker = L.marker([lat, lng]).addTo(map);
+            map.setView([lat, lng], 13);
+        }
+
+        // Function to update modal coordinates
+        function updateModalCoordinates(lat, lng) {
+            modalLatitudeInput.value = lat;
+            modalLongitudeInput.value = lng;
+            updateMarker(lat, lng);
+        }
+
+        // Function to save coordinates to form
+        function saveCoordinates() {
+            const lat = parseFloat(modalLatitudeInput.value);
+            const lng = parseFloat(modalLongitudeInput.value);
+            if (!isNaN(lat) && !isNaN(lng)) {
+                latitudeInput.value = lat;
+                longitudeInput.value = lng;
+                mapModal.style.display = 'none';
+            }
+        }
+
+        // Open map modal
+        openMapBtn.addEventListener('click', function() {
+            mapModal.style.display = 'block';
+            // Small delay to ensure modal is visible before initializing map
+            setTimeout(initMap, 100);
+            
+            // Copy current coordinates to modal inputs
+            if (latitudeInput.value && longitudeInput.value) {
+                modalLatitudeInput.value = latitudeInput.value;
+                modalLongitudeInput.value = longitudeInput.value;
+            }
+        });
+
+        // Close map modal
+        closeMapBtn.addEventListener('click', function() {
+            mapModal.style.display = 'none';
+        });
+
+        // Close modal when clicking outside
+        mapModal.addEventListener('click', function(e) {
+            if (e.target === mapModal) {
+                mapModal.style.display = 'none';
+            }
+        });
+
+        // Update coordinates button
+        document.getElementById('update-coordinates').addEventListener('click', function() {
+            const lat = parseFloat(modalLatitudeInput.value);
+            const lng = parseFloat(modalLongitudeInput.value);
+            if (!isNaN(lat) && !isNaN(lng)) {
+                updateMarker(lat, lng);
+            }
+        });
+
+        // Save coordinates button
+        document.getElementById('save-coordinates').addEventListener('click', saveCoordinates);
+
+        // Clear marker button
+        document.getElementById('clear-marker').addEventListener('click', function() {
+            if (marker) {
+                map.removeLayer(marker);
+                marker = null;
+            }
+            modalLatitudeInput.value = '';
+            modalLongitudeInput.value = '';
+        });
+
+        // Handle Enter key in coordinate inputs
+        [modalLatitudeInput, modalLongitudeInput].forEach(input => {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const lat = parseFloat(modalLatitudeInput.value);
+                    const lng = parseFloat(modalLongitudeInput.value);
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        updateMarker(lat, lng);
+                    }
+                }
+            });
+        });
+
+        // Username suggestion functionality
+        const suggestUsernameBtn = document.getElementById('suggest-username');
+        const usernameInput = document.querySelector('input[name="username"]');
+        const bloodBankNameInput = document.querySelector('input[name="blood_bank_name"]');
+        const contactPersonInput = document.querySelector('input[name="contact_person"]');
+
+        function generateUsernameFromText(text) {
+            // Remove special characters and spaces
+            const cleanText = text.toLowerCase().replace(/[^a-z0-9]/g, '');
+            
+            // Get first 3-5 characters
+            const prefix = cleanText.substring(0, Math.min(5, cleanText.length));
+            
+            // Add a random number
+            const randomNum = Math.floor(Math.random() * 1000);
+            
+            return `${prefix}${randomNum}`;
+        }
+
+        function generateRandomUsername() {
+            const bloodBankName = bloodBankNameInput.value.trim();
+            const contactPerson = contactPersonInput.value.trim();
+            
+            // If blood bank name is available, use it
+            if (bloodBankName) {
+                return generateUsernameFromText(bloodBankName);
+            }
+            
+            // If contact person name is available, use it
+            if (contactPerson) {
+                return generateUsernameFromText(contactPerson);
+            }
+            
+            // Fallback to random username if no names are available
+            const adjectives = ['blood', 'donor', 'life', 'save', 'care', 'help', 'hope', 'gift', 'heart', 'red'];
+            const nouns = ['bank', 'center', 'hub', 'point', 'base', 'unit', 'clinic', 'center', 'post', 'spot'];
+            const numbers = Math.floor(Math.random() * 1000);
+            
+            const randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+            const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
+            
+            return `${randomAdjective}${randomNoun}${numbers}`;
+        }
+
+        suggestUsernameBtn.addEventListener('click', function() {
+            usernameInput.value = generateRandomUsername();
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %} 

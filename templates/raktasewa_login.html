@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}RaktaSewa Login{% endblock %}
+{% block content %}
+<div class="container my-5">
+  <h2 class="mb-4">RaktaSewa Blood Bank Login</h2>
+  <form method="post" class="card shadow-sm p-4 col-md-6 mx-auto">
+    {% csrf_token %}
+    {% if error %}
+      <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+    <div class="mb-3">
+      <label for="id_username" class="form-label">Username</label>
+      {{ form.username }}
+    </div>
+    <div class="mb-3">
+      <label for="id_password" class="form-label">Password</label>
+      {{ form.password }}
+    </div>
+    <button type="submit" class="btn btn-danger">Login</button>
+  </form>
+</div>
+{% endblock %}

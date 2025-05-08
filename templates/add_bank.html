@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Add Your Blood Bank{% endblock %}
+{% block content %}
+<div class="container my-5">
+  <h2 class="mb-4">Add Your Blood Bank</h2>
+  <form method="post" class="card shadow-sm p-4">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-md-6">
+        <h5 class="mb-3">Blood Bank Information</h5>
+        <div class="mb-3">{{ form.province.label_tag }} {{ form.province }}</div>
+        <div class="mb-3">{{ form.district.label_tag }} {{ form.district }}</div>
+        <div class="mb-3">{{ form.city.label_tag }} {{ form.city }}</div>
+        <div class="mb-3">{{ form.blood_bank_name.label_tag }} {{ form.blood_bank_name }}</div>
+        <div class="mb-3">{{ form.parent_hospital_name.label_tag }} {{ form.parent_hospital_name }}</div>
+        <div class="mb-3">{{ form.short_name.label_tag }} {{ form.short_name }}</div>
+        <div class="mb-3">{{ form.category.label_tag }} {{ form.category }}</div>
+        <div class="mb-3">{{ form.contact_person.label_tag }} {{ form.contact_person }}</div>
+        <div class="mb-3">{{ form.email.label_tag }} {{ form.email }}</div>
+        <div class="mb-3">{{ form.contact_no.label_tag }} {{ form.contact_no }}</div>
+        <div class="mb-3">{{ form.address.label_tag }} {{ form.address }}</div>
+        <div class="mb-3">{{ form.pincode.label_tag }} {{ form.pincode }}</div>
+      </div>
+      <div class="col-md-6">
+        <h5 class="mb-3">Geographical Location</h5>
+        <div class="mb-3">
+          <label for="map" class="form-label">Select Location on Map</label>
+          <div id="map" style="height: 250px; border-radius: 8px;"></div>
+          {{ form.latitude }}
+          {{ form.longitude }}
+        </div>
+        <h5 class="mb-3 mt-4">Donation Information</h5>
+        <div class="mb-2"><strong>Donor Types:</strong></div>
+        <div class="form-check form-check-inline">{{ form.donor_voluntary }} {{ form.donor_voluntary.label_tag }}</div>
+        <div class="form-check form-check-inline">{{ form.donor_replacement }} {{ form.donor_replacement.label_tag }}</div>
+        <div class="form-check form-check-inline">{{ form.donor_directed }} {{ form.donor_directed.label_tag }}</div>
+        <div class="form-check form-check-inline">{{ form.donor_autologous }} {{ form.donor_autologous.label_tag }}</div>
+        <div class="form-check form-check-inline">{{ form.donor_family }} {{ form.donor_family.label_tag }}</div>
+        <div class="form-check form-check-inline">{{ form.donor_replacement_external }} {{ form.donor_replacement_external.label_tag }}</div>
+        <div class="mb-2 mt-3"><strong>Donation Types:</strong></div>
+        <div class="form-check form-check-inline">{{ form.donation_leucapheresis }} {{ form.donation_leucapheresis.label_tag }}</div>
+        <div class="form-check form-check-inline">{{ form.donation_plasmapheresis }} {{ form.donation_plasmapheresis.label_tag }}</div>
+        <div class="form-check form-check-inline">{{ form.donation_plateletpheresis }} {{ form.donation_plateletpheresis.label_tag }}</div>
+        <div class="form-check form-check-inline">{{ form.donation_whole_blood }} {{ form.donation_whole_blood.label_tag }}</div>
+        <div class="mb-3 mt-3">{{ form.remark.label_tag }} {{ form.remark }}</div>
+        <h5 class="mb-3 mt-4">Account</h5>
+        <div class="mb-3">{{ form.username.label_tag }} {{ form.username }}</div>
+        <div class="mb-3">{{ form.password.label_tag }} {{ form.password }}</div>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-danger mt-3">Register Blood Bank</button>
+    {% if success %}
+      <div class="alert alert-success mt-3">Registration successful! Thank you for adding your blood bank.</div>
+    {% endif %}
+  </form>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+  <!-- Leaflet.js for interactive map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var map = L.map('map').setView([27.7, 85.3], 7);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
+      var marker;
+      function updateLatLng(lat, lng) {
+        document.getElementById('id_latitude').value = lat;
+        document.getElementById('id_longitude').value = lng;
+      }
+      map.on('click', function(e) {
+        var lat = e.latlng.lat.toFixed(6);
+        var lng = e.latlng.lng.toFixed(6);
+        if (marker) { map.removeLayer(marker); }
+        marker = L.marker([lat, lng]).addTo(map);
+        updateLatLng(lat, lng);
+      });
+      // Set marker if values are pre-filled (edit form)
+      var latInput = document.getElementById('id_latitude').value;
+      var lngInput = document.getElementById('id_longitude').value;
+      if(latInput && lngInput) {
+        marker = L.marker([latInput, lngInput]).addTo(map);
+        map.setView([latInput, lngInput], 13);
+      }
+    });
+  </script>
+{% endblock %}

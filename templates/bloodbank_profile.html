@@ -1,0 +1,58 @@
+{% extends 'base2.html' %}
+{% block title %}Blood Bank Profile{% endblock %}
+{% block content %}
+<div class="container my-5">
+  <h2 class="mb-4">Blood Bank Profile</h2>
+  <div class="card shadow-sm p-4 mb-4">
+    <h5 class="mb-3">Profile Information</h5>
+    <dl class="row">
+      <dt class="col-sm-4">Blood Bank Name</dt>
+      <dd class="col-sm-8">{{ user.blood_bank_name }}</dd>
+      <dt class="col-sm-4">Short Name</dt>
+      <dd class="col-sm-8">{{ user.short_name }}</dd>
+      <dt class="col-sm-4">Parent Hospital</dt>
+      <dd class="col-sm-8">{{ user.parent_hospital_name }}</dd>
+      <dt class="col-sm-4">Province</dt>
+      <dd class="col-sm-8">{{ user.province }}</dd>
+      <dt class="col-sm-4">District</dt>
+      <dd class="col-sm-8">{{ user.district }}</dd>
+      <dt class="col-sm-4">City</dt>
+      <dd class="col-sm-8">{{ user.city }}</dd>
+      <dt class="col-sm-4">Address</dt>
+      <dd class="col-sm-8">{{ user.address }}</dd>
+      <dt class="col-sm-4">Contact Person</dt>
+      <dd class="col-sm-8">{{ user.contact_person }}</dd>
+      <dt class="col-sm-4">Email</dt>
+      <dd class="col-sm-8">{{ user.email }}</dd>
+      <dt class="col-sm-4">Contact No</dt>
+      <dd class="col-sm-8">{{ user.contact_no }}</dd>
+      <dt class="col-sm-4">Pincode</dt>
+      <dd class="col-sm-8">{{ user.pincode }}</dd>
+      <dt class="col-sm-4">Category</dt>
+      <dd class="col-sm-8">{{ user.category }}</dd>
+      <dt class="col-sm-4">Remark</dt>
+      <dd class="col-sm-8">{{ user.remark }}</dd>
+    </dl>
+  </div>
+
+  <div class="card shadow-sm p-4">
+    <h5 class="mb-3">Edit / Update Profile</h5>
+    <form method="post">
+      {% csrf_token %}
+      {% for field in form.visible_fields %}
+        <div class="mb-3">
+          {{ field.label_tag }} {{ field }}
+          {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+          {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+        </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-primary">Save Changes</button>
+      {% if success %}
+        <div class="alert alert-success mt-3">Profile updated successfully!</div>
+      {% elif success == False %}
+        <div class="alert alert-danger mt-3">There was an error updating your profile. Please check the form.</div>
+      {% endif %}
+    </form>
+  </div>
+</div>
+{% endblock %}

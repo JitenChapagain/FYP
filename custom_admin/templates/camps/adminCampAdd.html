@@ -1,0 +1,353 @@
+{% extends "../adminbase.html" %}
+{% load static %}
+
+{% block title %}Add New Camp Schedule - Rakta Sewa Admin{% endblock %}
+
+{% block active_camps %}active{% endblock %}
+
+{% block content %}
+<style>
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding: 15px 0;
+        border-bottom: 2px solid rgba(220, 53, 69, 0.1);
+        position: relative;
+    }
+
+    .header-section::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 80px;
+        height: 2px;
+        background: var(--primary-red);
+    }
+
+    .header-section h1 {
+        color: var(--primary-red);
+        font-size: 28px;
+        font-weight: 700;
+        margin: 0;
+        position: relative;
+        padding-left: 16px;
+    }
+
+    .header-section h1::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 20px;
+        background: var(--primary-red);
+        border-radius: 2px;
+    }
+
+    .back-btn {
+        background: linear-gradient(145deg, #ffffff, #f0f0f0);
+        color: #666;
+        padding: 10px 20px;
+        border-radius: 10px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        border: none;
+        box-shadow: 5px 5px 10px #d1d1d1,
+                    -5px -5px 10px #ffffff;
+        transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 8px 8px 15px #d1d1d1,
+                    -8px -8px 15px #ffffff;
+    }
+
+    .form-container {
+        background: white;
+        border-radius: 16px;
+        padding: 40px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        max-width: 1200px;
+        margin: 0 auto;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .form-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-red), #ff6b6b);
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-bottom: 30px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        position: relative;
+    }
+
+    .form-group label {
+        color: #333;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 14px;
+        border: 2px solid #eee;
+        border-radius: 8px;
+        font-size: 14px;
+        color: #333;
+        transition: all 0.3s ease;
+        width: 100%;
+        background: #fafafa;
+    }
+
+    .form-group textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: var(--primary-red);
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+        background: white;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 16px;
+        margin-top: 40px;
+        padding-top: 30px;
+        border-top: 2px solid rgba(220, 53, 69, 0.1);
+    }
+
+    .cancel-btn {
+        background: linear-gradient(145deg, #ffffff, #f0f0f0);
+        color: #666;
+        padding: 14px 28px;
+        border-radius: 12px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: none;
+        box-shadow: 5px 5px 10px #d1d1d1,
+                    -5px -5px 10px #ffffff;
+        transition: all 0.3s ease;
+    }
+
+    .cancel-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 8px 8px 15px #d1d1d1,
+                    -8px -8px 15px #ffffff;
+    }
+
+    .save-btn {
+        background: linear-gradient(145deg, var(--primary-red), #c82333);
+        color: white;
+        padding: 14px 28px;
+        border-radius: 12px;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 5px 5px 10px rgba(220, 53, 69, 0.2);
+    }
+
+    .save-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 8px 8px 15px rgba(220, 53, 69, 0.3);
+    }
+
+    .error-message {
+        color: #d32f2f;
+        font-size: 12px;
+        margin-top: 4px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 8px;
+        background: rgba(211, 47, 47, 0.1);
+        border-radius: 4px;
+    }
+
+    .form-group.error input,
+    .form-group.error select,
+    .form-group.error textarea {
+        border-color: #d32f2f;
+        background: rgba(211, 47, 47, 0.05);
+    }
+
+    .form-group.error .error-message::before {
+        content: "error";
+        font-family: "Material Icons";
+        font-size: 16px;
+    }
+
+    @media (max-width: 768px) {
+        .form-container {
+            padding: 25px;
+            margin: 0 15px;
+        }
+
+        .header-section {
+            flex-direction: column;
+            gap: 20px;
+            align-items: flex-start;
+            padding: 20px 0;
+        }
+
+        .header-section h1 {
+            font-size: 28px;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .cancel-btn,
+        .save-btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    /* Add subtle animation for form elements */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-group {
+        animation: fadeIn 0.3s ease-out forwards;
+    }
+
+    .form-group:nth-child(2) { animation-delay: 0.1s; }
+    .form-group:nth-child(3) { animation-delay: 0.2s; }
+    .form-group:nth-child(4) { animation-delay: 0.3s; }
+    .form-group:nth-child(5) { animation-delay: 0.4s; }
+    .form-group:nth-child(6) { animation-delay: 0.5s; }
+    .form-group:nth-child(7) { animation-delay: 0.6s; }
+    .form-group:nth-child(8) { animation-delay: 0.7s; }
+</style>
+
+<div class="header-section">
+    <h1>Add New Camp Schedule</h1>
+    <a href="{% url 'admin_camps' %}" class="back-btn">
+        <span class="material-icons">arrow_back</span>
+        Back to List
+    </a>
+</div>
+
+<div class="form-container">
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-grid">
+            <div class="form-group {% if form.location.errors %}error{% endif %}">
+                <label for="{{ form.location.id_for_label }}">Location</label>
+                {{ form.location }}
+                {% if form.location.errors %}
+                    <span class="error-message">{{ form.location.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group {% if form.province.errors %}error{% endif %}">
+                <label for="{{ form.province.id_for_label }}">Province</label>
+                {{ form.province }}
+                {% if form.province.errors %}
+                    <span class="error-message">{{ form.province.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group {% if form.district.errors %}error{% endif %}">
+                <label for="{{ form.district.id_for_label }}">District</label>
+                {{ form.district }}
+                {% if form.district.errors %}
+                    <span class="error-message">{{ form.district.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group {% if form.bloodbank.errors %}error{% endif %}">
+                <label for="{{ form.bloodbank.id_for_label }}">Blood Bank</label>
+                {{ form.bloodbank }}
+                {% if form.bloodbank.errors %}
+                    <span class="error-message">{{ form.bloodbank.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group {% if form.schedule_date.errors %}error{% endif %}">
+                <label for="{{ form.schedule_date.id_for_label }}">Schedule Date</label>
+                {{ form.schedule_date }}
+                {% if form.schedule_date.errors %}
+                    <span class="error-message">{{ form.schedule_date.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group {% if form.start_time.errors %}error{% endif %}">
+                <label for="{{ form.start_time.id_for_label }}">Start Time</label>
+                {{ form.start_time }}
+                {% if form.start_time.errors %}
+                    <span class="error-message">{{ form.start_time.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group {% if form.end_time.errors %}error{% endif %}">
+                <label for="{{ form.end_time.id_for_label }}">End Time</label>
+                {{ form.end_time }}
+                {% if form.end_time.errors %}
+                    <span class="error-message">{{ form.end_time.errors.0 }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-group {% if form.description.errors %}error{% endif %}">
+            <label for="{{ form.description.id_for_label }}">Description</label>
+            {{ form.description }}
+            {% if form.description.errors %}
+                <span class="error-message">{{ form.description.errors.0 }}</span>
+            {% endif %}
+        </div>
+
+        <div class="form-actions">
+            <a href="{% url 'admin_camps' %}" class="cancel-btn">
+                <span class="material-icons">close</span>
+                Cancel
+            </a>
+            <button type="submit" class="save-btn">
+                <span class="material-icons">save</span>
+                Save Camp
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %} 

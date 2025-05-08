@@ -1,0 +1,306 @@
+{% extends "../adminbase.html" %}
+{% load static %}
+
+{% block title %}About Rakta Sewa - Admin{% endblock %}
+
+{% block active_about_raktasewa %}active{% endblock %}
+
+{% block content %}
+<style>
+    .content-header {
+        background: linear-gradient(135deg, #bf2229 0%, #d62731 100%);
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: white;
+    }
+
+    .content-title {
+        color: white;
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .content-subtitle {
+        color: rgba(255,255,255,0.9);
+        font-size: 1rem;
+        margin-top: 8px;
+    }
+
+    .add-button {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.3);
+        padding: 10px 20px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .add-button:hover {
+        background: rgba(255,255,255,0.3);
+        transform: translateY(-2px);
+    }
+
+    .search-filter {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+
+    .search-input {
+        flex: 1;
+        padding: 10px 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+        border-color: #bf2229;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(191,34,41,0.1);
+    }
+
+    .about-table {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        overflow: hidden;
+        margin-top: 20px;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table th {
+        background: #f8f9fa;
+        padding: 16px;
+        text-align: left;
+        font-weight: 600;
+        color: #333;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .table td {
+        padding: 16px;
+        border-bottom: 1px solid #eee;
+        color: #333;
+        vertical-align: top;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .content-preview {
+        max-width: 400px;
+        line-height: 1.5;
+        color: #666;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .status-active {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+
+    .status-draft {
+        background: #fff3e0;
+        color: #ef6c00;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn {
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .btn .material-icons {
+        font-size: 16px;
+    }
+
+    .btn-view {
+        background-color: #e3f2fd;
+        color: #1976d2;
+    }
+
+    .btn-view:hover {
+        background-color: #1976d2;
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+    .btn-edit {
+        background-color: #f5f5f5;
+        color: #424242;
+    }
+
+    .btn-edit:hover {
+        background-color: #424242;
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+    .btn-delete {
+        background-color: #ffebee;
+        color: #bf2229;
+    }
+
+    .btn-delete:hover {
+        background-color: #bf2229;
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #666;
+    }
+
+    .empty-state .material-icons {
+        font-size: 48px;
+        color: #ddd;
+        margin-bottom: 16px;
+    }
+
+    .empty-state-text {
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+
+    .empty-state-subtext {
+        font-size: 14px;
+        color: #999;
+    }
+</style>
+
+<div class="content-header">
+    <div>
+        <h1 class="content-title">About Rakta Sewa</h1>
+        <p class="content-subtitle">Manage your organization's information and mission statement</p>
+    </div>
+    <a href="{% url 'admin_about_raktasewa_add' %}" class="add-button">
+        <span class="material-icons">add</span>
+        Add New Content
+    </a>
+</div>
+
+<div class="search-filter">
+    <input type="text" class="search-input" placeholder="Search content..." id="searchInput">
+    <select class="search-input" style="width: 150px;">
+        <option value="">All Status</option>
+        <option value="active">Active</option>
+        <option value="draft">Draft</option>
+    </select>
+</div>
+
+<div class="about-table">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Content</th>
+                <th>Status</th>
+                <th>Last Updated</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for about in about_contents %}
+            <tr>
+                <td>
+                    <div class="content-preview">{{ about.content|truncatechars:100 }}</div>
+                </td>
+                <td>
+                    <span class="status-badge status-active">Active</span>
+                </td>
+                <td>{{ about.updated_at|date:"M d, Y" }}</td>
+                <td>
+                    <div class="action-buttons">
+                        <a href="{% url 'admin_about_raktasewa_detail' about.id %}" class="btn btn-view" title="View Details">
+                            <span class="material-icons">visibility</span>
+                            View
+                        </a>
+                        <a href="{% url 'admin_about_raktasewa_edit' about.id %}" class="btn btn-edit" title="Edit Content">
+                            <span class="material-icons">edit</span>
+                            Edit
+                        </a>
+                        <a href="{% url 'admin_about_raktasewa_delete' about.id %}" class="btn btn-delete" title="Delete Content">
+                            <span class="material-icons">delete</span>
+                            Delete
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">
+                    <div class="empty-state">
+                        <span class="material-icons">description</span>
+                        <div class="empty-state-text">No content available</div>
+                        <div class="empty-state-subtext">Click the "Add New Content" button to create your first entry</div>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const searchText = e.target.value.toLowerCase();
+        const rows = document.querySelectorAll('.table tbody tr');
+        
+        rows.forEach(row => {
+            const content = row.querySelector('.content-preview').textContent.toLowerCase();
+            if (content.includes(searchText)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock %} 

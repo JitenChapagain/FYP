@@ -1,0 +1,256 @@
+{% extends "../adminbase.html" %}
+{% load static %}
+
+{% block title %}Add About Rakta Sewa - Admin{% endblock %}
+
+{% block active_about_raktasewa %}active{% endblock %}
+
+{% block content %}
+<style>
+    .content-header {
+        background: linear-gradient(135deg, #bf2229 0%, #d62731 100%);
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: white;
+    }
+
+    .content-title {
+        color: white;
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .content-subtitle {
+        color: rgba(255,255,255,0.9);
+        font-size: 1rem;
+        margin-top: 8px;
+    }
+
+    .back-button {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.3);
+        padding: 10px 20px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .back-button:hover {
+        background: rgba(255,255,255,0.3);
+        transform: translateY(-2px);
+    }
+
+    .form-card {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        padding: 30px;
+        margin-top: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 30px;
+    }
+
+    .form-label {
+        display: block;
+        color: #333;
+        font-size: 14px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 12px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 15px;
+        line-height: 1.5;
+        transition: all 0.3s ease;
+        background-color: #fafafa;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #bf2229;
+        background-color: #fff;
+        box-shadow: 0 0 0 3px rgba(191, 34, 41, 0.1);
+    }
+
+    .form-textarea {
+        min-height: 200px;
+        resize: vertical;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 30px;
+        padding-top: 30px;
+        border-top: 1px solid #eee;
+    }
+
+    .btn {
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .btn .material-icons {
+        font-size: 20px;
+    }
+
+    .btn-submit {
+        background: #bf2229;
+        color: white;
+    }
+
+    .btn-submit:hover {
+        background: #d62731;
+        transform: translateY(-2px);
+    }
+
+    .btn-cancel {
+        background: #f5f5f5;
+        color: #666;
+    }
+
+    .btn-cancel:hover {
+        background: #e0e0e0;
+        transform: translateY(-2px);
+    }
+
+    .error-message {
+        color: #bf2229;
+        font-size: 14px;
+        margin-top: 8px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .error-message .material-icons {
+        font-size: 16px;
+    }
+
+    .form-hint {
+        color: #666;
+        font-size: 13px;
+        margin-top: 8px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .form-hint .material-icons {
+        font-size: 16px;
+        color: #999;
+    }
+
+    .character-count {
+        color: #666;
+        font-size: 13px;
+        text-align: right;
+        margin-top: 8px;
+    }
+
+    .character-count.warning {
+        color: #f57c00;
+    }
+
+    .character-count.error {
+        color: #bf2229;
+    }
+</style>
+
+<div class="content-header">
+    <div>
+        <h1 class="content-title">Add About Rakta Sewa Content</h1>
+        <p class="content-subtitle">Create new content for your organization</p>
+    </div>
+    <a href="{% url 'admin_about_raktasewa' %}" class="back-button">
+        <span class="material-icons">arrow_back</span>
+        Back to List
+    </a>
+</div>
+
+<div class="form-card">
+    <form method="post" enctype="multipart/form-data" id="aboutForm">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label class="form-label" for="content">Content</label>
+            <textarea id="content" name="content" class="form-control form-textarea" required 
+                      placeholder="Enter your organization's information here..."
+                      maxlength="2000"></textarea>
+            <div class="character-count" id="charCount">0/2000 characters</div>
+            {% if form.content.errors %}
+                <div class="error-message">
+                    <span class="material-icons">error</span>
+                    {{ form.content.errors }}
+                </div>
+            {% endif %}
+            <div class="form-hint">
+                <span class="material-icons">info</span>
+                Provide detailed information about your organization, mission, and values
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-submit">
+                <span class="material-icons">save</span>
+                Save Content
+            </button>
+            <a href="{% url 'admin_about_raktasewa' %}" class="btn btn-cancel">
+                <span class="material-icons">close</span>
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+    const textarea = document.getElementById('content');
+    const charCount = document.getElementById('charCount');
+    const maxLength = 2000;
+
+    textarea.addEventListener('input', function() {
+        const length = this.value.length;
+        charCount.textContent = `${length}/${maxLength} characters`;
+        
+        if (length > maxLength * 0.9) {
+            charCount.classList.add('warning');
+            if (length > maxLength * 0.95) {
+                charCount.classList.add('error');
+            } else {
+                charCount.classList.remove('error');
+            }
+        } else {
+            charCount.classList.remove('warning', 'error');
+        }
+    });
+</script>
+{% endblock %} 

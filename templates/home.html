@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div id="carouselExampleIndicators" class="carousel slide mb-5" data-bs-ride="carousel">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+  </div>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="https://static.vecteezy.com/system/resources/thumbnails/008/191/708/small_2x/human-blood-donate-and-heart-rate-on-white-background-free-vector.jpg" class="d-block w-100" alt="Blood Donation Campaign">
+      <div class="carousel-caption">
+        <div class="caption-content bg-dark bg-opacity-50 p-4 rounded">
+          <h2 class="display-4 fw-bold">Every Drop Counts</h2>
+          <p class="lead">Your blood donation can save up to three lives. Join our mission to make a difference.</p>
+          <a href="/donor-login/" class="btn btn-danger btn-lg mt-2">Donate Now</a>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQn86FdHUB7UwVApNFSB4TdkntnEWdq4BQPiA&s" class="d-block w-100" alt="Blood Bank Services">
+      <div class="carousel-caption">
+        <div class="caption-content bg-dark bg-opacity-50 p-4 rounded">
+          <h2 class="display-4 fw-bold">Find Blood Near You</h2>
+          <p class="lead">Quick access to blood banks and real-time blood availability information.</p>
+          <a href="{% url 'bloodavailability' %}" class="btn btn-danger btn-lg mt-2">Check Availability</a>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="https://d27yye28rbnqaa.cloudfront.net/NeotiaGetwelSiliguri/upload/14-06-2024/666c18b232e09_blood-donor-day-ngmh-blog-zoom-jpg.jpg" class="d-block w-100" alt="Blood Donation Camp">
+      <div class="carousel-caption">
+        <div class="caption-content bg-dark bg-opacity-50 p-4 rounded">
+          <h2 class="display-4 fw-bold">Join Our Blood Camps</h2>
+          <p class="lead">Participate in our blood donation camps and be a hero in someone's life.</p>
+          <a href="/camp/" class="btn btn-danger btn-lg mt-2">Find Camps</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+<style>
+.carousel {
+  margin-bottom: 3rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.carousel-item {
+  height: 500px;
+  background-color: #f8f9fa;
+  overflow: hidden;
+  position: relative;
+}
+
+.carousel-item img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  max-width: none;
+  object-fit: cover;
+  filter: brightness(0.85);
+}
+
+.carousel-caption {
+  bottom: 50%;
+  transform: translateY(50%);
+  width: 100%;
+  left: 0;
+  right: 0;
+  padding: 0 15%;
+  z-index: 2;
+}
+
+.caption-content {
+  max-width: 800px;
+  margin: 0 auto;
+  background: rgba(0, 0, 0, 0.6) !important;
+  border-radius: 12px !important;
+  padding: 2rem !important;
+}
+
+.carousel-indicators {
+  bottom: 20px;
+  z-index: 3;
+}
+
+.carousel-indicators button {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin: 0 6px;
+  background-color: #fff;
+  opacity: 0.5;
+}
+
+.carousel-indicators button.active {
+  opacity: 1;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  width: 5%;
+  opacity: 0.7;
+  background: rgba(0,0,0,0.2);
+  height: 100%;
+  z-index: 3;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+  opacity: 1;
+  background: rgba(0,0,0,0.3);
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border: none;
+  padding: 0.8rem 2rem;
+  transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+  background-color: #bb2d3b;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 992px) {
+  .carousel-item {
+    height: 400px;
+  }
+  
+  .carousel-caption {
+    padding: 0 10%;
+  }
+  
+  .caption-content {
+    padding: 1.5rem !important;
+  }
+  
+  .display-4 {
+    font-size: 2rem;
+  }
+  
+  .lead {
+    font-size: 1rem;
+  }
+  
+  .btn-lg {
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .carousel-item {
+    height: 300px;
+  }
+  
+  .carousel-caption {
+    padding: 0 5%;
+  }
+  
+  .caption-content {
+    padding: 1rem !important;
+  }
+  
+  .display-4 {
+    font-size: 1.5rem;
+  }
+  
+  .lead {
+    font-size: 0.9rem;
+  }
+  
+  .btn-lg {
+    padding: 0.4rem 1.2rem;
+    font-size: 0.9rem;
+  }
+}
+</style>
+
+<div class="container text-center mb-5">
+  <h3>Welcome to RaktaSewa</h3>
+  <p class="lead">A modern, dynamic blood bank management system for Nepal. Donate blood, save lives, and join our mission!</p>
+</div>
+{% endblock %}

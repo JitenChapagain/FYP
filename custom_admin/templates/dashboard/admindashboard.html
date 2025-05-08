@@ -1,0 +1,27 @@
+{% extends "../adminbase.html" %}
+
+{% block content %}
+<style>
+    .welcome-box {
+        background: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 0 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .welcome-message {
+        color: #333;
+        font-size: 16px;
+        font-weight: 500;
+        margin: 0;
+        padding: 10px;
+        border-left: 4px solid var(--primary-red);
+        background-color: rgba(191, 34, 41, 0.05);
+    }
+</style>
+
+<div class="welcome-box">
+    <p class="welcome-message">You are logged in!</p>
+</div>
+{% endblock %} 

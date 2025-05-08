@@ -1,0 +1,50 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% block title %}Add Donor{% endblock %}
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'css/add_donor.css' %}">
+{% endblock %}
+{% block content %}
+<div class="container my-5">
+  <div class="card shadow-sm p-4 mx-auto" style="max-width: 600px;">
+    <h2 class="mb-4 text-center">Add Donor</h2>
+    <form method="post" enctype="multipart/form-data" autocomplete="off">
+      {% csrf_token %}
+      <table class="table table-borderless donor-table">
+        <tbody>
+          <tr>
+            <th scope="row">Name</th>
+            <td>{{ form.name }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Profile Picture</th>
+            <td>{{ form.profile_picture }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Blood Group</th>
+            <td>{{ form.blood_group }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Address</th>
+            <td>{{ form.address }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Mobile</th>
+            <td>{{ form.mobile }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- Hidden field for bloodbank username -->
+      {{ form.bloodbank }}
+      <div class="text-end">
+        <button type="submit" class="btn btn-danger px-4">Add Donor</button>
+      </div>
+      {% if success %}
+        <div class="alert alert-success mt-3">Donor added successfully!</div>
+      {% elif success == False %}
+        <div class="alert alert-danger mt-3">There was an error adding the donor. Please check the form.</div>
+      {% endif %}
+    </form>
+  </div>
+</div>
+{% endblock %}

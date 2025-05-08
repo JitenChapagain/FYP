@@ -1,0 +1,218 @@
+{% extends "../adminbase.html" %}
+{% load static %}
+
+{% block title %}About Rakta Sewa Details - Admin{% endblock %}
+
+{% block active_about_raktasewa %}active{% endblock %}
+
+{% block content %}
+<style>
+    .content-header {
+        background: linear-gradient(135deg, #bf2229 0%, #d62731 100%);
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: white;
+    }
+
+    .content-title {
+        color: white;
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .content-subtitle {
+        color: rgba(255,255,255,0.9);
+        font-size: 1rem;
+        margin-top: 8px;
+    }
+
+    .back-button {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.3);
+        padding: 10px 20px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .back-button:hover {
+        background: rgba(255,255,255,0.3);
+        transform: translateY(-2px);
+    }
+
+    .detail-card {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        padding: 30px;
+        margin-top: 20px;
+    }
+
+    .detail-section {
+        margin-bottom: 30px;
+        padding-bottom: 30px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .detail-section:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+
+    .detail-label {
+        color: #666;
+        font-size: 14px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 12px;
+    }
+
+    .detail-value {
+        color: #333;
+        font-size: 16px;
+        line-height: 1.8;
+        white-space: pre-wrap;
+    }
+
+    .meta-info {
+        display: flex;
+        gap: 24px;
+        margin-top: 16px;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #666;
+        font-size: 14px;
+    }
+
+    .meta-item .material-icons {
+        font-size: 18px;
+        color: #999;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 12px;
+        margin-top: 30px;
+        padding-top: 30px;
+        border-top: 1px solid #eee;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .btn .material-icons {
+        font-size: 20px;
+    }
+
+    .btn-edit {
+        background: #bf2229;
+        color: white;
+    }
+
+    .btn-edit:hover {
+        background: #d62731;
+        transform: translateY(-2px);
+    }
+
+    .btn-delete {
+        background: #ffebee;
+        color: #bf2229;
+    }
+
+    .btn-delete:hover {
+        background: #bf2229;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        margin-bottom: 16px;
+    }
+
+    .status-active {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+
+    .status-draft {
+        background: #fff3e0;
+        color: #ef6c00;
+    }
+</style>
+
+<div class="content-header">
+    <div>
+        <h1 class="content-title">About Rakta Sewa Details</h1>
+        <p class="content-subtitle">View and manage content details</p>
+    </div>
+    <a href="{% url 'admin_about_raktasewa' %}" class="back-button">
+        <span class="material-icons">arrow_back</span>
+        Back to List
+    </a>
+</div>
+
+<div class="detail-card">
+    <span class="status-badge status-active">Active</span>
+    
+    <div class="detail-section">
+        <div class="detail-label">Content</div>
+        <div class="detail-value">{{ about.content }}</div>
+        <div class="meta-info">
+            <div class="meta-item">
+                <span class="material-icons">schedule</span>
+                Last Updated: {{ about.updated_at|date:"M d, Y H:i" }}
+            </div>
+            <div class="meta-item">
+                <span class="material-icons">person</span>
+                Updated By: Admin
+            </div>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <a href="{% url 'admin_about_raktasewa_edit' about.id %}" class="btn btn-edit">
+            <span class="material-icons">edit</span>
+            Edit Content
+        </a>
+        <a href="{% url 'admin_about_raktasewa_delete' about.id %}" class="btn btn-delete">
+            <span class="material-icons">delete</span>
+            Delete Content
+        </a>
+    </div>
+</div>
+{% endblock %} 

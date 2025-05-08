@@ -1,0 +1,491 @@
+{% extends "../adminbase.html" %}
+
+{% block title %}{{ blood_bank.blood_bank_name }} - Rakta Sewa Admin{% endblock %}
+
+{% block active_blood_banks %}active{% endblock %}
+
+{% block content %}
+<style>
+    .detail-header {
+        background: #fff;
+        padding: 8px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .detail-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--primary-red);
+    }
+
+    .detail-title {
+        color: var(--primary-red);
+        font-size: 28px;
+        font-weight: 600;
+        margin: 0;
+        position: relative;
+        padding-left: 14px;
+    }
+
+    .detail-title::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 22px;
+        background: var(--primary-red);
+        border-radius: 1px;
+    }
+
+    .detail-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+        position: relative;
+    }
+
+    .detail-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-red), #ff6b6b);
+    }
+
+    .detail-section {
+        padding: 30px;
+        border-bottom: 2px solid rgba(220, 53, 69, 0.1);
+        animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    .detail-section:last-child {
+        border-bottom: none;
+    }
+
+    .section-title {
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 14px 20px;
+        background: linear-gradient(145deg, var(--primary-red), #c82333);
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .section-title .material-icons {
+        font-size: 20px;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 6px;
+        border-radius: 6px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+    }
+
+    .info-card {
+        background: #fff;
+        border: 1px solid rgba(220, 53, 69, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        min-height: 80px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .info-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.06);
+        border-color: rgba(220, 53, 69, 0.2);
+    }
+
+    .info-label {
+        color: #666;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+    }
+
+    .info-value {
+        color: #333;
+        font-size: 1rem;
+        font-weight: 500;
+        line-height: 1.4;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        gap: 6px;
+    }
+
+    .status-active {
+        background: linear-gradient(145deg, #4caf50, #45a049);
+        color: white;
+    }
+
+    .status-pending {
+        background: linear-gradient(145deg, #ff9800, #f57c00);
+        color: white;
+    }
+
+    .status-inactive {
+        background: linear-gradient(145deg, #f44336, #d32f2f);
+        color: white;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        cursor: pointer;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-back {
+        background: linear-gradient(145deg, #ffffff, #f0f0f0);
+        color: #666;
+        box-shadow: 5px 5px 10px #d1d1d1,
+                    -5px -5px 10px #ffffff;
+    }
+
+    .btn-edit {
+        background: linear-gradient(145deg, var(--primary-red), #c82333);
+        color: white;
+        box-shadow: 5px 5px 10px rgba(220, 53, 69, 0.2);
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .btn-back:hover {
+        box-shadow: 8px 8px 15px #d1d1d1,
+                    -8px -8px 15px #ffffff;
+    }
+
+    .btn-edit:hover {
+        box-shadow: 8px 8px 15px rgba(220, 53, 69, 0.3);
+    }
+
+    .donation-types {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .donation-type {
+        background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: #495057;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+    }
+
+    .donation-type:hover {
+        transform: translateY(-1px);
+        box-shadow: 3px 3px 8px rgba(0,0,0,0.08);
+    }
+
+    .coordinates {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .coordinates div {
+        font-size: 0.9rem;
+        color: #495057;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .coordinates div .material-icons {
+        font-size: 16px;
+        color: var(--primary-red);
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .detail-section:nth-child(1) { animation-delay: 0.1s; }
+    .detail-section:nth-child(2) { animation-delay: 0.2s; }
+    .detail-section:nth-child(3) { animation-delay: 0.3s; }
+    .detail-section:nth-child(4) { animation-delay: 0.4s; }
+    .detail-section:nth-child(5) { animation-delay: 0.5s; }
+    .detail-section:nth-child(6) { animation-delay: 0.6s; }
+
+    @media (max-width: 768px) {
+        .detail-header {
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .action-buttons {
+            width: 100%;
+        }
+
+        .btn {
+            flex: 1;
+            justify-content: center;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .detail-section {
+            padding: 20px;
+        }
+    }
+</style>
+
+<div class="detail-header">
+    <h1 class="detail-title">Blood Bank View</h1>
+    <div class="action-buttons">
+        <a href="{% url 'admin_blood_banks' %}" class="btn btn-back">
+            <span class="material-icons">arrow_back</span>
+            Back to List
+        </a>
+        <a href="{% url 'blood_bank_edit' blood_bank.pk %}" class="btn btn-edit">
+            <span class="material-icons">edit</span>
+            Edit Blood Bank
+        </a>
+    </div>
+</div>
+
+<div class="detail-card">
+    <div class="detail-section">
+        <h2 class="section-title">
+            <span class="material-icons">info</span>
+            Basic Information
+        </h2>
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="info-label">Blood Bank Name</div>
+                <div class="info-value">{{ blood_bank.blood_bank_name }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Parent Hospital</div>
+                <div class="info-value">{{ blood_bank.parent_hospital_name }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Short Name</div>
+                <div class="info-value">{{ blood_bank.short_name }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Category</div>
+                <div class="info-value">{{ blood_bank.category }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Status</div>
+                <div class="info-value">
+                    <span class="status-badge status-{{ blood_bank.status|lower }}">
+                        <span class="material-icons">
+                            {% if blood_bank.status == 'Active' %}check_circle
+                            {% elif blood_bank.status == 'Pending' %}schedule
+                            {% else %}cancel{% endif %}
+                        </span>
+                        {{ blood_bank.status }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-section">
+        <h2 class="section-title">
+            <span class="material-icons">contact_phone</span>
+            Contact Information
+        </h2>
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="info-label">Contact Person</div>
+                <div class="info-value">{{ blood_bank.contact_person }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Email</div>
+                <div class="info-value">{{ blood_bank.email }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Contact Number</div>
+                <div class="info-value">{{ blood_bank.contact_no }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-section">
+        <h2 class="section-title">
+            <span class="material-icons">location_on</span>
+            Location Information
+        </h2>
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="info-label">Address</div>
+                <div class="info-value">{{ blood_bank.address }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">City</div>
+                <div class="info-value">{{ blood_bank.city }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">District</div>
+                <div class="info-value">{{ blood_bank.district }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Province</div>
+                <div class="info-value">{{ blood_bank.province }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Pincode</div>
+                <div class="info-value">{{ blood_bank.pincode }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Geographic Coordinates</div>
+                <div class="info-value coordinates">
+                    <div>
+                        <span class="material-icons">my_location</span>
+                        Latitude: {{ blood_bank.latitude }}
+                    </div>
+                    <div>
+                        <span class="material-icons">my_location</span>
+                        Longitude: {{ blood_bank.longitude }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-section">
+        <h2 class="section-title">
+            <span class="material-icons">volunteer_activism</span>
+            Donation Types
+        </h2>
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="info-label">Donor Types</div>
+                <div class="info-value">
+                    <div class="donation-types">
+                        {% if blood_bank.donor_voluntary %}<span class="donation-type">Voluntary</span>{% endif %}
+                        {% if blood_bank.donor_replacement %}<span class="donation-type">Replacement</span>{% endif %}
+                        {% if blood_bank.donor_directed %}<span class="donation-type">Directed</span>{% endif %}
+                        {% if blood_bank.donor_autologous %}<span class="donation-type">Autologous</span>{% endif %}
+                        {% if blood_bank.donor_family %}<span class="donation-type">Family</span>{% endif %}
+                        {% if blood_bank.donor_replacement_external %}<span class="donation-type">External Replacement</span>{% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Donation Methods</div>
+                <div class="info-value">
+                    <div class="donation-types">
+                        {% if blood_bank.donation_leucapheresis %}<span class="donation-type">Leucapheresis</span>{% endif %}
+                        {% if blood_bank.donation_plasmapheresis %}<span class="donation-type">Plasmapheresis</span>{% endif %}
+                        {% if blood_bank.donation_plateletpheresis %}<span class="donation-type">Plateletpheresis</span>{% endif %}
+                        {% if blood_bank.donation_whole_blood %}<span class="donation-type">Whole Blood</span>{% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-section">
+        <h2 class="section-title">
+            <span class="material-icons">calendar_today</span>
+            Registration Details
+        </h2>
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="info-label">Registration Date</div>
+                <div class="info-value">{{ blood_bank.submitted_at|date:"F d, Y" }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Registration Time</div>
+                <div class="info-value">{{ blood_bank.submitted_at|time:"g:i A" }}</div>
+            </div>
+        </div>
+    </div>
+
+    {% if blood_bank.remark %}
+    <div class="detail-section">
+        <h2 class="section-title">
+            <span class="material-icons">notes</span>
+            Additional Information
+        </h2>
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="info-label">Remarks</div>
+                <div class="info-value">{{ blood_bank.remark }}</div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="detail-section">
+        <h2 class="section-title">
+            <span class="material-icons">account_circle</span>
+            Account Information
+        </h2>
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="info-label">Username</div>
+                <div class="info-value">{{ blood_bank.username }}</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Password</div>
+                <div class="info-value">********</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

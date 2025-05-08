@@ -1,0 +1,223 @@
+{% extends 'adminbase.html' %}
+{% load static %}
+
+{% block title %}Add Gallery Image - Rakta Sewa Admin{% endblock %}
+
+{% block active_gallery %}active{% endblock %}
+
+{% block content %}
+<style>
+    .content-header {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .content-title {
+        color: #333;
+        font-size: 1.5rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .content-title .material-icons {
+        color: #bf2229;
+        font-size: 2rem;
+    }
+
+    .back-button {
+        background: #f8f9fa;
+        color: #333;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .back-button:hover {
+        background: #e9ecef;
+        transform: translateY(-2px);
+    }
+
+    .form-container {
+        background: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-weight: 500;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #bf2229;
+        box-shadow: 0 0 0 2px rgba(191, 34, 41, 0.1);
+        outline: none;
+    }
+
+    .form-text {
+        font-size: 12px;
+        color: #666;
+        margin-top: 4px;
+    }
+
+    .submit-button {
+        background: #bf2229;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .submit-button:hover {
+        background: #d62731;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .preview-container {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .image-preview {
+        max-width: 100%;
+        max-height: 300px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        display: none;
+    }
+
+    .preview-placeholder {
+        width: 100%;
+        height: 200px;
+        background: #f8f9fa;
+        border: 2px dashed #ddd;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #666;
+    }
+
+    .preview-placeholder .material-icons {
+        font-size: 48px;
+        color: #bf2229;
+        margin-bottom: 10px;
+    }
+</style>
+
+<div class="content-header">
+    <h1 class="content-title">
+        <span class="material-icons">add_photo_alternate</span>
+        Add New Image
+    </h1>
+    <a href="{% url 'admin_gallery' %}" class="back-button">
+        <span class="material-icons">arrow_back</span>
+        Back to Gallery
+    </a>
+</div>
+
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}" id="message-{{ forloop.counter }}">
+        <span class="material-icons alert-icon">
+            {% if message.tags == 'success' %}check_circle{% else %}error{% endif %}
+        </span>
+        {{ message }}
+        <button class="alert-close" onclick="this.parentElement.remove()">
+            <span class="material-icons">close</span>
+        </button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="form-container">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="image" class="form-label">Image</label>
+            <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
+            <small class="form-text">Upload a high-quality image (JPG, PNG, GIF). Max size: 5MB.</small>
+        </div>
+        <div class="form-group">
+            <label for="caption" class="form-label">Caption</label>
+            <input type="text" class="form-control" id="caption" name="caption" placeholder="Enter image caption">
+            <small class="form-text">A brief description of the image (optional).</small>
+        </div>
+        <div class="preview-container">
+            <div class="preview-placeholder">
+                <span class="material-icons">image</span>
+                <p>Image preview will appear here</p>
+            </div>
+            <img id="imagePreview" class="image-preview" alt="Preview">
+        </div>
+        <button type="submit" class="submit-button">
+            <span class="material-icons">upload</span>
+            Upload Image
+        </button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('image').addEventListener('change', function(e) {
+        const preview = document.getElementById('imagePreview');
+        const placeholder = document.querySelector('.preview-placeholder');
+        
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                placeholder.style.display = 'none';
+            }
+            
+            reader.readAsDataURL(this.files[0]);
+        } else {
+            preview.style.display = 'none';
+            placeholder.style.display = 'flex';
+        }
+    });
+</script>
+{% endblock %} 

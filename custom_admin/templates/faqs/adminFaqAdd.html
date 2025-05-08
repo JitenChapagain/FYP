@@ -1,0 +1,180 @@
+{% extends "../adminbase.html" %}
+{% load static %}
+
+{% block title %}Add FAQ - Rakta Sewa Admin{% endblock %}
+
+{% block active_faqs %}active{% endblock %}
+
+{% block content %}
+<style>
+    .content-header {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .content-title {
+        color: #333;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    .back-button {
+        background: #f5f5f5;
+        color: #000000;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .back-button:hover {
+        background: #424242;
+        color: #fff;
+    }
+
+    .form-card {
+        background: #fff;
+        padding: 24px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 24px;
+    }
+
+    .form-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .form-label {
+        display: block;
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        color: #000000;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #bf2229;
+    }
+
+    textarea.form-control {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 24px;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .btn .material-icons {
+        font-size: 20px;
+    }
+
+    .btn-save {
+        background-color: #bf2229;
+        color: #fff;
+    }
+
+    .btn-save:hover {
+        background-color: #a61d23;
+    }
+
+    .btn-cancel {
+        background-color: #f5f5f5;
+        color: #000000;
+    }
+
+    .btn-cancel:hover {
+        background-color: #424242;
+        color: #fff;
+    }
+
+    .error-message {
+        color: #bf2229;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+</style>
+
+<div class="content-header">
+    <h1 class="content-title">Add New FAQ</h1>
+    <a href="{% url 'admin_faqs' %}" class="back-button">
+        <span class="material-icons">arrow_back</span>
+        Back to FAQs
+    </a>
+</div>
+
+<div class="form-card">
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="question" class="form-label">Question</label>
+            <input type="text" id="question" name="question" class="form-control" required>
+            {% if form.question.errors %}
+                <div class="error-message">{{ form.question.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="answer" class="form-label">Answer</label>
+            <textarea id="answer" name="answer" class="form-control" required></textarea>
+            {% if form.answer.errors %}
+                <div class="error-message">{{ form.answer.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-save">
+                <span class="material-icons">save</span>
+                Save FAQ
+            </button>
+            <a href="{% url 'admin_faqs' %}" class="btn btn-cancel">
+                <span class="material-icons">close</span>
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %} 

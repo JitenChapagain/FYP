@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}About RaktaSewa{% endblock %}
+{% block content %}
+<div class="container my-5">
+  <h2 class="mb-4">About RaktaSewa</h2>
+  <div class="card shadow-sm">
+    <div class="card-body">
+      {{ about.content|linebreaks }}
+      <div class="text-muted small mt-3">Last updated: {{ about.updated_at|date:"F j, Y, g:i a" }}</div>
+    </div>
+  </div>
+</div>
+{% endblock %}
