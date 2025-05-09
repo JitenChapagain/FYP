@@ -8,20 +8,19 @@
 {% block content %}
 <style>
     .content-header {
-        background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
-        padding: 25px 30px;
+        background: #fff;
+        padding: 24px;
         border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        margin-bottom: 25px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        margin-bottom: 24px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border: 1px solid rgba(0,0,0,0.05);
     }
 
     .content-title {
-        color: #2c3e50;
-        font-size: 1.75rem;
+        color: #A94442;
+        font-size: 28px;
         font-weight: 600;
         margin: 0;
         display: flex;
@@ -31,7 +30,7 @@
 
     .content-title .material-icons {
         color: #bf2229;
-        font-size: 2rem;
+        font-size: 32px;
     }
 
     .btn-back {
@@ -39,56 +38,54 @@
         align-items: center;
         gap: 8px;
         padding: 10px 20px;
-        background: #f8f9fa;
-        color: #2c3e50;
+        background: #f5f5f5;
+        color: #000000;
         border-radius: 8px;
         text-decoration: none;
         font-weight: 500;
         transition: all 0.3s ease;
-        border: 1px solid rgba(0,0,0,0.1);
     }
 
     .btn-back:hover {
-        background: #e9ecef;
-        color: #bf2229;
-        transform: translateY(-2px);
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        background: #e0e0e0;
+        transform: translateY(-1px);
     }
 
     .detail-card {
         background: #fff;
-        padding: 30px;
+        padding: 24px;
         border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        border: 1px solid rgba(0,0,0,0.05);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
     }
 
     .detail-section {
-        margin-bottom: 35px;
-        padding: 25px;
+        margin-bottom: 24px;
+        padding: 24px;
         background: #f8f9fa;
         border-radius: 12px;
         transition: all 0.3s ease;
-        border: 1px solid rgba(0,0,0,0.05);
     }
 
     .detail-section:hover {
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.08);
         transform: translateY(-2px);
     }
 
     .section-title {
-        color: #2c3e50;
+        color: white;
         font-size: 1.2rem;
         font-weight: 600;
         margin-bottom: 20px;
         display: flex;
         align-items: center;
         gap: 10px;
+        padding: 12px 15px;
+        background-color: #bf2229;
+        border-radius: 6px;
     }
 
     .section-title .material-icons {
-        color: #bf2229;
+        color: white;
     }
 
     .detail-grid {
@@ -104,17 +101,17 @@
         padding: 15px;
         background: #fff;
         border-radius: 8px;
-        border: 1px solid rgba(0,0,0,0.05);
+        border: 1px solid #eee;
         transition: all 0.3s ease;
     }
 
     .detail-item:hover {
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
         transform: translateY(-2px);
     }
 
     .detail-label {
-        color: #666;
+        color: #000000;
         font-size: 0.85rem;
         font-weight: 500;
         text-transform: uppercase;
@@ -122,7 +119,7 @@
     }
 
     .detail-value {
-        color: #2c3e50;
+        color: #000000;
         font-size: 1.1rem;
         font-weight: 500;
     }
@@ -130,11 +127,11 @@
     .action-buttons {
         display: flex;
         gap: 15px;
-        margin-top: 30px;
+        margin-top: 24px;
     }
 
     .btn {
-        padding: 12px 25px;
+        padding: 10px 20px;
         border-radius: 8px;
         font-size: 1rem;
         font-weight: 500;
@@ -145,16 +142,15 @@
         gap: 10px;
         text-decoration: none;
         transition: all 0.3s ease;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
     .btn-edit {
-        background: #ff9800;
+        background: #bf2229;
         color: white;
     }
 
     .btn-delete {
-        background: #f44336;
+        background: #bf2229;
         color: white;
     }
 
@@ -182,7 +178,7 @@
         max-width: 500px;
         margin: 50px auto;
         border-radius: 12px;
-        padding: 30px;
+        padding: 24px;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         transform: translateY(0);
         animation: slideIn 0.3s ease-out;
@@ -192,15 +188,15 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 25px;
+        margin-bottom: 20px;
         padding-bottom: 15px;
-        border-bottom: 1px solid rgba(0,0,0,0.1);
+        border-bottom: 1px solid #eee;
     }
 
     .modal-title {
         font-size: 1.4rem;
         font-weight: 600;
-        color: #2c3e50;
+        color: #A94442;
         margin: 0;
     }
 
@@ -224,8 +220,8 @@
     }
 
     .modal-body {
-        margin-bottom: 25px;
-        color: #555;
+        margin-bottom: 20px;
+        color: #000000;
         line-height: 1.6;
         font-size: 1rem;
     }
