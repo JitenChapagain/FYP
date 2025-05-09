@@ -9,79 +9,112 @@
 <style>
     .content-header {
         background: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        margin-bottom: 20px;
+        padding: 24px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        margin-bottom: 24px;
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
 
     .content-title {
-        color: #333;
-        font-size: 1.5rem;
+        color: #A94442;
+        font-size: 28px;
         font-weight: 600;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .content-title .material-icons {
+        color: #bf2229;
+        font-size: 32px;
     }
 
     .back-button {
-        background: #f5f5f5;
-        color: #000000;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 6px;
-        display: flex;
+        display: inline-flex;
         align-items: center;
         gap: 8px;
-        cursor: pointer;
-        transition: all 0.3s ease;
+        padding: 10px 20px;
+        background: #f5f5f5;
+        color: #000000;
+        border-radius: 8px;
         text-decoration: none;
-        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
     }
 
     .back-button:hover {
-        background: #424242;
-        color: #fff;
+        background: #e0e0e0;
+        transform: translateY(-1px);
     }
 
     .detail-card {
         background: #fff;
         padding: 24px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        margin-bottom: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
     }
 
     .detail-section {
         margin-bottom: 24px;
+        padding: 24px;
+        background: #f8f9fa;
+        border-radius: 12px;
+        transition: all 0.3s ease;
     }
 
-    .detail-section:last-child {
-        margin-bottom: 0;
+    .detail-section:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+        transform: translateY(-2px);
+    }
+
+    .section-title {
+        color: white;
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 15px;
+        background-color: #bf2229;
+        border-radius: 6px;
+    }
+
+    .section-title .material-icons {
+        color: white;
     }
 
     .detail-label {
-        color: #666;
-        font-size: 14px;
+        color: #000000;
+        font-size: 0.9rem;
+        font-weight: 500;
         margin-bottom: 8px;
     }
 
     .detail-value {
         color: #000000;
-        font-size: 16px;
+        font-size: 1rem;
         line-height: 1.5;
+        padding: 10px 15px;
+        background: #fff;
+        border-radius: 8px;
+        border: 1px solid #ddd;
     }
 
     .action-buttons {
         display: flex;
-        gap: 8px;
-        margin-top: 20px;
+        gap: 10px;
+        margin-top: 24px;
     }
 
     .btn {
-        padding: 8px 16px;
-        border-radius: 6px;
-        font-size: 14px;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 1rem;
         font-weight: 500;
         cursor: pointer;
         border: none;
@@ -102,8 +135,8 @@
     }
 
     .btn-edit:hover {
-        background-color: #424242;
-        color: #fff;
+        background-color: #e0e0e0;
+        transform: translateY(-1px);
     }
 
     .btn-delete {
@@ -114,19 +147,83 @@
     .btn-delete:hover {
         background-color: #bf2229;
         color: #fff;
+        transform: translateY(-1px);
+    }
+
+    .alert {
+        padding: 16px 20px;
+        border-radius: 8px;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideIn 0.3s ease-out;
+        opacity: 1;
+        transition: opacity 0.3s ease-out;
+    }
+
+    .alert.hide {
+        opacity: 0;
+    }
+
+    .alert-success {
+        background-color: #e8f5e9;
+        border: 1px solid #c8e6c9;
+        color: #2e7d32;
+    }
+
+    .alert-error {
+        background-color: #ffebee;
+        border: 1px solid #ffcdd2;
+        color: #c62828;
+    }
+
+    .alert-icon {
+        font-size: 24px;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateY(-10px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
     }
 </style>
 
 <div class="content-header">
-    <h1 class="content-title">FAQ Details</h1>
+    <h1 class="content-title">
+        <span class="material-icons">help_outline</span>
+        FAQ Details
+    </h1>
     <a href="{% url 'admin_faqs' %}" class="back-button">
         <span class="material-icons">arrow_back</span>
         Back to FAQs
     </a>
 </div>
 
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}" id="message-{{ forloop.counter }}">
+        <span class="material-icons alert-icon">
+            {% if message.tags == 'success' %}check_circle{% else %}error{% endif %}
+        </span>
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
 <div class="detail-card">
     <div class="detail-section">
+        <h2 class="section-title">
+            <span class="material-icons">help_outline</span>
+            FAQ Information
+        </h2>
         <div class="detail-label">Question</div>
         <div class="detail-value">{{ faq.question }}</div>
     </div>
@@ -147,4 +244,22 @@
         </a>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get all message elements
+    const messages = document.querySelectorAll('.alert');
+    
+    // Set timeout for each message
+    messages.forEach(message => {
+        setTimeout(() => {
+            message.style.opacity = '0';
+            message.style.transition = 'opacity 0.5s ease-out';
+            setTimeout(() => {
+                message.remove();
+            }, 500);
+        }, 5000); // 5 seconds
+    });
+});
+</script>
 {% endblock %} 
