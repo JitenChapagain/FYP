@@ -8,34 +8,41 @@
 {% block content %}
 <style>
     .content-header {
-        background: linear-gradient(135deg, #bf2229 0%, #d62731 100%);
-        padding: 30px;
+        background: #fff;
+        padding: 24px;
         border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        margin-bottom: 30px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        margin-bottom: 24px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        color: white;
     }
 
     .content-title {
-        color: white;
-        font-size: 1.8rem;
+        color: #A94442;
+        font-size: 28px;
         font-weight: 600;
         margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .content-title .material-icons {
+        color: #bf2229;
+        font-size: 32px;
     }
 
     .content-subtitle {
-        color: rgba(255,255,255,0.9);
+        color: #666;
         font-size: 1rem;
         margin-top: 8px;
     }
 
     .back-button {
-        background: rgba(255,255,255,0.2);
-        color: white;
-        border: 1px solid rgba(255,255,255,0.3);
+        background: #f5f5f5;
+        color: #000000;
+        border: none;
         padding: 10px 20px;
         border-radius: 8px;
         display: flex;
@@ -49,77 +56,76 @@
     }
 
     .back-button:hover {
-        background: rgba(255,255,255,0.3);
-        transform: translateY(-2px);
+        background: #e0e0e0;
+        color: #000000;
+        transform: translateY(-1px);
     }
 
     .detail-card {
         background: #fff;
+        padding: 24px;
         border-radius: 12px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        padding: 30px;
-        margin-top: 20px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
     }
 
     .detail-section {
-        margin-bottom: 30px;
-        padding-bottom: 30px;
-        border-bottom: 1px solid #eee;
+        margin-bottom: 24px;
+        padding: 24px;
+        background: #f8f9fa;
+        border-radius: 12px;
+        transition: all 0.3s ease;
     }
 
-    .detail-section:last-child {
-        margin-bottom: 0;
-        padding-bottom: 0;
-        border-bottom: none;
+    .detail-section:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+        transform: translateY(-2px);
+    }
+
+    .section-title {
+        color: white;
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 15px;
+        background-color: #bf2229;
+        border-radius: 6px;
+    }
+
+    .section-title .material-icons {
+        color: white;
     }
 
     .detail-label {
-        color: #666;
-        font-size: 14px;
+        color: #000000;
+        font-size: 0.9rem;
         font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: 12px;
+        margin-bottom: 8px;
     }
 
     .detail-value {
-        color: #333;
-        font-size: 16px;
-        line-height: 1.8;
-        white-space: pre-wrap;
-    }
-
-    .meta-info {
-        display: flex;
-        gap: 24px;
-        margin-top: 16px;
-    }
-
-    .meta-item {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        color: #666;
-        font-size: 14px;
-    }
-
-    .meta-item .material-icons {
-        font-size: 18px;
-        color: #999;
+        color: #000000;
+        font-size: 1rem;
+        line-height: 1.5;
+        padding: 10px 15px;
+        background: #fff;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        margin-bottom: 16px;
     }
 
     .action-buttons {
         display: flex;
-        gap: 12px;
-        margin-top: 30px;
-        padding-top: 30px;
-        border-top: 1px solid #eee;
+        gap: 10px;
+        margin-top: 24px;
     }
 
     .btn {
         padding: 10px 20px;
         border-radius: 8px;
-        font-size: 14px;
+        font-size: 1rem;
         font-weight: 500;
         cursor: pointer;
         border: none;
@@ -135,51 +141,52 @@
     }
 
     .btn-edit {
-        background: #bf2229;
-        color: white;
+        background-color: #f5f5f5;
+        color: #000000;
     }
 
     .btn-edit:hover {
-        background: #d62731;
-        transform: translateY(-2px);
+        background-color: #e0e0e0;
+        transform: translateY(-1px);
     }
 
     .btn-delete {
-        background: #ffebee;
+        background-color: #ffebee;
         color: #bf2229;
     }
 
     .btn-delete:hover {
-        background: #bf2229;
-        color: white;
-        transform: translateY(-2px);
+        background-color: #bf2229;
+        color: #fff;
+        transform: translateY(-1px);
     }
 
-    .status-badge {
-        display: inline-block;
-        padding: 6px 12px;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: 500;
-        margin-bottom: 16px;
-    }
-
-    .status-active {
-        background: #e8f5e9;
-        color: #2e7d32;
-    }
-
-    .status-draft {
-        background: #fff3e0;
-        color: #ef6c00;
+    @media (max-width: 768px) {
+        .detail-section {
+            padding: 16px;
+        }
+        .content-header {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+        .action-buttons {
+            width: 100%;
+            flex-wrap: wrap;
+        }
+        .btn {
+            flex: 1;
+            min-width: 120px;
+            justify-content: center;
+        }
     }
 </style>
 
 <div class="content-header">
-    <div>
-        <h1 class="content-title">About Rakta Sewa Details</h1>
-        <p class="content-subtitle">View and manage content details</p>
-    </div>
+    <h1 class="content-title">
+        <span class="material-icons">info</span>
+        About Rakta Sewa Details
+    </h1>
     <a href="{% url 'admin_about_raktasewa' %}" class="back-button">
         <span class="material-icons">arrow_back</span>
         Back to List
@@ -187,23 +194,16 @@
 </div>
 
 <div class="detail-card">
-    <span class="status-badge status-active">Active</span>
-    
     <div class="detail-section">
+        <h2 class="section-title">
+            <span class="material-icons">info</span>
+            About Content
+        </h2>
         <div class="detail-label">Content</div>
         <div class="detail-value">{{ about.content }}</div>
-        <div class="meta-info">
-            <div class="meta-item">
-                <span class="material-icons">schedule</span>
-                Last Updated: {{ about.updated_at|date:"M d, Y H:i" }}
-            </div>
-            <div class="meta-item">
-                <span class="material-icons">person</span>
-                Updated By: Admin
-            </div>
-        </div>
+        <div class="detail-label">Last Updated</div>
+        <div class="detail-value">{{ about.updated_at|date:"M d, Y H:i" }}</div>
     </div>
-
     <div class="action-buttons">
         <a href="{% url 'admin_about_raktasewa_edit' about.id %}" class="btn btn-edit">
             <span class="material-icons">edit</span>

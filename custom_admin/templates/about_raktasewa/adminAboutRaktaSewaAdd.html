@@ -8,34 +8,35 @@
 {% block content %}
 <style>
     .content-header {
-        background: linear-gradient(135deg, #bf2229 0%, #d62731 100%);
-        padding: 30px;
+        background: #fff;
+        padding: 24px;
         border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        margin-bottom: 30px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        margin-bottom: 24px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        color: white;
     }
 
     .content-title {
-        color: white;
-        font-size: 1.8rem;
+        color: #A94442;
+        font-size: 28px;
         font-weight: 600;
         margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
 
-    .content-subtitle {
-        color: rgba(255,255,255,0.9);
-        font-size: 1rem;
-        margin-top: 8px;
+    .content-title .material-icons {
+        color: #bf2229;
+        font-size: 32px;
     }
 
     .back-button {
-        background: rgba(255,255,255,0.2);
-        color: white;
-        border: 1px solid rgba(255,255,255,0.3);
+        background: #f5f5f5;
+        color: #000000;
+        border: none;
         padding: 10px 20px;
         border-radius: 8px;
         display: flex;
@@ -49,48 +50,74 @@
     }
 
     .back-button:hover {
-        background: rgba(255,255,255,0.3);
-        transform: translateY(-2px);
+        background: #e0e0e0;
+        color: #000000;
+        transform: translateY(-1px);
     }
 
     .form-card {
         background: #fff;
+        padding: 24px;
         border-radius: 12px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        padding: 30px;
-        margin-top: 20px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+    }
+
+    .form-section {
+        margin-bottom: 24px;
+        padding: 24px;
+        background: #f8f9fa;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .form-section:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+        transform: translateY(-2px);
+    }
+
+    .section-title {
+        color: white;
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 15px;
+        background-color: #bf2229;
+        border-radius: 6px;
+    }
+
+    .section-title .material-icons {
+        color: white;
     }
 
     .form-group {
-        margin-bottom: 30px;
+        margin-bottom: 20px;
     }
 
     .form-label {
         display: block;
-        color: #333;
-        font-size: 14px;
+        color: #000000;
+        font-size: 0.9rem;
         font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: 12px;
+        margin-bottom: 8px;
     }
 
     .form-control {
         width: 100%;
-        padding: 12px 16px;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        font-size: 15px;
-        line-height: 1.5;
-        transition: all 0.3s ease;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: border-color 0.3s ease;
         background-color: #fafafa;
     }
 
     .form-control:focus {
         outline: none;
         border-color: #bf2229;
-        background-color: #fff;
-        box-shadow: 0 0 0 3px rgba(191, 34, 41, 0.1);
+        background: #fff;
     }
 
     .form-textarea {
@@ -100,23 +127,25 @@
 
     .form-actions {
         display: flex;
+        justify-content: flex-end;
         gap: 12px;
-        margin-top: 30px;
-        padding-top: 30px;
-        border-top: 1px solid #eee;
+        margin-top: 24px;
+        padding-top: 0;
+        border-top: none;
     }
 
     .btn {
-        padding: 12px 24px;
+        padding: 10px 20px;
         border-radius: 8px;
-        font-size: 14px;
+        font-size: 1rem;
         font-weight: 500;
         cursor: pointer;
+        border: none;
         display: flex;
         align-items: center;
         gap: 8px;
         transition: all 0.3s ease;
-        border: none;
+        text-decoration: none;
     }
 
     .btn .material-icons {
@@ -129,18 +158,20 @@
     }
 
     .btn-submit:hover {
-        background: #d62731;
-        transform: translateY(-2px);
+        background: #a94442;
+        color: #fff;
+        transform: translateY(-1px);
     }
 
     .btn-cancel {
         background: #f5f5f5;
-        color: #666;
+        color: #000000;
     }
 
     .btn-cancel:hover {
         background: #e0e0e0;
-        transform: translateY(-2px);
+        color: #000000;
+        transform: translateY(-1px);
     }
 
     .error-message {
@@ -187,10 +218,10 @@
 </style>
 
 <div class="content-header">
-    <div>
-        <h1 class="content-title">Add About Rakta Sewa Content</h1>
-        <p class="content-subtitle">Create new content for your organization</p>
-    </div>
+    <h1 class="content-title">
+        <span class="material-icons">add_circle</span>
+        Add About Rakta Sewa Content
+    </h1>
     <a href="{% url 'admin_about_raktasewa' %}" class="back-button">
         <span class="material-icons">arrow_back</span>
         Back to List
@@ -198,38 +229,42 @@
 </div>
 
 <div class="form-card">
-    <form method="post" enctype="multipart/form-data" id="aboutForm">
-        {% csrf_token %}
-        
-        <div class="form-group">
-            <label class="form-label" for="content">Content</label>
-            <textarea id="content" name="content" class="form-control form-textarea" required 
-                      placeholder="Enter your organization's information here..."
-                      maxlength="2000"></textarea>
-            <div class="character-count" id="charCount">0/2000 characters</div>
-            {% if form.content.errors %}
-                <div class="error-message">
-                    <span class="material-icons">error</span>
-                    {{ form.content.errors }}
+    <div class="form-section">
+        <h2 class="section-title">
+            <span class="material-icons">info</span>
+            About Content
+        </h2>
+        <form method="post" enctype="multipart/form-data" id="aboutForm">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label" for="content">Content</label>
+                <textarea id="content" name="content" class="form-control form-textarea" required 
+                          placeholder="Enter your organization's information here..."
+                          maxlength="2000"></textarea>
+                <div class="character-count" id="charCount">0/2000 characters</div>
+                {% if form.content.errors %}
+                    <div class="error-message">
+                        <span class="material-icons">error</span>
+                        {{ form.content.errors }}
+                    </div>
+                {% endif %}
+                <div class="form-hint">
+                    <span class="material-icons">info</span>
+                    Provide detailed information about your organization, mission, and values
                 </div>
-            {% endif %}
-            <div class="form-hint">
-                <span class="material-icons">info</span>
-                Provide detailed information about your organization, mission, and values
             </div>
-        </div>
-
-        <div class="form-actions">
-            <button type="submit" class="btn btn-submit">
-                <span class="material-icons">save</span>
-                Save Content
-            </button>
-            <a href="{% url 'admin_about_raktasewa' %}" class="btn btn-cancel">
-                <span class="material-icons">close</span>
-                Cancel
-            </a>
-        </div>
-    </form>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-submit">
+                    <span class="material-icons">save</span>
+                    Save Content
+                </button>
+                <a href="{% url 'admin_about_raktasewa' %}" class="btn btn-cancel">
+                    <span class="material-icons">close</span>
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
 </div>
 
 <script>

@@ -8,34 +8,41 @@
 {% block content %}
 <style>
     .content-header {
-        background: linear-gradient(135deg, #bf2229 0%, #d62731 100%);
-        padding: 30px;
+        background: #fff;
+        padding: 24px;
         border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        margin-bottom: 30px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        margin-bottom: 24px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        color: white;
     }
 
     .content-title {
-        color: white;
-        font-size: 1.8rem;
+        color: #A94442;
+        font-size: 28px;
         font-weight: 600;
         margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .content-title .material-icons {
+        color: #bf2229;
+        font-size: 32px;
     }
 
     .content-subtitle {
-        color: rgba(255,255,255,0.9);
+        color: #666;
         font-size: 1rem;
         margin-top: 8px;
     }
 
     .add-button {
-        background: rgba(255,255,255,0.2);
+        background: #bf2229;
         color: white;
-        border: 1px solid rgba(255,255,255,0.3);
+        border: none;
         padding: 10px 20px;
         border-radius: 8px;
         display: flex;
@@ -46,11 +53,13 @@
         text-decoration: none;
         font-size: 14px;
         font-weight: 500;
+        box-shadow: 0 2px 4px rgba(191, 34, 41, 0.2);
     }
 
     .add-button:hover {
-        background: rgba(255,255,255,0.3);
-        transform: translateY(-2px);
+        background: #a94442;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(191, 34, 41, 0.3);
     }
 
     .search-filter {
@@ -82,41 +91,70 @@
     .about-table {
         background: #fff;
         border-radius: 12px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
         overflow: hidden;
-        margin-top: 20px;
+        margin-top: 24px;
+        border: 1px solid #eee;
+    }
+
+    .section-title {
+        color: white;
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 15px;
+        background-color: #bf2229;
+        border-radius: 6px;
+    }
+
+    .section-title .material-icons {
+        color: white;
     }
 
     .table {
         width: 100%;
-        border-collapse: separate;
+        border-collapse: collapse;
         border-spacing: 0;
+        font-size: 14px;
     }
 
     .table th {
-        background: #f8f9fa;
-        padding: 16px;
+        background: #bf2229;
+        padding: 12px 16px;
         text-align: left;
         font-weight: 600;
-        color: #333;
-        border-bottom: 2px solid #e9ecef;
+        color: #ffffff;
+        border: none;
+        white-space: nowrap;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
     .table td {
         padding: 16px;
         border-bottom: 1px solid #eee;
-        color: #333;
+        color: #000000;
         vertical-align: top;
+        background: #fff;
+        line-height: 1.5;
     }
 
-    .table tbody tr:hover {
+    .table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .table tbody tr:hover td {
         background-color: #f8f9fa;
     }
 
     .content-preview {
         max-width: 400px;
         line-height: 1.5;
-        color: #666;
+        color: #000 !important;
     }
 
     .status-badge {
@@ -214,34 +252,102 @@
         font-size: 14px;
         color: #999;
     }
+
+    /* Search and Filter Section */
+    .search-box {
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    .search-control {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 280px;
+    }
+    .search-input {
+        padding: 8px 36px 8px 36px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 15px;
+        width: 100%;
+        color: #000000;
+        background: #fafafa;
+        transition: border 0.2s;
+    }
+    .search-input:focus {
+        outline: none;
+        border-color: #a94442;
+        background: #fff;
+    }
+    .search-icon {
+        position: absolute;
+        left: 10px;
+        color: #a94442;
+        font-size: 22px;
+        pointer-events: none;
+        z-index: 2;
+    }
+    .clear-search {
+        position: absolute;
+        right: 8px;
+        background: none;
+        border: none;
+        color: #a94442;
+        font-size: 20px;
+        cursor: pointer;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 3;
+        padding: 0;
+    }
+    .clear-search.visible {
+        display: flex;
+    }
+    .no-results {
+        text-align: center;
+        padding: 20px;
+        color: #666;
+        font-style: italic;
+    }
 </style>
 
 <div class="content-header">
-    <div>
-        <h1 class="content-title">About Rakta Sewa</h1>
-        <p class="content-subtitle">Manage your organization's information and mission statement</p>
-    </div>
+    <h1 class="content-title">
+        <span class="material-icons">info</span>
+        About Rakta Sewa
+    </h1>
     <a href="{% url 'admin_about_raktasewa_add' %}" class="add-button">
         <span class="material-icons">add</span>
         Add New Content
     </a>
 </div>
 
-<div class="search-filter">
-    <input type="text" class="search-input" placeholder="Search content..." id="searchInput">
-    <select class="search-input" style="width: 150px;">
-        <option value="">All Status</option>
-        <option value="active">Active</option>
-        <option value="draft">Draft</option>
-    </select>
-</div>
+<form class="search-box" onsubmit="return false;">
+    <div class="search-control">
+        <span class="material-icons search-icon">search</span>
+        <input type="text" 
+               class="search-input" 
+               placeholder="Search about content..." 
+               autocomplete="off">
+        <button type="button" id="clearSearch" class="clear-search" onclick="clearSearch()">
+            <span class="material-icons">close</span>
+        </button>
+    </div>
+</form>
 
 <div class="about-table">
     <table class="table">
         <thead>
             <tr>
+                <th style="width: 60px;">S.No</th>
                 <th>Content</th>
-                <th>Status</th>
                 <th>Last Updated</th>
                 <th>Actions</th>
             </tr>
@@ -249,11 +355,9 @@
         <tbody>
             {% for about in about_contents %}
             <tr>
+                <td class="serial-number">{{ forloop.counter }}</td>
                 <td>
                     <div class="content-preview">{{ about.content|truncatechars:100 }}</div>
-                </td>
-                <td>
-                    <span class="status-badge status-active">Active</span>
                 </td>
                 <td>{{ about.updated_at|date:"M d, Y" }}</td>
                 <td>
@@ -276,10 +380,8 @@
             {% empty %}
             <tr>
                 <td colspan="4">
-                    <div class="empty-state">
-                        <span class="material-icons">description</span>
-                        <div class="empty-state-text">No content available</div>
-                        <div class="empty-state-subtext">Click the "Add New Content" button to create your first entry</div>
+                    <div class="no-results">
+                        No about content available
                     </div>
                 </td>
             </tr>
@@ -289,18 +391,65 @@
 </div>
 
 <script>
-    document.getElementById('searchInput').addEventListener('input', function(e) {
-        const searchText = e.target.value.toLowerCase();
-        const rows = document.querySelectorAll('.table tbody tr');
-        
-        rows.forEach(row => {
-            const content = row.querySelector('.content-preview').textContent.toLowerCase();
-            if (content.includes(searchText)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
+// Search functionality
+function filterTable() {
+    const searchInput = document.querySelector('.search-input');
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    const clearButton = document.getElementById('clearSearch');
+    const tableBody = document.querySelector('.table tbody');
+    const tableRows = tableBody.querySelectorAll('tr');
+    const noResults = document.querySelector('.no-results');
+    let visibleCount = 0;
+    let serial = 1;
+
+    // Show/hide clear button based on input value
+    if (searchTerm) {
+        clearButton.classList.add('visible');
+    } else {
+        clearButton.classList.remove('visible');
+    }
+
+    tableRows.forEach(row => {
+        const contentCell = row.querySelector('.content-preview');
+        const serialCell = row.querySelector('.serial-number');
+        if (!contentCell || !serialCell) return;
+        const contentText = contentCell.textContent.toLowerCase();
+
+        if (contentText.includes(searchTerm)) {
+            row.style.display = '';
+            serialCell.textContent = serial;
+            serial++;
+            visibleCount++;
+        } else {
+            row.style.display = 'none';
+        }
     });
+
+    // Show/hide no results message
+    if (visibleCount === 0) {
+        noResults.style.display = 'block';
+    } else {
+        noResults.style.display = 'none';
+    }
+}
+
+// Add event listener for search input
+const searchInputElem = document.querySelector('.search-input');
+searchInputElem.addEventListener('input', filterTable);
+searchInputElem.addEventListener('focus', filterTable);
+
+// Ensure clear button works on click (in addition to inline onclick)
+document.getElementById('clearSearch').addEventListener('click', function(e) {
+    e.preventDefault();
+    clearSearch();
+});
+
+// Clear search functionality
+function clearSearch() {
+    const searchInput = document.querySelector('.search-input');
+    searchInput.value = '';
+    filterTable();
+    searchInput.focus();
+}
 </script>
 {% endblock %} 
