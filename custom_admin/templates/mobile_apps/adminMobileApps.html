@@ -19,9 +19,11 @@
     }
 
     .content-title {
-        color: #333;
-        font-size: 1.5rem;
-        font-weight: 600;
+        color: #a94442;
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        margin: 0;
     }
 
     .add-button {
@@ -162,28 +164,51 @@
         position: relative;
         display: flex;
         align-items: center;
+        width: 280px;
     }
 
     .search-input {
-        padding: 6px 12px;
-        padding-right: 32px;
+        padding: 8px 36px 8px 36px;
         border: 1px solid #ddd;
         border-radius: 4px;
-        font-size: 14px;
-        width: 250px;
+        font-size: 15px;
+        width: 100%;
         color: #000000;
+        background: #fafafa;
+        transition: border 0.2s;
     }
 
     .search-input:focus {
         outline: none;
-        border-color: #bf2229;
+        border-color: #a94442;
+        background: #fff;
     }
 
     .search-icon {
         position: absolute;
+        left: 10px;
+        color: #a94442;
+        font-size: 22px;
+        pointer-events: none;
+        z-index: 2;
+    }
+
+    .clear-search {
+        position: absolute;
         right: 8px;
-        color: #666;
+        background: none;
+        border: none;
+        color: #a94442;
         font-size: 20px;
+        cursor: pointer;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 3;
+        padding: 0;
+    }
+    .clear-search.visible {
+        display: flex;
     }
 
     .no-results {
@@ -332,6 +357,7 @@
 
 <form class="search-box" onsubmit="return false;">
     <div class="search-control">
+        <span class="material-icons search-icon">search</span>
         <input type="text" 
                class="search-input" 
                placeholder="Search mobile apps..." 
@@ -339,7 +365,6 @@
         <button type="button" id="clearSearch" class="clear-search" onclick="clearSearch()">
             <span class="material-icons">close</span>
         </button>
-        <span class="material-icons search-icon">search</span>
     </div>
 </form>
 
@@ -439,9 +464,14 @@ function filterTable() {
     const tableRows = tableBody.querySelectorAll('tr');
     const noResults = document.querySelector('.no-results');
     let visibleCount = 0;
+    let serial = 1;
 
     // Show/hide clear button based on input value
-    clearButton.style.display = searchTerm ? 'flex' : 'none';
+    if (searchTerm) {
+        clearButton.classList.add('visible');
+    } else {
+        clearButton.classList.remove('visible');
+    }
 
     tableRows.forEach(row => {
         const nameCell = row.querySelector('td:nth-child(2)');
@@ -451,6 +481,8 @@ function filterTable() {
 
         if (nameText.includes(searchTerm) || descriptionText.includes(searchTerm)) {
             row.style.display = '';
+            row.querySelector('td:nth-child(1)').textContent = serial;
+            serial++;
             visibleCount++;
         } else {
             row.style.display = 'none';
@@ -466,13 +498,22 @@ function filterTable() {
 }
 
 // Add event listener for search input
-document.querySelector('.search-input').addEventListener('input', filterTable);
+const searchInputElem = document.querySelector('.search-input');
+searchInputElem.addEventListener('input', filterTable);
+searchInputElem.addEventListener('focus', filterTable);
+
+// Ensure clear button works on click (in addition to inline onclick)
+document.getElementById('clearSearch').addEventListener('click', function(e) {
+    e.preventDefault();
+    clearSearch();
+});
 
 // Clear search functionality
 function clearSearch() {
     const searchInput = document.querySelector('.search-input');
     searchInput.value = '';
     filterTable();
+    searchInput.focus();
 }
 
 // Add message auto-dismissal
