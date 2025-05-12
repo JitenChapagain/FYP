@@ -46,4 +46,4 @@ If you use Python 3.13+, you will get errors like `ModuleNotFoundError: No modul
 
 ## Troubleshooting
 - If you see `ModuleNotFoundError: No module named 'cgi'`, you are using Python 3.13+. Downgrade to Python 3.12 or lower.
-- If you need help, contact the project maintainer. 
+- If you need help, contact the project maintainer. .....
