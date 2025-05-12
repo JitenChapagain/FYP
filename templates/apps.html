@@ -3,28 +3,63 @@
 {% block title %}Mobile Apps{% endblock %}
 {% block content %}
 <div class="container my-5">
-  <h2 class="mb-4">Mobile Apps</h2>
-  <div class="table-responsive">
-    <table class="table table-striped table-hover shadow-sm">
-      <thead class="table-danger">
-        <tr>
-          <th>Name</th>
-          <th>Description</th>
-          <th>Download</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for app in apps %}
-        <tr>
-          <td>{{ app.name }}</td>
-          <td>{{ app.description }}</td>
-          <td><a href="{{ app.download_link }}" class="btn btn-outline-danger btn-sm" target="_blank">Download</a></td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="3" class="text-center">No mobile apps available yet.</td></tr>
-        {% endfor %}
-      </tbody>
-    </table>
+  <div class="text-center mb-5">
+    <span class="display-5 text-danger"><i class="bi bi-phone-vibrate"></i></span>
+    <h2 class="fw-bold">Mobile Apps</h2>
+    <p class="text-muted mb-0">Access RaktaSewa on the go! Download our official mobile apps for a seamless experience.</p>
+  </div>
+  <div class="row g-4">
+    {% for app in apps %}
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card h-100 shadow-sm border-0 app-card">
+        <div class="card-body d-flex flex-column align-items-center text-center">
+          {% if app.icon_url %}
+            <img src="{{ app.icon_url }}" alt="{{ app.name }} icon" class="mb-3 rounded app-icon" style="width:64px;height:64px;object-fit:cover;">
+          {% else %}
+            <div class="mb-3 d-flex align-items-center justify-content-center app-placeholder" style="width:64px;height:64px;background:#f8f9fa;border-radius:12px;">
+              <i class="bi bi-app-indicator text-danger fs-1"></i>
+            </div>
+          {% endif %}
+          <h5 class="fw-bold mb-2">{{ app.name }}</h5>
+          <p class="text-muted small flex-grow-1">{{ app.description }}</p>
+          {% if app.platforms %}
+          <div class="mb-2">
+            {% for platform in app.platforms %}
+              {% if platform == 'android' %}
+                <span class="badge bg-success me-1"><i class="bi bi-android2"></i> Android</span>
+              {% elif platform == 'ios' %}
+                <span class="badge bg-primary"><i class="bi bi-apple"></i> iOS</span>
+              {% endif %}
+            {% endfor %}
+          </div>
+          {% endif %}
+          <a href="{{ app.download_link }}" class="btn btn-danger w-100 mt-2" target="_blank"><i class="bi bi-download me-1"></i>Download</a>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5">
+      <img src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png" alt="No Apps" width="120" class="mb-3 opacity-50">
+      <h5 class="text-muted">No mobile apps available yet.</h5>
+      <p class="text-secondary">Stay tuned for our upcoming mobile applications!</p>
+    </div>
+    {% endfor %}
   </div>
 </div>
+<style>
+.app-icon {
+  box-shadow: 0 2px 12px rgba(191,34,41,0.10);
+  background: #fff;
+}
+.app-placeholder {
+  box-shadow: 0 2px 12px rgba(191,34,41,0.07);
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+.app-card:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 8px 32px rgba(191,34,41,0.18);
+  transition: 0.18s;
+}
+</style>
 {% endblock %}

@@ -6,36 +6,64 @@
 {% endblock %}
 {% block content %}
 <div class="container my-5">
-    <div class="card shadow-sm">
-        <div class="card-header bg-danger text-white">
-            <h3 class="mb-0">Blood Stock List</h3>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Blood Group</th>
-                            <th>Units Available</th>
-                            <th>Last Updated</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for stock in blood_stock %}
-                        <tr>
-                            <td>{{ stock.blood_group }}</td>
-                            <td>{{ stock.units }} units</td>
-                            <td>{{ stock.last_updated|date:"M d, Y H:i" }}</td>
-                            <td>
-                                <a href="{% url 'update_blood_group' stock.blood_group %}" class="btn btn-sm btn-danger">Update</a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+  <!-- Hero Header -->
+  <div class="text-center mb-5">
+    <span class="d-inline-block mb-3">
+      <i class="bi bi-droplet-fill text-danger" style="font-size:3rem;"></i>
+    </span>
+    <h2 class="fw-bold">Blood Stock List</h2>
+    <p class="text-muted mb-0">Overview of all available blood stock and recent updates.</p>
+  </div>
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-danger text-white d-flex align-items-center">
+      <i class="bi bi-droplet-half me-2 fs-4"></i>
+      <h3 class="mb-0 fw-bold">Blood Stock</h3>
     </div>
+    <div class="card-body">
+      {% if blood_stock %}
+      <div class="table-responsive">
+        <table class="table align-middle table-hover mb-0">
+          <thead class="table-danger">
+            <tr>
+              <th>Blood Group</th>
+              <th>Units</th>
+              <th>Last Updated</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for stock in blood_stock %}
+            <tr>
+              <td>
+                <span class="badge bg-danger fs-6 px-3 py-2"><i class="bi bi-droplet me-1"></i>{{ stock.blood_group }}</span>
+              </td>
+              <td>
+                {% if stock.units <= 5 %}
+                  <span class="badge bg-warning text-dark px-3 py-2"><i class="bi bi-exclamation-circle me-1"></i>{{ stock.units }} units</span>
+                {% else %}
+                  <span class="badge bg-success px-3 py-2"><i class="bi bi-check-circle me-1"></i>{{ stock.units }} units</span>
+                {% endif %}
+              </td>
+              <td class="text-muted">{{ stock.last_updated|date:"M d, Y H:i" }}</td>
+              <td>
+                <a href="{% url 'update_blood_group' stock.blood_group %}" class="btn btn-outline-danger btn-sm"><i class="bi bi-pencil-square me-1"></i>Update</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="text-center py-5">
+        <i class="bi bi-emoji-frown text-secondary fs-1 mb-2"></i>
+        <h5 class="text-muted">No blood stock data available.</h5>
+        <p class="text-secondary">Please update the blood stock to get started.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
 </div>
+<style>
+.table th, .table td { vertical-align: middle !important; }
+</style>
 {% endblock %}

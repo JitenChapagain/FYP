@@ -156,10 +156,15 @@
 
 {% block content %}
 <div class="container" style="margin-top: 1rem;">
-    <h2 style="color: #a94442; font-size: 24px; font-family: 'Montserrat', sans-serif;">Blood Bank Directory</h2>
-    
-    <!-- Search Form Card -->
-    <div class="card search-card">
+    <div class="text-center mb-4">
+    <span class="d-inline-block mb-2">
+      <i class="bi bi-hospital-fill text-danger" style="font-size:2.2rem;"></i>
+    </span>
+    <h2 class="fw-bold" style="color:#a94442;">Blood Bank Directory</h2>
+    <p class="text-muted mb-0">Find and connect with blood banks across Nepal.</p>
+  </div>
+  <!-- Search Form Card -->
+  <div class="card search-card shadow-sm border-0 mb-4">
         <div class="card-header">
             <h5 class="mb-0">Search Blood Bank</h5>
         </div>
@@ -217,16 +222,15 @@
                 </div>
             </div>
             <div class="table-responsive">
-                <table class="table">
-                    <thead>
+                <table class="table table-hover align-middle mb-0 shadow-sm">
+                    <thead class="table-danger">
                         <tr>
-                            <th>S.No</th>
-                            <th>Name</th>
-                            <th>Address</th>
-                            <th>Phone</th>
-                            <th>Email</th>
-                            <th>Category</th>
-                            <th>Type</th>
+                            <th>#</th>
+                            <th>Blood Bank Name</th>
+                            <th>Location</th>
+                            <th>Contact</th>
+                            <th>Blood Groups</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -234,30 +238,23 @@
                             {% for bloodbank in bloodbanks %}
                             <tr class="clickable-row" data-url="{% url 'bloodbank_detail' bloodbank.id %}">
                                 <td>{{ forloop.counter }}</td>
-                                <td>
-                                    <div class="blood-bank-name">{{ bloodbank.blood_bank_name }}</div>
+                                <td class="fw-bold">
+                                    <i class="bi bi-hospital text-danger me-1"></i>{{ bloodbank.blood_bank_name }}
                                 </td>
                                 <td>
-                                    <div class="blood-bank-address">
-                                        {{ bloodbank.address }}, {{ bloodbank.district }}, {{ bloodbank.province }}
-                                    </div>
+                                    <i class="bi bi-geo-alt-fill text-secondary me-1"></i>{{ bloodbank.city }}, {{ bloodbank.district }}
                                 </td>
                                 <td>
-                                    <div class="blood-bank-contact">
-                                        {{ bloodbank.contact_no }}
-                                    </div>
+                                    <i class="bi bi-person-fill text-secondary me-1"></i>{{ bloodbank.contact_person }}<br>
+                                    <i class="bi bi-telephone-fill text-secondary me-1"></i>{{ bloodbank.phone }}
                                 </td>
                                 <td>
-                                    <div class="blood-bank-contact">
-                                        {{ bloodbank.email|default:"-" }}
-                                    </div>
+                                    {% for group in bloodbank.blood_groups %}
+                                        <span class="badge bg-danger me-1 mb-1"><i class="bi bi-droplet me-1"></i>{{ group }}</span>
+                                    {% endfor %}
                                 </td>
-                                <td>{{ bloodbank.category }}</td>
                                 <td>
-                                    {% if bloodbank.donor_voluntary %}<span class="badge bg-success me-2">Voluntary</span>{% endif %}
-                                    {% if bloodbank.donor_replacement %}<span class="badge bg-info me-2">Replacement</span>{% endif %}
-                                    {% if bloodbank.donor_directed %}<span class="badge bg-primary me-2">Directed</span>{% endif %}
-                                    {% if bloodbank.donor_autologous %}<span class="badge bg-warning">Autologous</span>{% endif %}
+                                    <a href="{% url 'bloodbank_detail' bloodbank.id %}" class="btn btn-outline-danger btn-sm"><i class="bi bi-eye me-1"></i>View</a>
                                 </td>
                             </tr>
                             {% empty %}
