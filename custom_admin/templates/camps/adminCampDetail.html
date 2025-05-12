@@ -342,7 +342,7 @@
         <div class="info-grid">
             <div class="info-card">
                 <div class="info-label">Schedule Date</div>
-                <div class="info-value {% if camp.schedule_date|date:'Y-m-d' < now|date:'Y-m-d' %}date-passed{% else %}date-upcoming{% endif %}">
+                <div class="info-value" style="color: #000;">
                     {{ camp.schedule_date|date:"F d, Y" }}
                 </div>
             </div>

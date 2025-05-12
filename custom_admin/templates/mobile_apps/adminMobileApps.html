@@ -329,6 +329,12 @@
     .alert-close:hover {
         opacity: 0.8;
     }
+
+    #deleteForm {
+        display: flex;
+        flex-direction: row;
+        gap: 12px;
+    }
 </style>
 
 {% if messages %}
@@ -397,7 +403,7 @@
                             <span class="material-icons">edit</span>
                             Edit
                         </a>
-                        <button class="btn btn-delete" onclick="showDeleteModal('{{ app.pk }}')">
+                        <button class="btn btn-delete" data-delete-url="{% url 'admin_mobile_app_delete' app.pk %}" onclick="showDeleteModal(this)">
                             <span class="material-icons">delete</span>
                             Delete
                         </button>
@@ -435,10 +441,10 @@
 </div>
 
 <script>
-function showDeleteModal(appId) {
+function showDeleteModal(button) {
     const modal = document.getElementById('deleteModal');
     const form = document.getElementById('deleteForm');
-    form.action = `/admin/mobile-apps/delete/${appId}/`;
+    form.action = button.getAttribute('data-delete-url');
     modal.style.display = 'block';
 }
 

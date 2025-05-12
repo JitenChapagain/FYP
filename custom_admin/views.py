@@ -547,8 +547,7 @@ def admin_about_raktasewa_edit(request, about_id):
     about = get_object_or_404(AboutRaktaSewa, id=about_id)
     
     if request.method == 'POST':
-        about.title = request.POST.get('title')
-        about.description = request.POST.get('description')
+        about.content = request.POST.get('content')
         about.save()
         
         messages.success(request, 'About content updated successfully!')
@@ -827,7 +826,7 @@ def admin_mobile_app_add(request):
             download_link=download_link
         )
         messages.success(request, 'Mobile app added successfully!')
-        return redirect('admin_mobile_app_detail', pk=mobile_app.id)
+        return redirect('admin_mobile_apps')
     
     return render(request, 'mobile_apps/adminMobileAppAdd.html')
 
@@ -850,7 +849,7 @@ def admin_mobile_app_edit(request, pk):
         mobile_app.save()
         
         messages.success(request, 'Mobile app updated successfully!')
-        return redirect('admin_mobile_app_detail', pk=mobile_app.id)
+        return redirect('admin_mobile_apps')
     
     context = {
         'mobile_app': mobile_app
