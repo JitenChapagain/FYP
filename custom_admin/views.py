@@ -410,6 +410,9 @@ def admin_blood_stocks(request):
     # Get all blood stocks with their blood banks
     blood_stocks = BloodStock.objects.select_related('bloodbank').all().order_by('-last_updated')
     
+    # Get all blood banks for the dropdown
+    blood_banks = BloodBankRegistration.objects.all().order_by('blood_bank_name')
+
     # Search functionality
     search_query = request.GET.get('search', '').strip()
     if search_query:
@@ -435,6 +438,7 @@ def admin_blood_stocks(request):
         'entries': entries_per_page,
         'filtered_count': blood_stocks.count(),
         'is_filtered': bool(search_query),
+        'blood_banks': blood_banks,
     }
     return render(request, 'blood_stocks/adminBloodStocks.html', context)
 
