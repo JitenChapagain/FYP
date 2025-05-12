@@ -3,12 +3,74 @@
 {% block title %}About RaktaSewa{% endblock %}
 {% block content %}
 <div class="container my-5">
-  <h2 class="mb-4">About RaktaSewa</h2>
-  <div class="card shadow-sm">
-    <div class="card-body">
-      {{ about.content|linebreaks }}
-      <div class="text-muted small mt-3">Last updated: {{ about.updated_at|date:"F j, Y, g:i a" }}</div>
+  <!-- Hero/Header -->
+  <div class="text-center mb-5">
+    <span class="mb-3 d-inline-block" style="width:72px;height:72px;">
+      <i class="bi bi-droplet-fill text-danger" style="font-size:64px;"></i>
+    </span>
+    <h2 class="fw-bold">About RaktaSewa</h2>
+    <p class="lead text-muted">Saving lives, one drop at a time. RaktaSewa is Nepal's modern blood bank management system, connecting donors and recipients for a healthier tomorrow.</p>
+  </div>
+  <div class="row g-4 align-items-start">
+    <!-- Main Content -->
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body">
+          <h4 class="mb-3 text-danger"><i class="bi bi-droplet-half me-2"></i>Who We Are</h4>
+          {{ about.content|linebreaks }}
+        
+        </div>
+      </div>
+    </div>
+    <!-- Sidebar: Mission, Vision, Quick Facts -->
+    <div class="col-lg-4">
+      <div class="card mb-4 shadow-sm border-0">
+        <div class="card-body">
+          <h5 class="text-danger"><i class="bi bi-bullseye me-2"></i>Our Mission</h5>
+          <p class="mb-2">To ensure safe, timely, and accessible blood donation and transfusion services across Nepal.</p>
+          <h5 class="text-danger mt-4"><i class="bi bi-eye me-2"></i>Our Vision</h5>
+          <p class="mb-2">A nation where no life is lost due to lack of blood.</p>
+        </div>
+      </div>
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <h6 class="text-danger"><i class="bi bi-info-circle me-1"></i>Quick Facts</h6>
+          <ul class="list-unstyled mb-0">
+            <li><i class="bi bi-people me-2"></i>10,000+ donors registered</li>
+            <li><i class="bi bi-hospital me-2"></i>100+ hospitals partnered</li>
+            <li><i class="bi bi-geo me-2"></i>Serving all provinces</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Team Section: About JASA -->
+  <div class="my-5">
+    <h4 class="fw-bold text-center mb-4 text-danger"><i class="bi bi-people-fill me-2"></i>About Our Team: JASA</h4>
+    <div class="card border-0 shadow-sm p-4 mx-auto" style="max-width:900px;">
+      <div class="card-body">
+        <p class="lead mb-3">
+          <strong>JASA</strong> is more than just a team—it's a passionate collective of innovators, dreamers, and doers dedicated to transforming blood donation and healthcare in Nepal. Our name stands for <strong>J</strong>oint <strong>A</strong>ction for <strong>S</strong>ocial <strong>A</strong>dvancement, and our mission is to create life-saving solutions that are accessible, reliable, and impactful.
+        </p>
+        <p>
+          United by a shared vision, the JASA team brings together diverse expertise in technology, medicine, community outreach, and design. We believe in the power of collaboration and empathy, working hand-in-hand to build platforms like RaktaSewa that bridge the gap between donors and those in need. Every member of JASA is committed to upholding the highest standards of integrity, compassion, and service.
+        </p>
+        <p>
+          Our journey began with a simple question: How can we ensure that no life is lost due to a lack of blood? Driven by this purpose, we've harnessed the latest technologies, fostered partnerships with hospitals and organizations, and engaged with communities across Nepal. Each project we undertake is guided by our core values—innovation, transparency, and a relentless pursuit of excellence.
+        </p>
+        <p>
+          At JASA, we celebrate diversity and inclusion, recognizing that our strength lies in the unique perspectives and talents of our team members. We are proud of our achievements, but even prouder of the lives we touch and the hope we inspire. Together, we are not just building software; we are building a movement for a healthier, more connected Nepal.
+        </p>
+        <p class="mb-0">
+          Thank you for supporting JASA and RaktaSewa. We invite you to join us on this journey—whether as a donor, volunteer, partner, or advocate. Together, we can make a difference, one drop at a time.
+        </p>
+      </div>
     </div>
   </div>
 </div>
+<style>
+.card {
+  border-radius: 1rem;
+}
+</style>
 {% endblock %}

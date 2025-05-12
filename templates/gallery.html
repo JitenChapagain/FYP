@@ -4,21 +4,142 @@
 {% block content %}
 <div class="container my-5">
   <h2 class="mb-4">Gallery</h2>
+  <!-- Gallery Stats -->
+  <div class="mb-3 d-flex flex-wrap align-items-center justify-content-between">
+    <div class="fw-bold text-danger">
+      <i class="bi bi-images me-1"></i> Total Images: {{ images|length }}
+    </div>
+    <div class="text-muted small">
+      {% if gallery_categories %}
+        Categories:
+        {% for cat in gallery_categories %}
+          <span class="badge bg-secondary me-1">{{ cat }}</span>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+  <!-- Filter Bar (UI only) -->
+  <div class="mb-4">
+    <div class="input-group">
+      <span class="input-group-text"><i class="bi bi-funnel"></i></span>
+      <select class="form-select" id="galleryCategoryFilter">
+        <option value="">All Categories</option>
+        {% if gallery_categories %}
+          {% for cat in gallery_categories %}
+            <option value="{{ cat }}">{{ cat }}</option>
+          {% endfor %}
+        {% endif %}
+      </select>
+      <input type="text" class="form-control" placeholder="Search images... (UI only)" id="gallerySearchInput">
+    </div>
+  </div>
   <div class="row g-3">
     {% for image in images %}
     <div class="col-6 col-md-4 col-lg-3">
-      <div class="card shadow-sm h-100">
-        <img src="{{ image.image.url }}" class="card-img-top gallery-img" alt="{{ image.caption }}">
-        {% if image.caption %}
-        <div class="card-body p-2">
-          <p class="card-text small text-center">{{ image.caption }}</p>
+      <div class="gallery-card position-relative overflow-hidden rounded shadow-sm h-100">
+        <img src="{{ image.image.url }}" class="gallery-img w-100" alt="{{ image.caption }}" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#carouselModal" data-index="{{ forloop.counter0 }}">
+        <!-- Overlay: Like, Download, Info -->
+        <div class="gallery-action-overlay position-absolute top-0 end-0 p-2 d-flex flex-column align-items-end" style="z-index:2;">
+          <button class="btn btn-light btn-sm mb-2 rounded-circle" title="Like"><i class="bi bi-heart"></i></button>
+          <a href="{{ image.image.url }}" class="btn btn-light btn-sm rounded-circle" title="Download" download><i class="bi bi-download"></i></a>
         </div>
-        {% endif %}
+        <div class="gallery-info-overlay position-absolute bottom-0 start-0 w-100 p-2 text-white d-flex flex-column" style="background:rgba(0,0,0,0.45);">
+          {% if image.caption %}
+            <span class="small fw-bold">{{ image.caption }}</span>
+          {% endif %}
+          <span class="small">
+            {% if image.event %}<i class="bi bi-calendar-event"></i> {{ image.event }} {% endif %}
+            {% if image.date %}<i class="bi bi-clock ms-2"></i> {{ image.date }}{% endif %}
+          </span>
+        </div>
       </div>
     </div>
     {% empty %}
-    <div class="text-center">No images in the gallery yet.</div>
+    <div class="col-12 text-center py-5">
+      <img src="https://cdn-icons-png.flaticon.com/512/7486/7486797.png" alt="No Images" width="120" class="mb-3 opacity-50">
+      <h5 class="text-muted">No images in the gallery yet.</h5>
+      <p class="text-secondary">Check back soon for updates from our events and donation camps!</p>
+    </div>
     {% endfor %}
   </div>
+  <!-- Carousel Modal (UI only, cycles all images) -->
+  <div class="modal fade" id="carouselModal" tabindex="-1" aria-labelledby="carouselModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content bg-dark">
+        <div class="modal-body p-0">
+          <div id="galleryCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+              {% for image in images %}
+              <div class="carousel-item{% if forloop.first %} active{% endif %}">
+                <img src="{{ image.image.url }}" class="d-block w-100 rounded" alt="{{ image.caption }}">
+                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+                  {% if image.caption %}<h5>{{ image.caption }}</h5>{% endif %}
+                  {% if image.event %}<small><i class="bi bi-calendar-event"></i> {{ image.event }}</small>{% endif %}
+                  {% if image.date %}<small class="ms-2"><i class="bi bi-clock"></i> {{ image.date }}</small>{% endif %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+        </div>
+        <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
 </div>
+<style>
+.gallery-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  background: #fff;
+}
+.gallery-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 32px rgba(191,34,41,0.15);
+  z-index: 2;
+}
+.gallery-img {
+  height: 240px;
+  object-fit: cover;
+  transition: filter 0.2s;
+  border-radius: 8px;
+}
+.gallery-card:hover .gallery-img {
+  filter: brightness(0.7) blur(1px);
+}
+.gallery-action-overlay {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.gallery-card:hover .gallery-action-overlay {
+  opacity: 1;
+}
+.gallery-info-overlay {
+  opacity: 0.95;
+  font-size: 0.95rem;
+}
+</style>
+<script>
+// Gallery modal: open carousel at clicked image (UI only)
+document.addEventListener('DOMContentLoaded', function() {
+  const galleryImgs = document.querySelectorAll('.gallery-img[data-bs-toggle="modal"][data-bs-target="#carouselModal"]');
+  galleryImgs.forEach(function(img, idx) {
+    img.addEventListener('click', function() {
+      const carousel = document.querySelector('#galleryCarousel');
+      if (carousel) {
+        const bsCarousel = bootstrap.Carousel.getOrCreateInstance(carousel);
+        bsCarousel.to(idx);
+      }
+    });
+  });
+});
+</script>
 {% endblock %}
