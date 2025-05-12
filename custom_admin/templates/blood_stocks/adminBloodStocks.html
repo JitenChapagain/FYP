@@ -616,21 +616,22 @@
 
 <!-- Filter Card: Blood Bank Dropdown -->
 {% block after_content_header %}
-<div class="filter-card">
-    <div class="filter-header">Search Blood Stock</div>
-    <div class="filter-body filter-center">
-        <div class="filter-group">
-            <label for="bloodBankSelect" class="filter-label">Select Blood Bank</label>
-            <select id="bloodBankSelect" class="filter-select">
-                <option value="all">All Blood Banks</option>
-                {% for bank in blood_banks %}
-                    <option value="{{ bank.id }}">{{ bank.blood_bank_name }}</option>
-                {% endfor %}
-            </select>
+<form id="filterForm" method="get" style="margin-bottom:0;">
+    <div class="filter-card">
+        <div class="filter-header">Search Blood Stock</div>
+        <div class="filter-body filter-center">
+            <div class="filter-group">
+                <label for="bloodBankSelect" class="filter-label">Select Blood Bank</label>
+                <select id="bloodBankSelect" name="blood_bank" class="filter-select" onchange="document.getElementById('filterForm').submit();">
+                    <option value="all" {% if not request.GET.blood_bank or request.GET.blood_bank == 'all' %}selected{% endif %}>All Blood Banks</option>
+                    {% for bank in blood_banks %}
+                        <option value="{{ bank.id }}" {% if request.GET.blood_bank == bank.id|stringformat:"s" %}selected{% endif %}>{{ bank.blood_bank_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
         </div>
-        
     </div>
-</div>
+</form>
 {% endblock %}
 <form class="search-box" onsubmit="return false;">
     <div class="search-control">
@@ -765,8 +766,6 @@ function filterTable() {
     const tableBody = document.querySelector('.table tbody');
     const tableRows = tableBody.querySelectorAll('tr');
     const noResults = document.querySelector('.no-results');
-    const bankSelect = document.getElementById('bloodBankSelect');
-    const selectedBank = bankSelect ? bankSelect.value : 'all';
     let visibleCount = 0;
     let serial = 1;
 
@@ -785,16 +784,14 @@ function filterTable() {
         const bankText = bankCell.textContent.toLowerCase();
         const groupText = groupCell.textContent.toLowerCase();
         const unitsText = unitsCell.textContent.toLowerCase();
-        const rowBankId = row.getAttribute('data-bank-id');
 
-        const matchesBank = (selectedBank === 'all' || rowBankId === selectedBank);
         const matchesSearch = (
             bankText.includes(searchTerm) ||
             groupText.includes(searchTerm) ||
             unitsText.includes(searchTerm)
         );
 
-        if (matchesBank && matchesSearch) {
+        if (matchesSearch) {
             row.style.display = '';
             row.querySelector('td:nth-child(1)').textContent = serial;
             serial++;
@@ -816,12 +813,6 @@ function filterTable() {
 const searchInputElem = document.querySelector('.search-input');
 searchInputElem.addEventListener('input', filterTable);
 searchInputElem.addEventListener('focus', filterTable);
-
-// Add event listener for blood bank dropdown
-const bankSelectElem = document.getElementById('bloodBankSelect');
-if (bankSelectElem) {
-    bankSelectElem.addEventListener('change', filterTable);
-}
 
 // Ensure clear button works on click (in addition to inline onclick)
 document.getElementById('clearSearch').addEventListener('click', function(e) {

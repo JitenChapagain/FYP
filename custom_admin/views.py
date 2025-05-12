@@ -413,6 +413,11 @@ def admin_blood_stocks(request):
     # Get all blood banks for the dropdown
     blood_banks = BloodBankRegistration.objects.all().order_by('blood_bank_name')
 
+    # Filter by blood bank if selected
+    blood_bank_id = request.GET.get('blood_bank')
+    if blood_bank_id and blood_bank_id != 'all':
+        blood_stocks = blood_stocks.filter(bloodbank_id=blood_bank_id)
+
     # Search functionality
     search_query = request.GET.get('search', '').strip()
     if search_query:
@@ -439,6 +444,7 @@ def admin_blood_stocks(request):
         'filtered_count': blood_stocks.count(),
         'is_filtered': bool(search_query),
         'blood_banks': blood_banks,
+        'selected_blood_bank': blood_bank_id,
     }
     return render(request, 'blood_stocks/adminBloodStocks.html', context)
 
