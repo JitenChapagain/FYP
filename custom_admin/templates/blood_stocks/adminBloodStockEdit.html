@@ -220,16 +220,10 @@
     <div class="detail-section">
         <h2 class="section-title">Blood Bank Information</h2>
         <div class="form-grid">
-            <div class="form-group {% if form.bloodbank.errors %}error{% endif %}">
+            <div class="form-group">
                 <label class="form-label">Blood Bank</label>
-                <select name="bloodbank" class="form-select" required>
-                    {% for bank in blood_banks %}
-                        <option value="{{ bank.pk }}" {% if blood_stock.bloodbank.pk == bank.pk %}selected{% endif %}>{{ bank.blood_bank_name }}</option>
-                    {% endfor %}
-                </select>
-                {% if form.bloodbank.errors %}
-                    <span class="error-message">{{ form.bloodbank.errors.0 }}</span>
-                {% endif %}
+                <div style="color: #000; font-size: 1rem; font-weight: 500; padding: 10px 0;">{{ blood_stock.bloodbank.blood_bank_name }}</div>
+                <input type="hidden" name="bloodbank" value="{{ blood_stock.bloodbank.pk }}">
             </div>
         </div>
     </div>

@@ -369,6 +369,7 @@
 
     .modal-footer {
         display: flex;
+        flex-direction: row;
         justify-content: flex-end;
         gap: 12px;
         padding-top: 15px;
@@ -627,7 +628,7 @@
                 {% endfor %}
             </select>
         </div>
-        <button class="filter-search-btn" onclick="filterTable()">Search</button>
+        
     </div>
 </div>
 {% endblock %}
@@ -726,8 +727,8 @@
         <div class="modal-body">
             <p>Are you sure you want to delete this blood stock? This action cannot be undone.</p>
         </div>
-        <div class="modal-footer">
-            <form id="deleteForm" method="POST">
+        <div class="modal-footer" style="display: flex; flex-direction: row; justify-content: flex-end; gap: 12px;">
+            <form id="deleteForm" method="POST" style="display: flex; flex-direction: row; gap: 12px;">
                 {% csrf_token %}
                 <button type="button" class="btn" onclick="hideDeleteModal()">Cancel</button>
                 <button type="submit" class="btn btn-delete">Delete</button>

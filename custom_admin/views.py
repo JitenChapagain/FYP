@@ -477,9 +477,17 @@ def blood_stock_add(request):
         form = BloodStockForm(request.POST)
         if form.is_valid():
             try:
-                form.save()
-                messages.success(request, 'Blood stock added successfully.')
-                return redirect('admin_blood_stocks')
+                bloodbank_id = request.POST.get('bloodbank')
+                blood_group = form.cleaned_data['blood_group']
+                # Check for duplicate
+                if BloodStock.objects.filter(bloodbank_id=bloodbank_id, blood_group=blood_group).exists():
+                    messages.error(request, 'This blood group already exists for the selected blood bank.')
+                else:
+                    blood_stock = form.save(commit=False)
+                    blood_stock.bloodbank = BloodBankRegistration.objects.get(pk=bloodbank_id)
+                    blood_stock.save()
+                    messages.success(request, 'Blood stock added successfully.')
+                    return redirect('admin_blood_stocks')
             except Exception as e:
                 messages.error(request, f'Error adding blood stock: {str(e)}')
         else:
@@ -489,9 +497,10 @@ def blood_stock_add(request):
                     messages.error(request, f'{field}: {error}')
     else:
         form = BloodStockForm()
-    
+    blood_banks = BloodBankRegistration.objects.all().order_by('blood_bank_name')
     context = {
-        'form': form
+        'form': form,
+        'blood_banks': blood_banks
     }
     return render(request, 'blood_stocks/adminBloodStockAdd.html', context)
 
