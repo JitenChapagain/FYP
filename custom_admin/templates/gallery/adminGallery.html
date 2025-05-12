@@ -1,35 +1,105 @@
-{% extends 'adminbase.html' %}
+{% extends "../adminbase.html" %}
 {% load static %}
 
-{% block title %}Gallery Management - Rakta Sewa Admin{% endblock %}
+{% block title %}Gallery - Rakta Sewa Admin{% endblock %}
 
 {% block active_gallery %}active{% endblock %}
 
 {% block content %}
 <style>
+    /* Success Message Styles */
+    .alert {
+        padding: 16px 20px;
+        border-radius: 8px;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideIn 0.3s ease-out;
+        opacity: 1;
+        transition: opacity 0.3s ease-out;
+    }
+
+    .alert.hide {
+        opacity: 0;
+    }
+
+    .alert-success {
+        background-color: #e8f5e9;
+        border: 1px solid #c8e6c9;
+        color: #2e7d32;
+    }
+
+    .alert .material-icons {
+        font-size: 24px;
+    }
+
+    .alert-message {
+        flex: 1;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .alert-close {
+        background: none;
+        border: none;
+        color: inherit;
+        cursor: pointer;
+        padding: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+    }
+
+    .alert-close:hover {
+        opacity: 1;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateY(-10px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
     .content-header {
         background: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        margin-bottom: 20px;
+        padding: 24px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        margin-bottom: 24px;
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
 
     .content-title {
-        color: #333;
-        font-size: 1.5rem;
+        color: #A94442;
+        font-size: 28px;
         font-weight: 600;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .content-title .material-icons {
+        color: #bf2229;
+        font-size: 32px;
     }
 
     .add-button {
         background: #bf2229;
         color: white;
         border: none;
-        padding: 8px 16px;
-        border-radius: 6px;
+        padding: 10px 20px;
+        border-radius: 8px;
         display: flex;
         align-items: center;
         gap: 8px;
@@ -37,47 +107,56 @@
         transition: all 0.3s ease;
         text-decoration: none;
         font-size: 14px;
+        font-weight: 500;
+        box-shadow: 0 2px 4px rgba(191, 34, 41, 0.2);
     }
 
     .add-button:hover {
-        background: #d62731;
-        transform: translateY(-2px);
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        background: #bf2229;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(191, 34, 41, 0.3);
     }
 
     .gallery-table {
         background: #fff;
-        border-radius: 0;
-        box-shadow: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
         overflow: hidden;
-        margin-top: 20px;
-        border: 1px solid #ddd;
+        margin-top: 24px;
+        border: 1px solid #eee;
     }
 
     .table {
         width: 100%;
-        border-collapse: collapse;
+        border-collapse: separate;
         border-spacing: 0;
         font-size: 14px;
     }
 
     .table th {
         background: #bf2229;
-        padding: 8px 12px;
+        padding: 12px 16px;
         text-align: left;
         font-weight: 600;
         color: #ffffff;
-        border: 1px solid #a61d23;
+        border: none;
         white-space: nowrap;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
     .table td {
-        padding: 6px 12px;
-        border: 1px solid #ddd;
+        padding: 16px;
+        border-bottom: 1px solid #eee;
         color: #000000;
         vertical-align: top;
         background: #fff;
-        line-height: 1.3;
+        line-height: 1.5;
+    }
+
+    .table tbody tr:last-child td {
+        border-bottom: none;
     }
 
     .table tbody tr:hover td {
@@ -85,36 +164,39 @@
     }
 
     .gallery-image {
-        width: 100px;
-        height: 100px;
+        width: 120px;
+        height: 120px;
         object-fit: cover;
-        border-radius: 4px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
     .gallery-details {
         display: flex;
         flex-direction: column;
-        gap: 4px;
+        gap: 8px;
     }
 
     .gallery-caption {
         font-weight: 600;
         color: #000000;
+        font-size: 14px;
     }
 
     .gallery-date {
-        color: #666;
+        color: #000000;
         font-size: 13px;
+        line-height: 1.6;
     }
 
     .action-buttons {
         display: flex;
-        gap: 3px;
+        gap: 6px;
     }
 
     .btn {
-        padding: 4px 8px;
-        border-radius: 4px;
+        padding: 6px 12px;
+        border-radius: 6px;
         font-size: 12px;
         font-weight: 500;
         cursor: pointer;
@@ -122,7 +204,7 @@
         display: flex;
         align-items: center;
         gap: 4px;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
         text-decoration: none;
     }
 
@@ -148,6 +230,7 @@
     .btn-edit:hover {
         background-color: #424242;
         color: #fff;
+        transform: translateY(-1px);
     }
 
     .btn-delete {
@@ -163,9 +246,9 @@
     /* Search and Filter Section */
     .search-box {
         background: #fff;
-        padding: 20px;
+        padding: 24px;
         border-radius: 12px;
-        box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
         margin-bottom: 24px;
         display: flex;
         align-items: center;
@@ -179,23 +262,25 @@
     }
 
     .search-input {
-        padding: 6px 12px;
-        padding-right: 32px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
+        padding: 10px 16px;
+        padding-right: 40px;
+        border: 1px solid #eee;
+        border-radius: 8px;
         font-size: 14px;
-        width: 250px;
+        width: 300px;
         color: #000000;
+        transition: all 0.3s ease;
     }
 
     .search-input:focus {
         outline: none;
         border-color: #bf2229;
+        box-shadow: 0 0 0 3px rgba(191, 34, 41, 0.1);
     }
 
     .search-icon {
         position: absolute;
-        right: 8px;
+        right: 12px;
         color: #666;
         font-size: 20px;
     }
@@ -296,61 +381,101 @@
         position: relative;
     }
 
-    .alert {
-        padding: 12px 20px;
-        border-radius: 6px;
-        margin-bottom: 10px;
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .modal.show {
         display: flex;
-        align-items: center;
-        gap: 10px;
-        position: relative;
-        animation: slideIn 0.3s ease-out;
-    }
-
-    .alert-success {
-        background-color: #4caf50;
-        color: white;
-        border: none;
-    }
-
-    .alert-error {
-        background-color: #f44336;
-        color: white;
-        border: none;
-    }
-
-    .alert-icon {
-        font-size: 20px;
-    }
-
-    .alert-close {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
-        color: white;
-        cursor: pointer;
-        padding: 0;
-        display: flex;
+        opacity: 1;
         align-items: center;
         justify-content: center;
     }
 
-    .alert-close:hover {
-        opacity: 0.8;
+    .modal-content {
+        background: white;
+        padding: 24px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 400px;
+        position: relative;
+        transform: translateY(-20px);
+        transition: transform 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
-    @keyframes slideIn {
-        from {
-            transform: translateY(-20px);
-            opacity: 0;
-        }
-        to {
-            transform: translateY(0);
-            opacity: 1;
-        }
+    .modal.show .modal-content {
+        transform: translateY(0);
+    }
+
+    .modal-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .modal-header .material-icons {
+        color: #bf2229;
+        font-size: 24px;
+    }
+
+    .modal-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+        margin: 0;
+    }
+
+    .modal-body {
+        margin-bottom: 24px;
+        color: #666;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+    }
+
+    .modal-btn {
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s ease;
+    }
+
+    .modal-btn-cancel {
+        background-color: #f5f5f5;
+        color: #333;
+    }
+
+    .modal-btn-cancel:hover {
+        background-color: #e0e0e0;
+    }
+
+    .modal-btn-delete {
+        background-color: #bf2229;
+        color: white;
+    }
+
+    .modal-btn-delete:hover {
+        background-color: #a61d23;
     }
 </style>
 
@@ -371,17 +496,21 @@
 {% endif %}
 
 <div class="content-header">
-    <h1 class="content-title">Gallery Management</h1>
+    <h1 class="content-title">
+        <span class="material-icons">image</span>
+        Gallery Management
+    </h1>
     <a href="{% url 'admin_gallery_add' %}" class="add-button">
         <span class="material-icons">add</span>
         Add New Image
     </a>
 </div>
 
-<form class="table-controls" onsubmit="return false;">
+<form class="table-controls" method="GET" action="{% url 'admin_gallery' %}">
     <div class="entries-control">
         <label>Show</label>
         <select name="entries" class="entries-select" onchange="this.form.submit()">
+            <option value="1" {% if entries == '1' %}selected{% endif %}>1</option>
             <option value="4" {% if entries == '4' %}selected{% endif %}>4</option>
             <option value="10" {% if entries == '10' %}selected{% endif %}>10</option>
             <option value="25" {% if entries == '25' %}selected{% endif %}>25</option>
@@ -442,7 +571,7 @@
                             <span class="material-icons">edit</span>
                             Edit
                         </a>
-                        <a href="{% url 'admin_gallery_delete' item.pk %}" class="btn btn-delete" onclick="return confirm('Are you sure you want to delete this image?')">
+                        <a href="javascript:void(0)" class="btn btn-delete" data-delete-url="{% url 'admin_gallery_delete' item.pk %}" onclick="openDeleteModal(this.dataset.deleteUrl)">
                             <span class="material-icons">delete</span>
                             Delete
                         </a>
@@ -490,6 +619,26 @@
 </div>
 {% endif %}
 
+<!-- Delete Confirmation Modal -->
+<div class="modal" id="deleteModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="material-icons">warning</span>
+            <h3 class="modal-title">Delete Image</h3>
+        </div>
+        <div class="modal-body">
+            Are you sure you want to delete this image? This action cannot be undone.
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn modal-btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+            <form id="deleteForm" method="POST" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="modal-btn modal-btn-delete">Delete</button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
     function filterTable() {
         const searchInput = document.querySelector('.search-input');
@@ -499,13 +648,14 @@
         const tableRows = tableBody.querySelectorAll('tr');
         const noResults = document.querySelector('.no-results');
         const searchResults = document.querySelector('.search-results');
+        const entriesSelect = document.querySelector('.entries-select');
         let visibleCount = 0;
 
         clearButton.style.display = searchTerm ? 'flex' : 'none';
 
         if (!searchTerm) {
             tableRows.forEach((row, index) => {
-                row.classList.remove('hidden');
+                row.style.display = '';
                 row.querySelector('td:first-child').textContent = index + 1;
             });
             noResults.style.display = 'none';
@@ -525,11 +675,11 @@
             });
 
             if (found) {
-                row.classList.remove('hidden');
+                row.style.display = '';
                 visibleCount++;
                 row.querySelector('td:first-child').textContent = visibleCount;
             } else {
-                row.classList.add('hidden');
+                row.style.display = 'none';
             }
         });
 
@@ -568,9 +718,24 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.querySelector('.search-input');
+        const entriesSelect = document.querySelector('.entries-select');
+        
+        // Initialize search
         searchInput.addEventListener('input', filterTable);
         filterTable();
 
+        // Handle entries change
+        entriesSelect.addEventListener('change', function() {
+            const currentSearch = searchInput.value.trim();
+            const url = new URL(window.location.href);
+            url.searchParams.set('entries', this.value);
+            if (currentSearch) {
+                url.searchParams.set('search', currentSearch);
+            }
+            window.location.href = url.toString();
+        });
+
+        // Auto-dismiss messages
         const messages = document.querySelectorAll('.alert');
         messages.forEach(message => {
             setTimeout(() => {
@@ -581,6 +746,28 @@
                 }, 500);
             }, 5000);
         });
+    });
+
+    let deleteUrl = '';
+
+    function openDeleteModal(url) {
+        deleteUrl = url;
+        const modal = document.getElementById('deleteModal');
+        const form = document.getElementById('deleteForm');
+        form.action = url;
+        modal.classList.add('show');
+    }
+
+    function closeDeleteModal() {
+        const modal = document.getElementById('deleteModal');
+        modal.classList.remove('show');
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeDeleteModal();
+        }
     });
 </script>
 {% endblock %} 

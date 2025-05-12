@@ -245,7 +245,7 @@
 
     .search-input {
         padding: 10px 16px;
-        padding-right: 40px;
+        padding-left: 40px;
         border: 1px solid #ddd;
         border-radius: 8px;
         font-size: 14px;
@@ -263,7 +263,7 @@
 
     .search-icon {
         position: absolute;
-        right: 12px;
+        left: 12px;
         color: #666;
         font-size: 20px;
     }
@@ -407,6 +407,14 @@
     {% endfor %}
 {% endif %}
 
+<div id="updateSuccessAlert" class="alert alert-success" style="display: none;">
+    <span class="material-icons">check_circle</span>
+    <div class="alert-message"></div>
+    <button class="alert-close" onclick="hideSuccessMessage()">
+        <span class="material-icons">close</span>
+    </button>
+</div>
+
 <div class="content-header">
     <h1 class="content-title" style="color: #A94442; font-size: 28px;">Frequently Asked Questions</h1>
     <a href="{% url 'admin_faq_add' %}" class="add-button">
@@ -455,7 +463,7 @@
                             <span class="material-icons">edit</span>
                             Edit
                         </a>
-                        <a href="javascript:void(0)" class="btn btn-delete" onclick="openDeleteModal('{% url 'admin_faq_delete' faq.id %}')">
+                        <a href="javascript:void(0)" class="btn btn-delete" data-delete-url="{% url 'admin_faq_delete' faq.id %}" onclick="openDeleteModal(this.dataset.deleteUrl)">
                             <span class="material-icons">delete</span>
                             Delete
                         </a>
@@ -497,18 +505,41 @@
     // Auto-hide success message after 5 seconds
     function hideSuccessMessage() {
         const successAlert = document.getElementById('successAlert');
+        const updateSuccessAlert = document.getElementById('updateSuccessAlert');
+        
         if (successAlert) {
             successAlert.classList.add('hide');
             setTimeout(() => {
                 successAlert.remove();
-            }, 300); // Wait for fade-out animation to complete
+            }, 300);
+        }
+        
+        if (updateSuccessAlert) {
+            updateSuccessAlert.classList.add('hide');
+            setTimeout(() => {
+                updateSuccessAlert.remove();
+            }, 300);
         }
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+        // Check for success message in sessionStorage
+        const successMessage = sessionStorage.getItem('faqUpdateSuccess');
+        if (successMessage) {
+            const updateSuccessAlert = document.getElementById('updateSuccessAlert');
+            updateSuccessAlert.style.display = 'flex';
+            updateSuccessAlert.querySelector('.alert-message').textContent = successMessage;
+            
+            // Clear the message from sessionStorage
+            sessionStorage.removeItem('faqUpdateSuccess');
+            
+            // Auto-hide after 5 seconds
+            setTimeout(hideSuccessMessage, 5000);
+        }
+
         const successAlert = document.getElementById('successAlert');
         if (successAlert) {
-            setTimeout(hideSuccessMessage, 5000); // Hide after 5 seconds
+            setTimeout(hideSuccessMessage, 5000);
         }
     });
 

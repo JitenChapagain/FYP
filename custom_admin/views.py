@@ -683,7 +683,7 @@ def admin_gallery_add(request):
                 caption=caption
             )
             messages.success(request, 'Gallery item added successfully')
-            return redirect('admin_gallery_detail', pk=gallery_item.pk)
+            return redirect('admin_gallery')
         except Exception as e:
             messages.error(request, f'Error adding gallery item: {str(e)}')
             return redirect('admin_gallery_add')
@@ -710,7 +710,7 @@ def admin_gallery_edit(request, pk):
             gallery_item.save()
             
             messages.success(request, 'Gallery item updated successfully')
-            return redirect('admin_gallery_detail', pk=pk)
+            return redirect('admin_gallery')
         except Exception as e:
             messages.error(request, f'Error updating gallery item: {str(e)}')
             return redirect('admin_gallery_edit', pk=pk)
@@ -720,11 +720,12 @@ def admin_gallery_edit(request, pk):
 @login_required
 def admin_gallery_delete(request, pk):
     gallery_item = get_object_or_404(Gallery, pk=pk)
-    try:
-        gallery_item.delete()
-        messages.success(request, 'Gallery item deleted successfully')
-    except Exception as e:
-        messages.error(request, f'Error deleting gallery item: {str(e)}')
+    if request.method == 'POST':
+        try:
+            gallery_item.delete()
+            messages.success(request, 'Gallery item deleted successfully')
+        except Exception as e:
+            messages.error(request, f'Error deleting gallery item: {str(e)}')
     return redirect('admin_gallery')
 
 @login_required(login_url='admin_login')

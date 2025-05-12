@@ -1,4 +1,4 @@
-{% extends 'adminbase.html' %}
+{% extends "../adminbase.html" %}
 {% load static %}
 
 {% block title %}Add Gallery Image - Rakta Sewa Admin{% endblock %}
@@ -9,19 +9,20 @@
 <style>
     .content-header {
         background: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        margin-bottom: 20px;
+        padding: 24px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        margin-bottom: 24px;
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
 
     .content-title {
-        color: #333;
-        font-size: 1.5rem;
+        color: #A94442;
+        font-size: 28px;
         font-weight: 600;
+        margin: 0;
         display: flex;
         align-items: center;
         gap: 10px;
@@ -29,132 +30,226 @@
 
     .content-title .material-icons {
         color: #bf2229;
-        font-size: 2rem;
+        font-size: 32px;
     }
 
     .back-button {
-        background: #f8f9fa;
-        color: #333;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 6px;
-        display: flex;
+        display: inline-flex;
         align-items: center;
         gap: 8px;
-        cursor: pointer;
-        transition: all 0.3s ease;
+        padding: 10px 20px;
+        background: #f5f5f5;
+        color: #000000;
+        border-radius: 8px;
         text-decoration: none;
-        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
     }
 
     .back-button:hover {
-        background: #e9ecef;
+        background: #e0e0e0;
+        transform: translateY(-1px);
+    }
+
+    .form-card {
+        background: #fff;
+        padding: 24px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+    }
+
+    .detail-section {
+        margin-bottom: 24px;
+        padding: 24px;
+        background: #f8f9fa;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .detail-section:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.08);
         transform: translateY(-2px);
     }
 
-    .form-container {
-        background: #fff;
-        padding: 30px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    .section-title {
+        color: white;
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 15px;
+        background-color: #bf2229;
+        border-radius: 6px;
+    }
+
+    .section-title .material-icons {
+        color: white;
     }
 
     .form-group {
-        margin-bottom: 20px;
+        margin-bottom: 24px;
+    }
+
+    .form-group:last-child {
+        margin-bottom: 0;
     }
 
     .form-label {
         display: block;
-        margin-bottom: 8px;
-        color: #333;
+        color: #000000;
+        font-size: 0.9rem;
         font-weight: 500;
+        margin-bottom: 8px;
     }
 
     .form-control {
         width: 100%;
-        padding: 10px 12px;
+        padding: 10px 15px;
         border: 1px solid #ddd;
-        border-radius: 6px;
-        font-size: 14px;
+        border-radius: 8px;
+        font-size: 1rem;
+        color: #000000;
         transition: all 0.3s ease;
     }
 
     .form-control:focus {
         border-color: #bf2229;
-        box-shadow: 0 0 0 2px rgba(191, 34, 41, 0.1);
+        box-shadow: 0 0 0 3px rgba(191, 34, 41, 0.1);
         outline: none;
     }
 
-    .form-text {
-        font-size: 12px;
-        color: #666;
-        margin-top: 4px;
-    }
-
-    .submit-button {
-        background: #bf2229;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 6px;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .submit-button:hover {
-        background: #d62731;
-        transform: translateY(-2px);
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .preview-container {
-        margin-top: 20px;
-        text-align: center;
-    }
-
     .image-preview {
-        max-width: 100%;
-        max-height: 300px;
+        width: 200px;
+        height: 200px;
         border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        object-fit: cover;
+        margin-top: 10px;
+        border: 2px dashed #ddd;
         display: none;
     }
 
-    .preview-placeholder {
-        width: 100%;
-        height: 200px;
-        background: #f8f9fa;
-        border: 2px dashed #ddd;
-        border-radius: 8px;
+    .image-preview.show {
+        display: block;
+    }
+
+    .form-actions {
         display: flex;
-        flex-direction: column;
+        gap: 10px;
+        margin-top: 24px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .btn .material-icons {
+        font-size: 20px;
+    }
+
+    .btn-save {
+        background-color: #bf2229;
+        color: #fff;
+    }
+
+    .btn-save:hover {
+        background-color: #a61d23;
+        transform: translateY(-1px);
+    }
+
+    .btn-cancel {
+        background-color: #f5f5f5;
+        color: #000000;
+    }
+
+    .btn-cancel:hover {
+        background-color: #e0e0e0;
+        transform: translateY(-1px);
+    }
+
+    .error-message {
+        color: #bf2229;
+        font-size: 0.85rem;
+        margin-top: 5px;
+    }
+
+    .alert {
+        padding: 16px 20px;
+        border-radius: 8px;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideIn 0.3s ease-out;
+        opacity: 1;
+        transition: opacity 0.3s ease-out;
+    }
+
+    .alert.hide {
+        opacity: 0;
+    }
+
+    .alert-success {
+        background-color: #e8f5e9;
+        border: 1px solid #c8e6c9;
+        color: #2e7d32;
+    }
+
+    .alert-error {
+        background-color: #ffebee;
+        border: 1px solid #ffcdd2;
+        color: #bf2229;
+    }
+
+    .alert .material-icons {
+        font-size: 24px;
+    }
+
+    .alert-message {
+        flex: 1;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .alert-close {
+        background: none;
+        border: none;
+        color: inherit;
+        cursor: pointer;
+        padding: 4px;
+        display: flex;
         align-items: center;
         justify-content: center;
-        color: #666;
+        opacity: 0.7;
+        transition: opacity 0.2s;
     }
 
-    .preview-placeholder .material-icons {
-        font-size: 48px;
-        color: #bf2229;
-        margin-bottom: 10px;
+    .alert-close:hover {
+        opacity: 1;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateY(-10px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
     }
 </style>
-
-<div class="content-header">
-    <h1 class="content-title">
-        <span class="material-icons">add_photo_alternate</span>
-        Add New Image
-    </h1>
-    <a href="{% url 'admin_gallery' %}" class="back-button">
-        <span class="material-icons">arrow_back</span>
-        Back to Gallery
-    </a>
-</div>
 
 {% if messages %}
 <div class="messages">
@@ -172,52 +267,94 @@
 </div>
 {% endif %}
 
-<div class="form-container">
-    <form method="post" enctype="multipart/form-data">
+<div class="content-header">
+    <h1 class="content-title">
+        <span class="material-icons">add_photo_alternate</span>
+        Add New Image
+    </h1>
+    <a href="{% url 'admin_gallery' %}" class="back-button">
+        <span class="material-icons">arrow_back</span>
+        Back to Gallery
+    </a>
+</div>
+
+<div class="form-card">
+    <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="form-group">
-            <label for="image" class="form-label">Image</label>
-            <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
-            <small class="form-text">Upload a high-quality image (JPG, PNG, GIF). Max size: 5MB.</small>
-        </div>
-        <div class="form-group">
-            <label for="caption" class="form-label">Caption</label>
-            <input type="text" class="form-control" id="caption" name="caption" placeholder="Enter image caption">
-            <small class="form-text">A brief description of the image (optional).</small>
-        </div>
-        <div class="preview-container">
-            <div class="preview-placeholder">
+        
+        <div class="detail-section">
+            <div class="section-title">
                 <span class="material-icons">image</span>
-                <p>Image preview will appear here</p>
+                Image Details
             </div>
-            <img id="imagePreview" class="image-preview" alt="Preview">
+
+            <div class="form-group">
+                <label class="form-label">Image</label>
+                <input type="file" 
+                       name="image" 
+                       class="form-control" 
+                       accept="image/*" 
+                       required
+                       onchange="previewImage(this)">
+                <img id="imagePreview" class="image-preview" alt="Image Preview">
+                {% if form.image.errors %}
+                <div class="error-message">{{ form.image.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Caption</label>
+                <input type="text" 
+                       name="caption" 
+                       class="form-control" 
+                       placeholder="Enter image caption"
+                       value="{{ form.caption.value|default:'' }}"
+                       required>
+                {% if form.caption.errors %}
+                <div class="error-message">{{ form.caption.errors.0 }}</div>
+                {% endif %}
+            </div>
         </div>
-        <button type="submit" class="submit-button">
-            <span class="material-icons">upload</span>
-            Upload Image
-        </button>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-save">
+                <span class="material-icons">save</span>
+                Save Image
+            </button>
+            <a href="{% url 'admin_gallery' %}" class="btn btn-cancel">
+                <span class="material-icons">close</span>
+                Cancel
+            </a>
+        </div>
     </form>
 </div>
 
 <script>
-    document.getElementById('image').addEventListener('change', function(e) {
+    function previewImage(input) {
         const preview = document.getElementById('imagePreview');
-        const placeholder = document.querySelector('.preview-placeholder');
-        
-        if (this.files && this.files[0]) {
+        if (input.files && input.files[0]) {
             const reader = new FileReader();
-            
             reader.onload = function(e) {
                 preview.src = e.target.result;
-                preview.style.display = 'block';
-                placeholder.style.display = 'none';
+                preview.classList.add('show');
             }
-            
-            reader.readAsDataURL(this.files[0]);
+            reader.readAsDataURL(input.files[0]);
         } else {
-            preview.style.display = 'none';
-            placeholder.style.display = 'flex';
+            preview.classList.remove('show');
         }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const messages = document.querySelectorAll('.alert');
+        messages.forEach(message => {
+            setTimeout(() => {
+                message.style.opacity = '0';
+                message.style.transition = 'opacity 0.5s ease-out';
+                setTimeout(() => {
+                    message.remove();
+                }, 500);
+            }, 5000);
+        });
     });
 </script>
 {% endblock %} 

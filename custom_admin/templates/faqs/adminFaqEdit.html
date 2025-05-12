@@ -244,7 +244,7 @@
 {% endif %}
 
 <div class="form-card">
-    <form method="post">
+    <form method="post" id="editFaqForm">
         {% csrf_token %}
         
         <div class="detail-section">
@@ -296,6 +296,51 @@ document.addEventListener('DOMContentLoaded', function() {
                 message.remove();
             }, 500);
         }, 5000); // 5 seconds
+    });
+
+    // Handle form submission
+    const form = document.getElementById('editFaqForm');
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Get form data
+        const formData = new FormData(form);
+        
+        // Send POST request
+        fetch(window.location.href, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                // Set success message in sessionStorage before redirecting
+                sessionStorage.setItem('faqUpdateSuccess', 'FAQ has been successfully updated!');
+                // Redirect to FAQs list page
+                window.location.href = "{% url 'admin_faqs' %}";
+            } else {
+                // Handle error
+                response.json().then(data => {
+                    // Show error message if any
+                    if (data.errors) {
+                        Object.keys(data.errors).forEach(field => {
+                            const errorDiv = document.createElement('div');
+                            errorDiv.className = 'error-message';
+                            errorDiv.textContent = data.errors[field];
+                            const input = document.getElementById(field);
+                            if (input) {
+                                input.parentNode.appendChild(errorDiv);
+                            }
+                        });
+                    }
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     });
 });
 </script>
