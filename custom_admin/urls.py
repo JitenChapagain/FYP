@@ -64,4 +64,8 @@ urlpatterns = [
     path('mobile-apps/<int:pk>/', views.admin_mobile_app_detail, name='admin_mobile_app_detail'),
     path('mobile-apps/<int:pk>/edit/', views.admin_mobile_app_edit, name='admin_mobile_app_edit'),
     path('mobile-apps/<int:pk>/delete/', views.admin_mobile_app_delete, name='admin_mobile_app_delete'),
+
+    # Activity and Forecasting
+    path('activity/', views.admin_activity, name='admin_activity'),
+    path('forecasting/', views.admin_forecasting, name='admin_forecasting'),
 ] 

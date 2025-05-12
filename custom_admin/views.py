@@ -868,3 +868,11 @@ def admin_mobile_app_delete(request, pk):
     mobile_app.delete()
     messages.success(request, 'Mobile app deleted successfully!')
     return redirect('admin_mobile_apps')
+
+@staff_member_required
+def admin_activity(request):
+    return render(request, 'activity.html')
+
+@staff_member_required
+def admin_forecasting(request):
+    return render(request, 'forecasting.html')

@@ -46,6 +46,8 @@
             top: 0;
             z-index: 100;
             box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            max-height: 100vh;
         }
 
         .sidebar-header {
@@ -241,9 +243,22 @@
                 <li><a href="{% url 'admin_contact_messages' %}" class="nav-item {% block active_contact_messages %}{% endblock %}">
                     <span class="material-icons">message</span> Contact Messages
                 </a></li>
+                <li >
+                    <a href="{% url 'admin_activity' %}" class="nav-item {% block active_activity %}{% endblock %}">
+                        <span class="material-icons">history</span>
+                        Activity
+                    </a>
+                </li>
+                <li >
+                    <a href="{% url 'admin_forecasting' %}" class="nav-item {% block active_forecasting %}{% endblock %}">
+                        <span class="material-icons">trending_up</span>
+                        Forecasting
+                    </a>
+                </li>
                 <li><a href="{% url 'admin_logout' %}" class="nav-item">
                     <span class="material-icons">logout</span> Logout
                 </a></li>
+                
             </ul>
         </div>
 
