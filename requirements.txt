@@ -1,3 +1,4 @@
+# Python 3.8–3.12 required. Python 3.13+ is NOT supported.
 # Bootstrap 5 for UI
 # Pillow for image handling
 Django==3.2.25
