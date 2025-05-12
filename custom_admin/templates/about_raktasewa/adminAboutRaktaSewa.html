@@ -6,6 +6,22 @@
 {% block active_about_raktasewa %}active{% endblock %}
 
 {% block content %}
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}" id="message-{{ forloop.counter }}">
+        <span class="material-icons alert-icon">
+            {% if message.tags == 'success' %}check_circle{% else %}error{% endif %}
+        </span>
+        {{ message }}
+        <button class="alert-close" onclick="this.parentElement.remove()">
+            <span class="material-icons">close</span>
+        </button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
 <style>
     .content-header {
         background: #fff;
@@ -316,6 +332,177 @@
         color: #666;
         font-style: italic;
     }
+
+    .messages {
+        margin-bottom: 20px;
+        position: relative;
+    }
+    .alert {
+        padding: 12px 20px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        position: relative;
+        animation: slideIn 0.3s ease-out;
+    }
+    .alert-success {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+    }
+    .alert-error {
+        background-color: #f44336;
+        color: white;
+        border: none;
+    }
+    .alert-icon {
+        font-size: 20px;
+    }
+    .alert-close {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .alert-close:hover {
+        opacity: 0.8;
+    }
+    @keyframes slideIn {
+        from {
+            transform: translateY(-10px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+    }
+    .modal.show {
+        display: flex;
+    }
+    .modal-content {
+        background: #fff;
+        max-width: 400px;
+        width: 90%;
+        margin: auto;
+        border-radius: 12px;
+        padding: 0;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        animation: slideIn 0.3s ease-out;
+        overflow: hidden;
+    }
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 24px 12px 24px;
+        border-bottom: 1px solid #eee;
+    }
+    .modal-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #A94442;
+        margin: 0;
+    }
+    .close-modal {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #666;
+        padding: 4px;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .close-modal:hover {
+        background: #f5f5f5;
+        color: #333;
+    }
+    .modal-body {
+        padding: 20px 24px;
+        color: #333;
+        font-size: 1rem;
+        line-height: 1.6;
+        border-bottom: 1px solid #eee;
+    }
+    .modal-footer {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        gap: 12px;
+        padding: 16px 24px;
+        background: #fafafa;
+    }
+    .btn-cancel {
+        background: #f5f5f5;
+        color: #333;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .btn-cancel:hover {
+        background: #e0e0e0;
+    }
+    .btn-delete {
+        background: #ffebee;
+        color: #bf2229;
+        border: 1px solid #ffcdd2;
+        border-radius: 6px;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .btn-delete:hover {
+        background: #bf2229;
+        color: #fff;
+    }
+    @keyframes slideIn {
+        from {
+            transform: translateY(-20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+    #deleteForm {
+        display: flex;
+        flex-direction: row;
+        gap: 12px;
+    }
 </style>
 
 <div class="content-header">
@@ -370,10 +557,10 @@
                             <span class="material-icons">edit</span>
                             Edit
                         </a>
-                        <a href="{% url 'admin_about_raktasewa_delete' about.id %}" class="btn btn-delete" title="Delete Content">
+                        <button class="btn btn-delete" title="Delete Content" data-delete-url="{% url 'admin_about_raktasewa_delete' about.id %}" onclick="showDeleteModal(this)">
                             <span class="material-icons">delete</span>
                             Delete
-                        </a>
+                        </button>
                     </div>
                 </td>
             </tr>
@@ -388,6 +575,27 @@
             {% endfor %}
         </tbody>
     </table>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">Confirm Delete</h2>
+            <button class="close-modal" onclick="hideDeleteModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p id="deleteModalText">Are you sure you want to delete this entry? This action cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+            <form id="deleteForm" method="POST" action="">
+                {% csrf_token %}
+                <input type="hidden" name="about_id" id="deleteAboutId" value="">
+                <button type="button" class="btn btn-cancel" onclick="hideDeleteModal()">Cancel</button>
+                <button type="submit" class="btn btn-delete">Delete</button>
+            </form>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -450,6 +658,42 @@ function clearSearch() {
     searchInput.value = '';
     filterTable();
     searchInput.focus();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Get all message elements
+    const messages = document.querySelectorAll('.alert');
+    // Set timeout for each message
+    messages.forEach(message => {
+        setTimeout(() => {
+            message.style.opacity = '0';
+            message.style.transition = 'opacity 0.5s ease-out';
+            setTimeout(() => {
+                message.remove();
+            }, 500);
+        }, 5000); // 5 seconds
+    });
+});
+
+function showDeleteModal(button) {
+    var modal = document.getElementById('deleteModal');
+    var form = document.getElementById('deleteForm');
+    var modalText = document.getElementById('deleteModalText');
+    var aboutIdInput = document.getElementById('deleteAboutId');
+    form.action = button.getAttribute('data-delete-url');
+    aboutIdInput.value = '';
+    modalText.innerHTML = 'Are you sure you want to delete this entry? This action cannot be undone.';
+    modal.classList.add('show');
+}
+function hideDeleteModal() {
+    var modal = document.getElementById('deleteModal');
+    modal.classList.remove('show');
+}
+window.onclick = function(event) {
+    var modal = document.getElementById('deleteModal');
+    if (event.target == modal) {
+        modal.classList.remove('show');
+    }
 }
 </script>
 {% endblock %} 

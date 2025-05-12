@@ -552,7 +552,7 @@ def admin_about_raktasewa_edit(request, about_id):
         about.save()
         
         messages.success(request, 'About content updated successfully!')
-        return redirect('admin_about_raktasewa_detail', about_id=about.id)
+        return redirect('admin_about_raktasewa')
     
     context = {
         'about': about
@@ -562,9 +562,12 @@ def admin_about_raktasewa_edit(request, about_id):
 @login_required(login_url='admin_login')
 def admin_about_raktasewa_delete(request, about_id):
     about = get_object_or_404(AboutRaktaSewa, id=about_id)
-    about.delete()
-    messages.success(request, 'About content deleted successfully!')
-    return redirect('admin_about_raktasewa')
+    if request.method == 'POST':
+        about.delete()
+        messages.success(request, 'About content deleted successfully!')
+        return redirect('admin_about_raktasewa')
+    # Fallback: render a confirmation page if not POST
+    return render(request, 'about_raktasewa/adminAboutRaktaSewaDeleteConfirm.html', {'about': about})
 
 # Notification Views
 @login_required(login_url='admin_login')
