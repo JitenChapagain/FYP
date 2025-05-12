@@ -8,10 +8,14 @@
 {% block content %}
 <style>
     .content-header {
+        background: #fff;
+        padding: 24px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        margin-bottom: 24px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 2rem;
     }
 
     .content-header h1 {
@@ -26,36 +30,35 @@
     }
 
     .btn {
-        padding: 0.5rem 1rem;
-        border-radius: 0.25rem;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 14px;
         font-weight: 500;
-        text-decoration: none;
-        display: inline-flex;
+        cursor: pointer;
+        border: none;
+        display: flex;
         align-items: center;
-        gap: 0.5rem;
-        transition: all 0.2s;
+        gap: 8px;
+        transition: all 0.3s ease;
+        text-decoration: none;
     }
 
     .btn-primary {
-        background-color: #007bff;
+        background-color: #1976d2;
         color: white;
-        border: none;
     }
 
     .btn-primary:hover {
-        background-color: #0056b3;
-        color: white;
+        background-color: #1565c0;
     }
 
     .btn-danger {
-        background-color: #dc3545;
+        background-color: #f44336;
         color: white;
-        border: none;
     }
 
     .btn-danger:hover {
-        background-color: #c82333;
-        color: white;
+        background-color: #e53935;
     }
 
     .btn-secondary {
@@ -70,10 +73,10 @@
     }
 
     .detail-container {
-        background: white;
-        border-radius: 0.5rem;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        padding: 2rem;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        padding: 24px;
     }
 
     .detail-section {

@@ -506,18 +506,17 @@
     </a>
 </div>
 
-<form class="table-controls" method="GET" action="{% url 'admin_gallery' %}">
+<div class="table-controls">
     <div class="entries-control">
-        <label>Show</label>
-        <select name="entries" class="entries-select" onchange="this.form.submit()">
-            <option value="1" {% if entries == '1' %}selected{% endif %}>1</option>
-            <option value="4" {% if entries == '4' %}selected{% endif %}>4</option>
-            <option value="10" {% if entries == '10' %}selected{% endif %}>10</option>
-            <option value="25" {% if entries == '25' %}selected{% endif %}>25</option>
-            <option value="50" {% if entries == '50' %}selected{% endif %}>50</option>
-            <option value="100" {% if entries == '100' %}selected{% endif %}>100</option>
+        <label for="entries-select">Show</label>
+        <select id="entries-select" class="entries-select" onchange="updateEntriesPerPage(this.value)">
+            <option value="5" selected>5</option>
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
         </select>
-        <label>Entries</label>
+        <span>entries</span>
     </div>
     <div class="search-control">
         <input type="text" 
@@ -529,7 +528,7 @@
         </button>
         <span class="material-icons search-icon">search</span>
     </div>
-</form>
+</div>
 
 <div class="search-results" style="display: none;"></div>
 <div class="no-results"></div>
@@ -602,19 +601,19 @@
 
 <div class="pagination">
     {% if gallery_items.has_previous %}
-    <a href="?page={{ gallery_items.previous_page_number }}&entries={{ entries }}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-btn">Previous</a>
+    <a href="?page={{ gallery_items.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if entries_per_page %}&entries={{ entries_per_page }}{% endif %}" class="page-btn">Previous</a>
     {% endif %}
     
     {% for num in gallery_items.paginator.page_range %}
         {% if num == gallery_items.number %}
         <span class="page-btn active">{{ num }}</span>
         {% else %}
-        <a href="?page={{ num }}&entries={{ entries }}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-btn">{{ num }}</a>
+        <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if entries_per_page %}&entries={{ entries_per_page }}{% endif %}" class="page-btn">{{ num }}</a>
         {% endif %}
     {% endfor %}
     
     {% if gallery_items.has_next %}
-    <a href="?page={{ gallery_items.next_page_number }}&entries={{ entries }}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-btn">Next</a>
+    <a href="?page={{ gallery_items.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if entries_per_page %}&entries={{ entries_per_page }}{% endif %}" class="page-btn">Next</a>
     {% endif %}
 </div>
 {% endif %}
@@ -716,24 +715,27 @@
         searchInput.focus();
     }
 
+    function updateEntriesPerPage(value) {
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set('entries', value);
+        currentUrl.searchParams.set('page', '1'); // Reset to first page when changing entries per page
+        window.location.href = currentUrl.toString();
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.querySelector('.search-input');
-        const entriesSelect = document.querySelector('.entries-select');
+        const entriesSelect = document.getElementById('entries-select');
+        
+        // Set the selected value based on URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const entriesParam = urlParams.get('entries');
+        if (entriesParam) {
+            entriesSelect.value = entriesParam;
+        }
         
         // Initialize search
         searchInput.addEventListener('input', filterTable);
         filterTable();
-
-        // Handle entries change
-        entriesSelect.addEventListener('change', function() {
-            const currentSearch = searchInput.value.trim();
-            const url = new URL(window.location.href);
-            url.searchParams.set('entries', this.value);
-            if (currentSearch) {
-                url.searchParams.set('search', currentSearch);
-            }
-            window.location.href = url.toString();
-        });
 
         // Auto-dismiss messages
         const messages = document.querySelectorAll('.alert');

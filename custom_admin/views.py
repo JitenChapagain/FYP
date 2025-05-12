@@ -10,6 +10,7 @@ from django.db.models import Q
 from django.contrib import messages
 from core.forms import BloodBankRegistrationForm, DonorForm, CampScheduleForm, BloodStockForm
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import PageNotAnInteger, EmptyPage
 
 # Create your views here.
 
@@ -664,8 +665,41 @@ def admin_faq_delete(request, faq_id):
 
 @login_required
 def admin_gallery(request):
+    # Get the number of entries per page from request, default to 5
+    entries_per_page = int(request.GET.get('entries', 5))
+    
+    # Get all gallery items ordered by upload date
     gallery_items = Gallery.objects.all().order_by('-uploaded_at')
-    return render(request, 'gallery/adminGallery.html', {'gallery_items': gallery_items})
+    
+    # Get search query if any
+    search_query = request.GET.get('search', '')
+    if search_query:
+        gallery_items = gallery_items.filter(caption__icontains=search_query)
+    
+    # Get total count before pagination
+    total_gallery_items = gallery_items.count()
+    
+    # Paginate the queryset
+    paginator = Paginator(gallery_items, entries_per_page)
+    page = request.GET.get('page', 1)
+    
+    try:
+        gallery_items = paginator.page(page)
+    except PageNotAnInteger:
+        gallery_items = paginator.page(1)
+    except EmptyPage:
+        gallery_items = paginator.page(paginator.num_pages)
+    
+    context = {
+        'gallery_items': gallery_items,
+        'total_gallery_items': total_gallery_items,
+        'is_filtered': bool(search_query),
+        'search_query': search_query,
+        'filtered_count': gallery_items.paginator.count if search_query else total_gallery_items,
+        'entries_per_page': entries_per_page,
+    }
+    
+    return render(request, 'gallery/adminGallery.html', context)
 
 @login_required
 def admin_gallery_add(request):
