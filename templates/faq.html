@@ -4,218 +4,23 @@
 {% block content %}
 <div class="container my-5">
   <h2 class="mb-4">Frequently Asked Questions</h2>
-  <!-- FAQ Search Bar -->
-  <div class="row mb-4">
-    <div class="col-md-8 mx-auto">
-      <input type="text" class="form-control form-control-lg" id="faqSearch" placeholder="Search for a question... (e.g. eligibility, donation, safety)">
-    </div>
-  </div>
-  <!-- Top FAQs (Static) -->
-  <div class="mb-4">
-    <h4 class="text-danger">Top FAQs</h4>
-    <div class="accordion mb-3" id="topFaqAccordion">
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="topfaq1">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#topcollapse1" aria-expanded="false" aria-controls="topcollapse1">
-            Is blood donation safe?
-          </button>
-        </h2>
-        <div id="topcollapse1" class="accordion-collapse collapse" aria-labelledby="topfaq1" data-bs-parent="#topFaqAccordion">
-          <div class="accordion-body">
-            Yes, blood donation is safe. All needles and bags are sterile and used only once.
-          </div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="topfaq2">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#topcollapse2" aria-expanded="false" aria-controls="topcollapse2">
-            Who can donate blood?
-          </button>
-        </h2>
-        <div id="topcollapse2" class="accordion-collapse collapse" aria-labelledby="topfaq2" data-bs-parent="#topFaqAccordion">
-          <div class="accordion-body">
-            Healthy individuals aged 18-65 years and weighing at least 50kg can usually donate blood.
-          </div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="topfaq3">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#topcollapse3" aria-expanded="false" aria-controls="topcollapse3">
-            How often can I donate?
-          </button>
-        </h2>
-        <div id="topcollapse3" class="accordion-collapse collapse" aria-labelledby="topfaq3" data-bs-parent="#topFaqAccordion">
-          <div class="accordion-body">
-            Most people can donate whole blood every 3-4 months.
-          </div>
+  <div class="accordion" id="faqAccordion">
+    {% for faq in faqs %}
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
+          {{ faq.question }}
+        </button>
+      </h2>
+      <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          {{ faq.answer|linebreaks }}
         </div>
       </div>
     </div>
-  </div>
-  <!-- Category-based FAQ Sections -->
-  <div class="mb-4">
-    <h4 class="text-danger">Donation FAQs</h4>
-    <div class="accordion mb-3" id="donationFaqAccordion">
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="donationfaq1">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#donationcollapse1" aria-expanded="false" aria-controls="donationcollapse1">
-            What should I do before donating blood?
-          </button>
-        </h2>
-        <div id="donationcollapse1" class="accordion-collapse collapse" aria-labelledby="donationfaq1" data-bs-parent="#donationFaqAccordion">
-          <div class="accordion-body">
-            Eat a healthy meal and drink plenty of water. Avoid fatty foods and alcohol before donation.
-          </div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="donationfaq2">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#donationcollapse2" aria-expanded="false" aria-controls="donationcollapse2">
-            How long does the donation process take?
-          </button>
-        </h2>
-        <div id="donationcollapse2" class="accordion-collapse collapse" aria-labelledby="donationfaq2" data-bs-parent="#donationFaqAccordion">
-          <div class="accordion-body">
-            The actual blood donation takes about 8-10 minutes. The entire process, including registration and rest, takes about 30-45 minutes.
-          </div>
-        </div>
-      </div>
-    </div>
-    <h4 class="text-danger">Eligibility FAQs</h4>
-    <div class="accordion mb-3" id="eligibilityFaqAccordion">
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="eligibilityfaq1">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#eligibilitycollapse1" aria-expanded="false" aria-controls="eligibilitycollapse1">
-            Can I donate if I have a cold or fever?
-          </button>
-        </h2>
-        <div id="eligibilitycollapse1" class="accordion-collapse collapse" aria-labelledby="eligibilityfaq1" data-bs-parent="#eligibilityFaqAccordion">
-          <div class="accordion-body">
-            No, you should be healthy and free from infection at the time of donation.
-          </div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="eligibilityfaq2">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#eligibilitycollapse2" aria-expanded="false" aria-controls="eligibilitycollapse2">
-            Can women donate blood during menstruation?
-          </button>
-        </h2>
-        <div id="eligibilitycollapse2" class="accordion-collapse collapse" aria-labelledby="eligibilityfaq2" data-bs-parent="#eligibilityFaqAccordion">
-          <div class="accordion-body">
-            Yes, if they feel well and meet all other eligibility criteria.
-          </div>
-        </div>
-      </div>
-    </div>
-    <h4 class="text-danger">Safety FAQs</h4>
-    <div class="accordion mb-3" id="safetyFaqAccordion">
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="safetyfaq1">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#safetycollapse1" aria-expanded="false" aria-controls="safetycollapse1">
-            Are there any side effects to donating blood?
-          </button>
-        </h2>
-        <div id="safetycollapse1" class="accordion-collapse collapse" aria-labelledby="safetyfaq1" data-bs-parent="#safetyFaqAccordion">
-          <div class="accordion-body">
-            Most donors feel fine. Some may feel lightheaded, but resting and having a snack helps.
-          </div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="safetyfaq2">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#safetycollapse2" aria-expanded="false" aria-controls="safetycollapse2">
-            What safety measures are in place?
-          </button>
-        </h2>
-        <div id="safetycollapse2" class="accordion-collapse collapse" aria-labelledby="safetyfaq2" data-bs-parent="#safetyFaqAccordion">
-          <div class="accordion-body">
-            All equipment is sterile and single-use. Staff follow strict hygiene protocols.
-          </div>
-        </div>
-      </div>
-    </div>
-    <h4 class="text-danger">Technical FAQs</h4>
-    <div class="accordion mb-3" id="technicalFaqAccordion">
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="technicalfaq1">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#technicalcollapse1" aria-expanded="false" aria-controls="technicalcollapse1">
-            How do I register as a donor online?
-          </button>
-        </h2>
-        <div id="technicalcollapse1" class="accordion-collapse collapse" aria-labelledby="technicalfaq1" data-bs-parent="#technicalFaqAccordion">
-          <div class="accordion-body">
-            Go to the Donor Registration page and fill out the required information. You will receive a confirmation once registered.
-          </div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="technicalfaq2">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#technicalcollapse2" aria-expanded="false" aria-controls="technicalcollapse2">
-            I forgot my login password. What should I do?
-          </button>
-        </h2>
-        <div id="technicalcollapse2" class="accordion-collapse collapse" aria-labelledby="technicalfaq2" data-bs-parent="#technicalFaqAccordion">
-          <div class="accordion-body">
-            Use the 'Forgot Password' link on the login page to reset your password.
-          </div>
-        </div>
-      </div>
-    </div>
-    <h4 class="text-danger">General FAQs</h4>
-    <div class="accordion mb-3" id="generalFaqAccordion">
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="generalfaq1">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#generalcollapse1" aria-expanded="false" aria-controls="generalcollapse1">
-            Can I donate blood if I am taking medication?
-          </button>
-        </h2>
-        <div id="generalcollapse1" class="accordion-collapse collapse" aria-labelledby="generalfaq1" data-bs-parent="#generalFaqAccordion">
-          <div class="accordion-body">
-            It depends on the medication. Please consult with the medical staff at the donation center.
-          </div>
-        </div>
-      </div>
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="generalfaq2">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#generalcollapse2" aria-expanded="false" aria-controls="generalcollapse2">
-            Where can I find upcoming blood donation camps?
-          </button>
-        </h2>
-        <div id="generalcollapse2" class="accordion-collapse collapse" aria-labelledby="generalfaq2" data-bs-parent="#generalFaqAccordion">
-          <div class="accordion-body">
-            Visit the 'Blood Donation Camps' section on our website for the latest events.
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Dynamic FAQs from Database -->
-  <div class="mb-4">
-    <h4 class="text-danger">More FAQs from our Community</h4>
-    <div class="accordion" id="faqAccordion">
-      {% for faq in faqs %}
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="heading{{ forloop.counter }}">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
-            {{ faq.question }}
-          </button>
-        </h2>
-        <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#faqAccordion">
-          <div class="accordion-body">
-            {{ faq.answer|linebreaks }}
-          </div>
-        </div>
-      </div>
-      {% empty %}
-      <div class="text-center">No FAQs have been added yet.</div>
-      {% endfor %}
-    </div>
-  </div>
-  <!-- Didn't find your answer? -->
-  <div class="alert alert-info text-center mt-4">
-    <h5 class="mb-2">Didn't find your answer?</h5>
-    <p>Contact our support team at <a href="mailto:info@raktasewa.org" class="text-danger">info@raktasewa.org</a> or visit our <a href="/contact/" class="text-danger">Contact Page</a>.</p>
+    {% empty %}
+    <div class="text-center">No FAQs have been added yet.</div>
+    {% endfor %}
   </div>
 </div>
 {% endblock %}

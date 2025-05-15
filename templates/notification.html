@@ -4,62 +4,27 @@
 {% block content %}
 <div class="container my-5">
   <h2 class="mb-4">Notifications</h2>
-  <div class="row g-4">
-  {% for notification in notifications %}
-  <div class="col-md-6 col-lg-4">
-    <div class="card shadow-sm border-danger h-100 position-relative notification-card">
-      <div class="card-body pb-2">
-        <div class="d-flex align-items-center mb-2">
-          {% if notification.is_pinned %}
-            <span class="me-2 text-warning" title="Pinned"><i class="bi bi-pin-angle-fill fs-5"></i></span>
-          {% endif %}
-          <span class="me-2">
-            {% if notification.type == 'alert' %}
-              <span class="badge bg-danger"><i class="bi bi-exclamation-triangle me-1"></i>Alert</span>
-            {% elif notification.type == 'event' %}
-              <span class="badge bg-success"><i class="bi bi-calendar-event me-1"></i>Event</span>
-            {% elif notification.type == 'system' %}
-              <span class="badge bg-secondary"><i class="bi bi-gear me-1"></i>System</span>
-            {% elif notification.type == 'info' %}
-              <span class="badge bg-info text-dark"><i class="bi bi-info-circle me-1"></i>Info</span>
-            {% else %}
-              <span class="badge bg-light text-dark"><i class="bi bi-bell me-1"></i>General</span>
-            {% endif %}
-          </span>
-          <h5 class="card-title mb-0 flex-grow-1 ms-2">{{ notification.title }}</h5>
-          {% if notification.is_new %}
-            <span class="badge bg-primary ms-2">New</span>
-          {% endif %}
-          <!-- Dismiss button (UI only) -->
-          <button type="button" class="btn-close ms-2" aria-label="Dismiss" title="Dismiss" onclick="this.closest('.notification-card').style.display='none';"></button>
-        </div>
-        <p class="card-text">{{ notification.message|linebreaks }}</p>
-      </div>
-      <div class="card-footer bg-transparent border-0 d-flex justify-content-between align-items-center pt-0">
-        <small class="text-muted">
-          <i class="bi bi-clock me-1"></i>
-          {% if notification.relative_time %}
-            {{ notification.relative_time }}
-          {% else %}
-            {{ notification.created_at|date:"M d, Y H:i" }}
-          {% endif %}
-        </small>
-      </div>
-    </div>
+  <div class="table-responsive">
+    <table class="table table-striped table-hover shadow-sm">
+      <thead class="table-danger">
+        <tr>
+          <th>Title</th>
+          <th>Message</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for notification in notifications %}
+        <tr>
+          <td>{{ notification.title }}</td>
+          <td>{{ notification.message|linebreaks }}</td>
+          <td>{{ notification.created_at|date:"M d, Y H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3" class="text-center">No notifications available.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
-  {% empty %}
-  <div class="col-12">
-    <div class="alert alert-info text-center shadow-sm">No notifications available.</div>
-  </div>
-  {% endfor %}
-</div>
-<style>
-  .notification-card .btn-close {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    z-index: 2;
-  }
-</style>
 </div>
 {% endblock %}

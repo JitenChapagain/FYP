@@ -5,7 +5,6 @@ from .bloodbank_forms import BloodBankLoginForm
 from django.contrib.auth.hashers import check_password
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
-import django.db.models as models
 
 # Province and District choices
 PROVINCE_CHOICES = [
@@ -346,124 +345,15 @@ def raktasewa_login(request):
                 user = BloodBankRegistration.objects.get(username=username)
                 if check_password(password, user.password):
                     request.session['bloodbank_user_id'] = user.id
-                    return redirect('bloodbank_home')
+                    return redirect('bloodbank_dashboard')
                 else:
                     error = "Invalid credentials."
             except BloodBankRegistration.DoesNotExist:
                 error = "Invalid credentials."
-
-def update_blood(request):
-    user_id = request.session.get('bloodbank_user_id')
-    if not user_id:
-        return redirect('raktasewa_login')
-    bloodbank = BloodBankRegistration.objects.get(id=user_id)
-    
-    # Get blood group choices and their stock
-    blood_groups = []
-    for blood_group in BloodStock.BLOOD_GROUP_CHOICES:
-        try:
-            stock = BloodStock.objects.get(
-                bloodbank=bloodbank,
-                blood_group=blood_group[0]
-            )
-            units = stock.units
-        except BloodStock.DoesNotExist:
-            units = 0
-        
-        blood_groups.append({
-            'group': blood_group[1],
-            'code': blood_group[0],
-            'units': units
-        })
-    
-    return render(request, 'update_blood.html', {
-        'blood_groups': blood_groups
-    })
-
-def update_blood_group(request, blood_group):
-    user_id = request.session.get('bloodbank_user_id')
-    if not user_id:
-        return redirect('raktasewa_login')
-    
-    bloodbank = BloodBankRegistration.objects.get(id=user_id)
-    
-    try:
-        blood_stock = BloodStock.objects.get(
-            bloodbank=bloodbank,
-            blood_group=blood_group
-        )
-    except BloodStock.DoesNotExist:
-        blood_stock = BloodStock(
-            bloodbank=bloodbank,
-            blood_group=blood_group,
-            units=0
-        )
-    
-    if request.method == 'POST':
-        form = BloodStockForm(request.POST, instance=blood_stock)
-        if form.is_valid():
-            form.save()
-            return redirect('update_blood')
     else:
-        form = BloodStockForm(instance=blood_stock)
-    
-    return render(request, 'update_blood_group.html', {
-        'form': form,
-        'blood_group': blood_group
-    })
+        form = BloodBankLoginForm()
+    return render(request, 'raktasewa_login.html', {'form': form, 'error': error})
 
-def blood_stock_list(request):
-    user_id = request.session.get('bloodbank_user_id')
-    if not user_id:
-        return redirect('raktasewa_login')
-    
-    bloodbank = BloodBankRegistration.objects.get(id=user_id)
-    blood_stock = BloodStock.objects.filter(bloodbank=bloodbank)
-    
-    return render(request, 'blood_stock_list.html', {
-        'blood_stock': blood_stock
-    })
-
-def add_donor(request):
-    user_id = request.session.get('bloodbank_user_id')
-    if not user_id:
-        return redirect('raktasewa_login')
-    bloodbank = BloodBankRegistration.objects.get(id=user_id)
-    success = None
-    if request.method == 'POST':
-        form = DonorForm(request.POST, request.FILES)
-        if form.is_valid():
-            donor = form.save(commit=False)
-            donor.bloodbank = bloodbank  # assign logged-in blood bank
-            donor.save()
-            success = True
-            form = DonorForm()  # reset form
-        else:
-            success = False
-    else:
-        form = DonorForm()
-    return render(request, 'add_donor.html', {'form': form, 'success': success})
-
-def bloodbank_home(request):
-    user_id = request.session.get('bloodbank_user_id')
-    if not user_id:
-        return redirect('raktasewa_login')
-    bloodbank = BloodBankRegistration.objects.get(id=user_id)
-
-    # Total units
-    total_units = BloodStock.objects.filter(bloodbank=bloodbank).aggregate(total=models.Sum('units'))['total'] or 0
-    # Notifications for this blood bank (customize as needed)
-    notifications = Notification.objects.filter(bloodbank=bloodbank).order_by('-created_at') if hasattr(Notification, 'bloodbank') else Notification.objects.all().order_by('-created_at')
-    # Donor count for this blood bank (customize as needed)
-    donor_count = Donor.objects.filter(bloodbank=bloodbank).count() if hasattr(Donor, 'bloodbank') else Donor.objects.count()
-
-    context = {
-        'user': bloodbank,
-        'total_units': total_units,
-        'notifications': notifications,
-        'donor_count': donor_count,
-    }
-    return render(request, 'bloodbank_home.html', context)
 
 def bloodbank_dashboard(request):
     user_id = request.session.get('bloodbank_user_id')

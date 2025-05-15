@@ -13,23 +13,22 @@
     <!-- Blood Bank Panel Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-danger shadow-sm sticky-top">
       <div class="container-fluid">
-        <a class="navbar-brand fw-bold" href="{% url 'bloodbank_home' %}">Blood Bank Panel</a>
+        <a class="navbar-brand fw-bold" href="/bloodbank/">Blood Bank Panel</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#bloodbankNavbar" aria-controls="bloodbankNavbar" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="bloodbankNavbar">
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-            <li class="nav-item"><a class="nav-link" href="{% url 'bloodbank_home' %}">Home</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'add_donor' %}">Add Donor</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'donor_list' %}">List of Donor</a></li>
             
             <li class="nav-item"><a class="nav-link" href="{% url 'update_blood' %}">Update Blood</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'bloodbank_profile' %}">Profile of Blood Bank</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Profile of Blood Bank</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'camp_schedules' %}">Schedule Camp</a></li>
             <li class="nav-item"><a class="nav-link text-light" href="/bloodbank-logout/">Logout</a></li>
             {% if bloodbank_name %}
               <li class="nav-item d-flex align-items-center ms-3">
-                <a class="navbar-text fw-bold text-light text-decoration-none" href="{% url 'bloodbank_profile' %}">{{ bloodbank_name }}</a>
+                <a class="navbar-text fw-bold text-light text-decoration-none" href="/bloodbank/profile/">{{ bloodbank_name }}</a>
               </li>
             {% endif %}
           </ul>

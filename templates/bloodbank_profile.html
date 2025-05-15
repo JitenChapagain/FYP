@@ -2,117 +2,57 @@
 {% block title %}Blood Bank Profile{% endblock %}
 {% block content %}
 <div class="container my-5">
-  <!-- Profile Header -->
-  <div class="text-center mb-5">
-    <div class="d-inline-block mb-3">
-      <div class="rounded-circle bg-danger d-flex align-items-center justify-content-center mx-auto" style="width:70px;height:70px;">
-        <i class="bi bi-hospital-fill text-white fs-1"></i>
-      </div>
-    </div>
-    <h2 class="fw-bold mt-3">Blood Bank Profile</h2>
-    <p class="text-muted mb-0">View and update your blood bank's profile information.</p>
+  <h2 class="mb-4">Blood Bank Profile</h2>
+  <div class="card shadow-sm p-4 mb-4">
+    <h5 class="mb-3">Profile Information</h5>
+    <dl class="row">
+      <dt class="col-sm-4">Blood Bank Name</dt>
+      <dd class="col-sm-8">{{ user.blood_bank_name }}</dd>
+      <dt class="col-sm-4">Short Name</dt>
+      <dd class="col-sm-8">{{ user.short_name }}</dd>
+      <dt class="col-sm-4">Parent Hospital</dt>
+      <dd class="col-sm-8">{{ user.parent_hospital_name }}</dd>
+      <dt class="col-sm-4">Province</dt>
+      <dd class="col-sm-8">{{ user.province }}</dd>
+      <dt class="col-sm-4">District</dt>
+      <dd class="col-sm-8">{{ user.district }}</dd>
+      <dt class="col-sm-4">City</dt>
+      <dd class="col-sm-8">{{ user.city }}</dd>
+      <dt class="col-sm-4">Address</dt>
+      <dd class="col-sm-8">{{ user.address }}</dd>
+      <dt class="col-sm-4">Contact Person</dt>
+      <dd class="col-sm-8">{{ user.contact_person }}</dd>
+      <dt class="col-sm-4">Email</dt>
+      <dd class="col-sm-8">{{ user.email }}</dd>
+      <dt class="col-sm-4">Contact No</dt>
+      <dd class="col-sm-8">{{ user.contact_no }}</dd>
+      <dt class="col-sm-4">Pincode</dt>
+      <dd class="col-sm-8">{{ user.pincode }}</dd>
+      <dt class="col-sm-4">Category</dt>
+      <dd class="col-sm-8">{{ user.category }}</dd>
+      <dt class="col-sm-4">Remark</dt>
+      <dd class="col-sm-8">{{ user.remark }}</dd>
+    </dl>
   </div>
-  <!-- Profile Info Card -->
-  <div class="row justify-content-center mb-4" id="profileInfoCard">
-    <div class="col-lg-8">
-      <div class="card shadow border-0 mb-4">
-        <div class="card-header bg-white d-flex align-items-center justify-content-between border-bottom py-3">
-          <div class="d-flex align-items-center">
-            <div class="rounded-circle bg-danger d-flex align-items-center justify-content-center me-3" style="width:48px;height:48px;">
-              <i class="bi bi-hospital-fill text-white fs-3"></i>
-            </div>
-            <div>
-              <h4 class="mb-0 fw-bold">{{ user.blood_bank_name }}</h4>
-              <span class="text-muted small">Profile Information</span>
-            </div>
-          </div>
-          <button id="editProfileBtn" class="btn btn-outline-danger"><i class="bi bi-pencil-square me-1"></i>Edit</button>
+
+  <div class="card shadow-sm p-4">
+    <h5 class="mb-3">Edit / Update Profile</h5>
+    <form method="post">
+      {% csrf_token %}
+      {% for field in form.visible_fields %}
+        <div class="mb-3">
+          {{ field.label_tag }} {{ field }}
+          {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+          {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
         </div>
-        <div class="card-body p-0">
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item"><strong>Short Name:</strong> {{ user.short_name }}</li>
-            <li class="list-group-item"><strong>Parent Hospital:</strong> {{ user.parent_hospital_name }}</li>
-            <li class="list-group-item"><strong>Province:</strong> {{ user.province }}</li>
-            <li class="list-group-item"><strong>District:</strong> {{ user.district }}</li>
-            <li class="list-group-item"><strong>City:</strong> {{ user.city }}</li>
-            <li class="list-group-item"><strong>Address:</strong> {{ user.address }}</li>
-            <li class="list-group-item"><strong>Contact Person:</strong> <i class="bi bi-person-fill text-secondary me-1"></i>{{ user.contact_person }}</li>
-            <li class="list-group-item"><strong>Email:</strong> <i class="bi bi-envelope-fill text-secondary me-1"></i>{{ user.email }}</li>
-            <li class="list-group-item"><strong>Contact No:</strong> <i class="bi bi-telephone-fill text-secondary me-1"></i>{{ user.contact_no }}</li>
-            <li class="list-group-item"><strong>Pincode:</strong> {{ user.pincode }}</li>
-            <li class="list-group-item"><strong>Category:</strong> {{ user.category }}</li>
-            <li class="list-group-item"><strong>Remark:</strong> {{ user.remark }}</li>
-          </ul>
-        </div>
-      </div>
-    </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-primary">Save Changes</button>
+      {% if success %}
+        <div class="alert alert-success mt-3">Profile updated successfully!</div>
+      {% elif success == False %}
+        <div class="alert alert-danger mt-3">There was an error updating your profile. Please check the form.</div>
+      {% endif %}
+    </form>
   </div>
-  <!-- Edit Profile Form Card -->
-  <div class="row justify-content-center" id="editProfileCard" style="display:none;">
-    <div class="col-lg-8">
-      <div class="card shadow border-0">
-        <div class="card-header bg-white d-flex align-items-center justify-content-between border-bottom py-3">
-          <div class="d-flex align-items-center">
-            <div class="rounded-circle bg-danger d-flex align-items-center justify-content-center me-3" style="width:48px;height:48px;">
-              <i class="bi bi-pencil-square text-white fs-3"></i>
-            </div>
-            <div>
-              <h4 class="mb-0 fw-bold">Edit / Update Profile</h4>
-              <span class="text-muted small">Update your profile details below</span>
-            </div>
-          </div>
-          <button type="button" id="viewProfileBtn" class="btn btn-outline-secondary"><i class="bi bi-eye me-1"></i>View</button>
-        </div>
-        <div class="card-body">
-          <form method="post">
-            {% csrf_token %}
-            <div class="row">
-              {% for field in form.visible_fields %}
-                <div class="mb-3 col-md-6">
-                  {{ field.label_tag }} {{ field }}
-                  {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
-                  {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
-                </div>
-              {% endfor %}
-            </div>
-            <button type="submit" class="btn btn-danger"><i class="bi bi-check-circle me-1"></i>Save Changes</button>
-            {% if success %}
-              <div class="alert alert-success mt-3">Profile updated successfully!</div>
-            {% elif success == False %}
-              <div class="alert alert-danger mt-3">There was an error updating your profile. Please check the form.</div>
-            {% endif %}
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const editBtn = document.getElementById('editProfileBtn');
-      const viewBtn = document.getElementById('viewProfileBtn');
-      const profileInfo = document.getElementById('profileInfoCard');
-      const editCard = document.getElementById('editProfileCard');
-      if (editBtn) {
-        editBtn.addEventListener('click', function() {
-          profileInfo.style.display = 'none';
-          editCard.style.display = '';
-        });
-      }
-      if (viewBtn) {
-        viewBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          editCard.style.display = 'none';
-          profileInfo.style.display = '';
-        });
-      }
-    });
-  </script>
 </div>
-<style>
-.table th, .table td { vertical-align: middle !important; }
-@media (max-width: 767.98px) {
-  .card-header .d-flex.align-items-center { flex-direction: column; align-items: flex-start !important; }
-  .card-header .d-flex.align-items-center .me-3 { margin-right: 0 !important; margin-bottom: 0.5rem; }
-}
-</style>
 {% endblock %}
