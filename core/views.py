@@ -337,8 +337,8 @@ def add_bank(request):
 
 def raktasewa_login(request):
     error = None
-    form = BloodBankLoginForm(request.POST or None)
     if request.method == 'POST':
+        form = BloodBankLoginForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
@@ -351,7 +351,6 @@ def raktasewa_login(request):
                     error = "Invalid credentials."
             except BloodBankRegistration.DoesNotExist:
                 error = "Invalid credentials."
-    return render(request, 'raktasewa_login.html', {'form': form, 'error': error})
 
 def update_blood(request):
     user_id = request.session.get('bloodbank_user_id')
